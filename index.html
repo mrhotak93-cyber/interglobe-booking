@@ -258,6 +258,17 @@
       color: #64748b;
     }
 
+    .warning-box {
+      border: 1px solid #fecaca;
+      background: #fff1f2;
+      color: #9f1239;
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 16px;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
     @media (max-width: 1024px) {
       .layout {
         grid-template-columns: 1fr;
@@ -288,6 +299,10 @@
   <div class="wrapper">
     <div class="layout">
       <div class="card">
+        <div id="decodeWarning" class="warning-box" style="display:none;">
+          Impossible de récupérer correctement les données du calculateur. Veuillez revenir au calculateur et recommencer.
+        </div>
+
         <div class="progress-top">
           <div class="progress-head">
             <span id="stepCounter">Étape 1 / 5</span>
@@ -308,6 +323,10 @@
           <input type="hidden" name="Prix de base HTVA" id="basePriceField">
           <input type="hidden" name="Options HTVA" id="optionsPriceField">
           <input type="hidden" name="Total estimé HTVA" id="totalPriceField">
+          <input type="hidden" name="Code postal collecte" id="pickupPostalField">
+          <input type="hidden" name="Code postal livraison" id="deliveryPostalField">
+          <input type="hidden" name="Pays collecte" id="pickupCountryField">
+          <input type="hidden" name="Pays livraison" id="deliveryCountryField">
           <textarea name="Résumé de la commande" id="summaryField" style="display:none;"></textarea>
 
           <!-- ÉTAPE 1 -->
@@ -485,6 +504,8 @@
 
         <div class="price-box">
           <div><strong>Véhicule :</strong> <span id="vehicleDisplay">-</span></div>
+          <div><strong>Collecte :</strong> <span id="pickupDisplay">-</span></div>
+          <div><strong>Livraison :</strong> <span id="deliveryDisplay">-</span></div>
           <div><strong>Tarif de base HTVA :</strong> <span id="basePriceDisplay">0.00 €</span></div>
           <div><strong>Options HTVA :</strong> <span id="optionsPriceDisplay">0.00 €</span></div>
           <div class="total-line"><strong>Total estimé HTVA :</strong> <span id="totalPriceDisplay">0.00 €</span></div>
@@ -523,15 +544,59 @@
     var totalSteps = 5;
     var productCount = 0;
 
+    const PRICE_SECRET_KEY = "InterGlobe_2026_Key";
+
+    function xorDecrypt(text, key) {
+      var result = '';
+      for (var i = 0; i < text.length; i++) {
+        result += String.fromCharCode(
+          text.charCodeAt(i) ^ key.charCodeAt(i % key.length)
+        );
+      }
+      return result;
+    }
+
+    function decodePayload(encoded, key) {
+      try {
+        var base64 = encoded.replace(/-/g, '+').replace(/_/g, '/');
+        while (base64.length % 4) {
+          base64 += '=';
+        }
+        var encrypted = atob(base64);
+        var json = xorDecrypt(encrypted, key);
+        return JSON.parse(json);
+      } catch (e) {
+        return null;
+      }
+    }
+
     function getUrlParam(name) {
       var params = new URLSearchParams(window.location.search);
       return params.get(name);
     }
 
-    var basePrice = parseFloat(getUrlParam('prix'));
-    if (isNaN(basePrice)) basePrice = 0;
+    var rawData = getUrlParam('data');
+    var decodedData = rawData ? decodePayload(rawData, PRICE_SECRET_KEY) : null;
 
-    var vehicleName = getUrlParam('vehicule') || '-';
+    var basePrice = 0;
+    var vehicleName = '-';
+    var pickupPostal = '-';
+    var deliveryPostal = '-';
+    var pickupCountry = '-';
+    var deliveryCountry = '-';
+
+    if (decodedData && decodedData.prix && decodedData.vehicule) {
+      basePrice = parseFloat(decodedData.prix);
+      if (isNaN(basePrice)) basePrice = 0;
+
+      vehicleName = decodedData.vehicule || '-';
+      pickupPostal = decodedData.collecte || '-';
+      deliveryPostal = decodedData.livraison || '-';
+      pickupCountry = decodedData.paysCollecte || '-';
+      deliveryCountry = decodedData.paysLivraison || '-';
+    } else {
+      document.getElementById('decodeWarning').style.display = 'block';
+    }
 
     function formatPrice(value) {
       return Number(value).toFixed(2) + ' €';
@@ -573,6 +638,8 @@
       var total = basePrice + optionsTotal;
 
       document.getElementById('vehicleDisplay').innerText = vehicleName;
+      document.getElementById('pickupDisplay').innerText = pickupPostal + ' (' + pickupCountry + ')';
+      document.getElementById('deliveryDisplay').innerText = deliveryPostal + ' (' + deliveryCountry + ')';
       document.getElementById('basePriceDisplay').innerText = formatPrice(basePrice);
       document.getElementById('optionsPriceDisplay').innerText = formatPrice(optionsTotal);
       document.getElementById('totalPriceDisplay').innerText = formatPrice(total);
@@ -581,6 +648,10 @@
       document.getElementById('basePriceField').value = formatPrice(basePrice);
       document.getElementById('optionsPriceField').value = formatPrice(optionsTotal);
       document.getElementById('totalPriceField').value = formatPrice(total);
+      document.getElementById('pickupPostalField').value = pickupPostal;
+      document.getElementById('deliveryPostalField').value = deliveryPostal;
+      document.getElementById('pickupCountryField').value = pickupCountry;
+      document.getElementById('deliveryCountryField').value = deliveryCountry;
     }
 
     function showStep(step) {
@@ -937,6 +1008,8 @@
       var html = '';
 
       html += '<strong>Véhicule :</strong> ' + vehicleName + '<br>';
+      html += '<strong>Collecte calculateur :</strong> ' + pickupPostal + ' (' + pickupCountry + ')<br>';
+      html += '<strong>Livraison calculateur :</strong> ' + deliveryPostal + ' (' + deliveryCountry + ')<br>';
       html += '<strong>Tarif de base HTVA :</strong> ' + formatPrice(basePrice) + '<br>';
       html += '<strong>Options HTVA :</strong> ' + formatPrice(getOptionsTotal()) + '<br>';
       html += '<strong>Total estimé HTVA :</strong> ' + formatPrice(basePrice + getOptionsTotal()) + '<br><br>';
@@ -1015,6 +1088,8 @@
 
       summary += '=== PRIX ===\n';
       summary += 'Véhicule : ' + vehicleName + '\n';
+      summary += 'Code postal collecte : ' + pickupPostal + ' (' + pickupCountry + ')\n';
+      summary += 'Code postal livraison : ' + deliveryPostal + ' (' + deliveryCountry + ')\n';
       summary += 'Tarif de base HTVA : ' + formatPrice(basePrice) + '\n';
       summary += 'Options HTVA : ' + formatPrice(getOptionsTotal()) + '\n';
       summary += 'Total estimé HTVA : ' + formatPrice(basePrice + getOptionsTotal()) + '\n\n';
