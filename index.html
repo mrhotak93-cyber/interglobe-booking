@@ -450,7 +450,7 @@
 
             <div class="field">
               <label for="goods_extra_info" data-i18n="extra_info_label">Informations complémentaires</label>
-              <textarea class="textarea summary-watch" id="goods_extra_info" data-i18n-placeholder="extra_info_placeholder" placeholder="Ex : ADR, moins de 1000 points, remise en main propre uniquement..."></textarea>
+              <textarea class="textarea summary-watch" id="goods_extra_info" data-i18n-placeholder="extra_info_placeholder" placeholder="Ex : ADR, moins de 1000 points..."></textarea>
             </div>
 
             <button type="button" class="btn btn-primary" id="addProductBtn" data-i18n="add_product_btn">+ Ajouter un produit</button>
@@ -744,7 +744,7 @@
         paper_invoice: "Facture papier (+10 €)",
         tail_lift: "Hayon élévateur (+30 €)",
         extra_info_label: "Informations complémentaires",
-        extra_info_placeholder: "Ex : ADR, moins de 1000 points, remise en main propre uniquement...",
+        extra_info_placeholder: "Ex : ADR, moins de 1000 points...",
         add_product_btn: "+ Ajouter un produit",
         step2_note: "Ajoutez autant de lignes que d’articles différents.",
         collect_company: "Nom de la société de collecte",
@@ -838,7 +838,11 @@
         success_line2: "Le dispatch confirmera sous peu votre demande, vérifiez vos mails et spams.",
         copy_number_btn: "Copier le numéro",
         cgv_btn: "Voir les CGV",
-        decode_warning: "Impossible de récupérer correctement les données du calculateur. Veuillez revenir au calculateur et recommencer."
+        decode_warning: "Impossible de récupérer correctement les données du calculateur. Veuillez revenir au calculateur et recommencer.",
+        validation_add_one_product: "Veuillez ajouter au moins un produit.",
+        validation_product_prefix: "Veuillez compléter les informations du produit",
+        validation_required_field: "Veuillez compléter ce champ obligatoire.",
+        validation_specify_country: "Veuillez indiquer votre pays."
       },
       nl: {
         step1_title: "Kies uw opties",
@@ -849,7 +853,7 @@
         paper_invoice: "Papieren factuur (+10 €)",
         tail_lift: "Laadklep (+30 €)",
         extra_info_label: "Aanvullende informatie",
-        extra_info_placeholder: "Bijv.: ADR, minder dan 1000 punten, enkel persoonlijke overhandiging...",
+        extra_info_placeholder: "Bijv.: ADR, minder dan 1000 punten...",
         add_product_btn: "+ Product toevoegen",
         step2_note: "Voeg zoveel regels toe als er verschillende artikelen zijn.",
         collect_company: "Naam van het afhaalbedrijf",
@@ -943,7 +947,11 @@
         success_line2: "De dispatch bevestigt uw aanvraag spoedig. Controleer uw e-mails en spam.",
         copy_number_btn: "Nummer kopiëren",
         cgv_btn: "Algemene voorwaarden",
-        decode_warning: "De gegevens van de calculator konden niet correct worden opgehaald. Ga terug naar de calculator en probeer opnieuw."
+        decode_warning: "De gegevens van de calculator konden niet correct worden opgehaald. Ga terug naar de calculator en probeer opnieuw.",
+        validation_add_one_product: "Gelieve minstens één product toe te voegen.",
+        validation_product_prefix: "Gelieve de gegevens van product in te vullen",
+        validation_required_field: "Gelieve dit verplichte veld in te vullen.",
+        validation_specify_country: "Gelieve uw land in te vullen."
       },
       en: {
         step1_title: "Choose your options",
@@ -954,7 +962,7 @@
         paper_invoice: "Paper invoice (+10 €)",
         tail_lift: "Tail lift (+30 €)",
         extra_info_label: "Additional information",
-        extra_info_placeholder: "E.g.: ADR, under 1000 points, hand delivery only...",
+        extra_info_placeholder: "E.g.: ADR, under 1000 points...",
         add_product_btn: "+ Add a product",
         step2_note: "Add as many lines as there are different items.",
         collect_company: "Pickup company name",
@@ -1048,7 +1056,11 @@
         success_line2: "Dispatch will confirm your request shortly. Please check your emails and spam folder.",
         copy_number_btn: "Copy number",
         cgv_btn: "View terms",
-        decode_warning: "Unable to retrieve the calculator data correctly. Please go back to the calculator and try again."
+        decode_warning: "Unable to retrieve the calculator data correctly. Please go back to the calculator and try again.",
+        validation_add_one_product: "Please add at least one product.",
+        validation_product_prefix: "Please complete the information for product",
+        validation_required_field: "Please complete this required field.",
+        validation_specify_country: "Please specify your country."
       }
     };
 
@@ -1092,74 +1104,25 @@
       applyTranslations();
     }
 
-    function xorDecrypt(text, key) {
-      var result = '';
-      for (var i = 0; i < text.length; i++) {
-        result += String.fromCharCode(
-          text.charCodeAt(i) ^ key.charCodeAt(i % key.length)
-        );
-      }
-      return result;
+    function showValidationMessage(message, fieldEl) {
+      alert(message);
+      if (fieldEl) fieldEl.focus();
+      return false;
     }
 
-    function decodePayload(encoded, key) {
-      try {
-        var base64 = encoded.replace(/-/g, '+').replace(/_/g, '/');
-        while (base64.length % 4) {
-          base64 += '=';
-        }
-        var encrypted = atob(base64);
-        var json = xorDecrypt(encrypted, key);
-        return JSON.parse(json);
-      } catch (e) {
-        return null;
-      }
-    }
-
-    function getUrlParam(name) {
-      var params = new URLSearchParams(window.location.search);
-      return params.get(name);
-    }
-
-    function getVehicleCode(vehicle) {
-      if (vehicle === 'Compact') return '1';
-      if (vehicle === 'Van') return '2';
-      if (vehicle === 'Fourgon') return '3';
-      if (vehicle === 'Camion') return '4';
-      if (vehicle === 'Semi-remorque') return '5';
-      return '0';
-    }
-
-    function getOptionFlag(id) {
-      var el = document.getElementById(id);
-      return el && el.checked ? '1' : '0';
-    }
-
-    function generateReservationNumber() {
-      var now = new Date();
-      var y = now.getFullYear().toString();
-      var m = String(now.getMonth() + 1).padStart(2, '0');
-      var d = String(now.getDate()).padStart(2, '0');
-      var hh = String(now.getHours()).padStart(2, '0');
-      var mm = String(now.getMinutes()).padStart(2, '0');
-      var ss = String(now.getSeconds()).padStart(2, '0');
-
-      var datePart = y + m + d;
-      var timePart = hh + mm + ss;
-
-      var vehicleCode = getVehicleCode(vehicleName);
-      var tailLiftFlag = getOptionFlag('opt_tail_lift');
-      var loadingFlag = getOptionFlag('opt_loading_help');
-      var unloadingFlag = getOptionFlag('opt_unloading_help');
-      var paperInvoiceFlag = getOptionFlag('opt_paper_invoice');
-
-      return datePart
-        + vehicleCode
-        + tailLiftFlag
-        + loadingFlag
-        + unloadingFlag
-        + paperInvoiceFlag
-        + timePart;
+    function getSuccessHtml(res) {
+      return ''
+        + '<div class="success-box">'
+        +   '<div class="success-icon">✅</div>'
+        +   '<div>' + t('success_line1') + '</div>'
+        +   '<div class="success-reservation" id="successReservationNumber">' + res + '</div>'
+        +   '<div style="margin-top:12px;">' + t('success_line2') + '</div>'
+        +   '<div class="success-actions">'
+        +     '<button type="button" class="btn btn-success" onclick="manualCopyReservationNumber()">' + t('copy_number_btn') + '</button>'
+        +     '<button type="button" class="btn btn-primary" onclick="window.location.href=\'https://www.interglobe.be/CGV\'">' + t('cgv_btn') + '</button>'
+        +   '</div>'
+        +   '<div id="copyStatus" style="margin-top:12px;font-size:14px;color:#166534;"></div>'
+        + '</div>';
     }
 
     function copyReservationNumber(reservationNumber) {
@@ -1232,21 +1195,7 @@
 
       if (success === '1' && res) {
         document.getElementById('mainLayout').style.display = 'none';
-
-        var html = ''
-          + '<div class="success-box">'
-          +   '<div class="success-icon">✅</div>'
-          +   '<div>' + t('success_line1') + '</div>'
-          +   '<div class="success-reservation" id="successReservationNumber">' + res + '</div>'
-          +   '<div style="margin-top:12px;">' + t('success_line2') + '</div>'
-          +   '<div class="success-actions">'
-          +     '<button type="button" class="btn btn-success" onclick="manualCopyReservationNumber()">' + t('copy_number_btn') + '</button>'
-          +     '<button type="button" class="btn btn-primary" onclick="window.location.href=\'https://www.interglobe.be/CGV\'">' + t('cgv_btn') + '</button>'
-          +   '</div>'
-          +   '<div id="copyStatus" style="margin-top:12px;font-size:14px;color:#166534;"></div>'
-          + '</div>';
-
-        document.getElementById('successContainer').innerHTML = html;
+        document.getElementById('successContainer').innerHTML = getSuccessHtml(res);
         document.getElementById('successContainer').style.display = 'block';
 
         setTimeout(function () {
@@ -1259,7 +1208,9 @@
       return false;
     }
 
-    if (!showSuccessMessageIfNeeded()) {
+    var successDisplayed = showSuccessMessageIfNeeded();
+
+    if (!successDisplayed) {
       var savedLang = localStorage.getItem('ig_booking_lang');
       if (savedLang && I18N[savedLang]) {
         currentLang = savedLang;
@@ -1589,69 +1540,92 @@
       function validateStep(step) {
         if (step === 2) {
           var products = document.querySelectorAll('.product-box');
+
           if (products.length === 0) {
-            alert(t('no_product_added'));
-            return false;
+            return showValidationMessage(t('validation_add_one_product'));
           }
 
           for (var i = 0; i < products.length; i++) {
-            var type = products[i].querySelector('.product-type').value.trim();
-            var desc = products[i].querySelector('.product-description').value.trim();
-            var stack = products[i].querySelector('.product-stackable').value.trim();
-            var qty = products[i].querySelector('.product-qty').value.trim();
-            var weight = products[i].querySelector('.product-weight').value.trim();
-            var length = products[i].querySelector('.product-length').value.trim();
-            var width = products[i].querySelector('.product-width').value.trim();
-            var height = products[i].querySelector('.product-height').value.trim();
+            var fields = [
+              products[i].querySelector('.product-type'),
+              products[i].querySelector('.product-description'),
+              products[i].querySelector('.product-stackable'),
+              products[i].querySelector('.product-qty'),
+              products[i].querySelector('.product-weight'),
+              products[i].querySelector('.product-length'),
+              products[i].querySelector('.product-width'),
+              products[i].querySelector('.product-height')
+            ];
 
-            if (!type || !desc || !stack || !qty || !weight || !length || !width || !height) {
-              alert(t('goods_section') + ' : ' + t('product') + ' ' + (i + 1));
-              return false;
+            for (var j = 0; j < fields.length; j++) {
+              if (!fields[j].value.trim()) {
+                return showValidationMessage(t('validation_product_prefix') + ' ' + (i + 1) + '.', fields[j]);
+              }
             }
           }
         }
 
         if (step === 3) {
           var fields3 = [
-            'collect_company','collect_date','collect_street','collect_number','collect_postal','collect_city','collect_country','collect_time'
+            'collect_company',
+            'collect_date',
+            'collect_street',
+            'collect_number',
+            'collect_postal',
+            'collect_city',
+            'collect_country',
+            'collect_time'
           ];
-          for (var j = 0; j < fields3.length; j++) {
-            var el3 = document.getElementById(fields3[j]);
+
+          for (var k = 0; k < fields3.length; k++) {
+            var el3 = document.getElementById(fields3[k]);
             if (!el3.value.trim()) {
-              el3.focus();
-              return false;
+              return showValidationMessage(t('validation_required_field'), el3);
             }
           }
         }
 
         if (step === 4) {
           var fields4 = [
-            'delivery_company','delivery_date','delivery_street','delivery_number','delivery_postal','delivery_city','delivery_country','delivery_time'
+            'delivery_company',
+            'delivery_date',
+            'delivery_street',
+            'delivery_number',
+            'delivery_postal',
+            'delivery_city',
+            'delivery_country',
+            'delivery_time'
           ];
-          for (var k = 0; k < fields4.length; k++) {
-            var el4 = document.getElementById(fields4[k]);
+
+          for (var m = 0; m < fields4.length; m++) {
+            var el4 = document.getElementById(fields4[m]);
             if (!el4.value.trim()) {
-              el4.focus();
-              return false;
+              return showValidationMessage(t('validation_required_field'), el4);
             }
           }
         }
 
         if (step === 5) {
           var fields5 = [
-            'billing_email','billing_name','billing_street','billing_number','billing_postal','billing_city','billing_country','billing_phone'
+            'billing_email',
+            'billing_name',
+            'billing_street',
+            'billing_number',
+            'billing_postal',
+            'billing_city',
+            'billing_country',
+            'billing_phone'
           ];
-          for (var m = 0; m < fields5.length; m++) {
-            var el5 = document.getElementById(fields5[m]);
+
+          for (var n = 0; n < fields5.length; n++) {
+            var el5 = document.getElementById(fields5[n]);
             if (!el5.value.trim()) {
-              el5.focus();
-              return false;
+              return showValidationMessage(t('validation_required_field'), el5);
             }
           }
 
           if (safeValue('billing_country') === 'Autre' && !safeValue('billing_country_other')) {
-            document.getElementById('billing_country_other').focus();
-            return false;
+            return showValidationMessage(t('validation_specify_country'), document.getElementById('billing_country_other'));
           }
         }
 
@@ -2071,6 +2045,46 @@
       addProduct();
       showStep(1);
       applyTranslations();
+    } else {
+      var savedLangSuccess = localStorage.getItem('ig_booking_lang');
+      if (savedLangSuccess && I18N[savedLangSuccess]) {
+        currentLang = savedLangSuccess;
+      }
+
+      var langBtnsSuccess = document.querySelectorAll('.lang-btn');
+      for (var s = 0; s < langBtnsSuccess.length; s++) {
+        langBtnsSuccess[s].addEventListener('click', function() {
+          currentLang = this.getAttribute('data-lang');
+          localStorage.setItem('ig_booking_lang', currentLang);
+
+          var res = getUrlParam('res');
+          document.getElementById('successContainer').innerHTML = getSuccessHtml(res);
+
+          var btns = document.querySelectorAll('.lang-btn');
+          for (var x = 0; x < btns.length; x++) {
+            btns[x].classList.remove('active');
+            if (btns[x].getAttribute('data-lang') === currentLang) {
+              btns[x].classList.add('active');
+            }
+          }
+        });
+      }
+
+      var initialBtns = document.querySelectorAll('.lang-btn');
+      for (var y = 0; y < initialBtns.length; y++) {
+        initialBtns[y].classList.remove('active');
+        if (initialBtns[y].getAttribute('data-lang') === currentLang) {
+          initialBtns[y].classList.add('active');
+        }
+      }
+
+      var resInit = getUrlParam('res');
+      document.getElementById('successContainer').innerHTML = getSuccessHtml(resInit);
+      document.getElementById('successContainer').style.display = 'block';
+
+      setTimeout(function () {
+        copyReservationNumber(resInit);
+      }, 150);
     }
   </script>
 </body>
