@@ -1,0 +1,1128 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Réserver la course - InterGlobe</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background: #f7f9fc;
+      color: #003366;
+    }
+
+    .wrapper {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 18px;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 360px;
+      gap: 18px;
+      align-items: start;
+    }
+
+    .card,
+    .sidebar-card {
+      background: #fff;
+      border-radius: 14px;
+      box-shadow: 0 4px 18px rgba(0,0,0,0.08);
+      padding: 20px;
+    }
+
+    .sidebar-card {
+      position: sticky;
+      top: 18px;
+    }
+
+    h1, h2, h3, h4 {
+      margin-top: 0;
+      color: #003366;
+    }
+
+    .progress-top {
+      margin-bottom: 20px;
+    }
+
+    .progress-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 15px;
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+
+    .progress-bar-wrap {
+      width: 100%;
+      height: 12px;
+      background: #e5e7eb;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 20%;
+      background: #16a34a;
+      transition: width 0.25s ease;
+    }
+
+    .step {
+      display: none;
+    }
+
+    .step.active {
+      display: block;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .field {
+      margin-bottom: 12px;
+    }
+
+    .field label {
+      display: block;
+      font-weight: bold;
+      font-size: 14px;
+      margin-bottom: 6px;
+      color: #003366;
+    }
+
+    .input,
+    .select,
+    .textarea {
+      width: 100%;
+      padding: 11px 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
+      box-sizing: border-box;
+      font-size: 15px;
+      background: #fff;
+    }
+
+    .textarea {
+      min-height: 90px;
+      resize: vertical;
+    }
+
+    .option-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+      border: 1px solid #dbe4ee;
+      border-radius: 12px;
+      background: #f8fafc;
+      cursor: pointer;
+      margin-bottom: 12px;
+    }
+
+    .option-row input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      min-width: 18px;
+      accent-color: #003366;
+      margin: 0;
+    }
+
+    .option-row span {
+      font-size: 17px;
+      color: #003366;
+      line-height: 1.4;
+      font-weight: 500;
+    }
+
+    .product-box {
+      border: 1px solid #dbe4ee;
+      border-radius: 14px;
+      background: #f8fafc;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+
+    .product-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .product-title {
+      color: #003366;
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .btn {
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 15px;
+      padding: 12px 18px;
+    }
+
+    .btn-primary {
+      background: #003366;
+      color: #fff;
+    }
+
+    .btn-secondary {
+      background: #e5e7eb;
+      color: #111827;
+    }
+
+    .btn-success {
+      background: #16a34a;
+      color: #fff;
+    }
+
+    .btn-danger {
+      background: #dc2626;
+      color: #fff;
+      padding: 10px 12px;
+      border-radius: 8px;
+      font-size: 14px;
+    }
+
+    .footer-bar {
+      margin-top: 24px;
+      border-top: 1px solid #e5e7eb;
+      padding-top: 16px;
+      display: flex;
+      justify-content: flex-end;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .nav-buttons {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .small-note {
+      font-size: 13px;
+      color: #475569;
+      margin-top: 8px;
+    }
+
+    .summary-section {
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      background: #f8fafc;
+      padding: 12px;
+      margin-bottom: 12px;
+    }
+
+    .summary-section h4 {
+      margin: 0 0 8px 0;
+      font-size: 15px;
+    }
+
+    .summary-lines {
+      font-size: 14px;
+      line-height: 1.6;
+      color: #334155;
+      white-space: pre-line;
+    }
+
+    .price-box {
+      border: 1px solid #dbe4ee;
+      padding: 14px;
+      border-radius: 12px;
+      background: #eef4fb;
+      margin-bottom: 12px;
+      line-height: 1.8;
+      font-size: 15px;
+    }
+
+    .price-box .total-line {
+      font-size: 22px;
+      font-weight: bold;
+    }
+
+    .muted {
+      color: #64748b;
+    }
+
+    @media (max-width: 1024px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar-card {
+        position: static;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .grid-2 {
+        grid-template-columns: 1fr;
+      }
+
+      .product-head {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .option-row span {
+        font-size: 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="layout">
+      <div class="card">
+        <div class="progress-top">
+          <div class="progress-head">
+            <span id="stepCounter">Étape 1 / 5</span>
+            <span id="stepTitle">Options</span>
+          </div>
+          <div class="progress-bar-wrap">
+            <div class="progress-bar" id="progressBar"></div>
+          </div>
+        </div>
+
+        <form id="bookingForm" action="https://formsubmit.co/info@interglobe.be" method="POST">
+          <input type="hidden" name="_subject" value="Nouvel ordre de transport - InterGlobe">
+          <input type="hidden" name="_captcha" value="false">
+          <input type="hidden" name="_template" value="table">
+          <input type="hidden" name="_next" value="https://www.interglobe.be/merci">
+
+          <input type="hidden" name="Véhicule" id="vehicleField">
+          <input type="hidden" name="Prix de base HTVA" id="basePriceField">
+          <input type="hidden" name="Options HTVA" id="optionsPriceField">
+          <input type="hidden" name="Total estimé HTVA" id="totalPriceField">
+          <textarea name="Résumé de la commande" id="summaryField" style="display:none;"></textarea>
+
+          <!-- ÉTAPE 1 -->
+          <div class="step active" data-step="1">
+            <h2>Choisissez vos options</h2>
+
+            <label class="option-row">
+              <input type="checkbox" class="option-check" data-label="Aide au chargement par le conducteur" data-price="25">
+              <span>Aide au chargement par le conducteur (+25 €)</span>
+            </label>
+
+            <label class="option-row">
+              <input type="checkbox" class="option-check" data-label="Aide au déchargement par le conducteur" data-price="25">
+              <span>Aide au déchargement par le conducteur (+25 €)</span>
+            </label>
+
+            <label class="option-row">
+              <input type="checkbox" class="option-check" data-label="Facture papier" data-price="10">
+              <span>Facture papier (+10 €)</span>
+            </label>
+
+            <label class="option-row">
+              <input type="checkbox" class="option-check" data-label="Hayon" data-price="30">
+              <span>Hayon (+30 €)</span>
+            </label>
+          </div>
+
+          <!-- ÉTAPE 2 -->
+          <div class="step" data-step="2">
+            <h2>Décrivez vos marchandises</h2>
+            <div id="productsContainer"></div>
+
+            <button type="button" class="btn btn-primary" id="addProductBtn">+ Ajouter un produit</button>
+            <div class="small-note">Ajoute autant de produits que nécessaire.</div>
+          </div>
+
+          <!-- ÉTAPE 3 -->
+          <div class="step" data-step="3">
+            <h2>Collecte</h2>
+
+            <div class="grid-2">
+              <div class="field">
+                <label for="collect_company">Nom de la société de collecte</label>
+                <input class="input summary-watch" type="text" id="collect_company">
+              </div>
+
+              <div class="field">
+                <label for="collect_contact">Nom et prénom de la personne de contact</label>
+                <input class="input summary-watch" type="text" id="collect_contact">
+              </div>
+
+              <div class="field">
+                <label for="collect_address">Adresse</label>
+                <input class="input summary-watch" type="text" id="collect_address">
+              </div>
+
+              <div class="field">
+                <label for="collect_phone">N° de téléphone</label>
+                <input class="input summary-watch" type="text" id="collect_phone">
+              </div>
+
+              <div class="field">
+                <label for="collect_ref">Réf. de collecte</label>
+                <input class="input summary-watch" type="text" id="collect_ref">
+              </div>
+
+              <div class="field">
+                <label for="collect_time">Heure souhaitée d’enlèvement</label>
+                <input class="input summary-watch" type="text" id="collect_time" placeholder="Ex : 09:00 - 11:00">
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="collect_instructions">Instructions spéciales</label>
+              <textarea class="textarea summary-watch" id="collect_instructions"></textarea>
+            </div>
+          </div>
+
+          <!-- ÉTAPE 4 -->
+          <div class="step" data-step="4">
+            <h2>Livraison</h2>
+
+            <div class="grid-2">
+              <div class="field">
+                <label for="delivery_company">Nom de la société de livraison</label>
+                <input class="input summary-watch" type="text" id="delivery_company">
+              </div>
+
+              <div class="field">
+                <label for="delivery_contact">Nom et prénom de la personne de contact</label>
+                <input class="input summary-watch" type="text" id="delivery_contact">
+              </div>
+
+              <div class="field">
+                <label for="delivery_address">Adresse</label>
+                <input class="input summary-watch" type="text" id="delivery_address">
+              </div>
+
+              <div class="field">
+                <label for="delivery_phone">N° de téléphone</label>
+                <input class="input summary-watch" type="text" id="delivery_phone">
+              </div>
+
+              <div class="field">
+                <label for="delivery_ref">Réf. de livraison</label>
+                <input class="input summary-watch" type="text" id="delivery_ref">
+              </div>
+
+              <div class="field">
+                <label for="delivery_time">Heure souhaitée de livraison</label>
+                <input class="input summary-watch" type="text" id="delivery_time" placeholder="Ex : 14:00 - 16:00">
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="delivery_instructions">Instructions spéciales</label>
+              <textarea class="textarea summary-watch" id="delivery_instructions"></textarea>
+            </div>
+          </div>
+
+          <!-- ÉTAPE 5 -->
+          <div class="step" data-step="5">
+            <h2>Facturation</h2>
+
+            <div class="grid-2">
+              <div class="field">
+                <label for="billing_email">Email</label>
+                <input class="input summary-watch" type="email" id="billing_email">
+              </div>
+
+              <div class="field">
+                <label for="billing_company">Nom société</label>
+                <input class="input summary-watch" type="text" id="billing_company">
+              </div>
+
+              <div class="field">
+                <label for="billing_name">Nom et prénom</label>
+                <input class="input summary-watch" type="text" id="billing_name">
+              </div>
+
+              <div class="field">
+                <label for="billing_vat">N° de TVA</label>
+                <input class="input summary-watch" type="text" id="billing_vat">
+              </div>
+
+              <div class="field">
+                <label for="billing_address">Adresse</label>
+                <input class="input summary-watch" type="text" id="billing_address">
+              </div>
+
+              <div class="field">
+                <label for="billing_phone">N° de téléphone</label>
+                <input class="input summary-watch" type="text" id="billing_phone">
+              </div>
+            </div>
+
+            <div class="summary-section" style="margin-top:16px;">
+              <h4>Vérification finale de la commande</h4>
+              <div class="summary-lines" id="finalReviewBox"></div>
+            </div>
+          </div>
+
+          <div class="footer-bar">
+            <div class="nav-buttons">
+              <button type="button" class="btn btn-secondary" id="prevBtn" style="display:none;">Retour</button>
+              <button type="button" class="btn btn-primary" id="nextBtn">Suivant</button>
+              <button type="submit" class="btn btn-success" id="submitBtn" style="display:none;">Finaliser la commande</button>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <div class="sidebar-card">
+        <h3 style="margin-bottom:12px;">Récapitulatif</h3>
+
+        <div class="price-box">
+          <div><strong>Véhicule :</strong> <span id="vehicleDisplay">-</span></div>
+          <div><strong>Tarif de base HTVA :</strong> <span id="basePriceDisplay">0.00 €</span></div>
+          <div><strong>Options HTVA :</strong> <span id="optionsPriceDisplay">0.00 €</span></div>
+          <div class="total-line"><strong>Total estimé HTVA :</strong> <span id="totalPriceDisplay">0.00 €</span></div>
+        </div>
+
+        <div class="summary-section">
+          <h4>Options</h4>
+          <div class="summary-lines" id="summaryOptions"><span class="muted">Aucune option sélectionnée</span></div>
+        </div>
+
+        <div class="summary-section">
+          <h4>Marchandises</h4>
+          <div class="summary-lines" id="summaryProducts"><span class="muted">Aucun produit ajouté</span></div>
+        </div>
+
+        <div class="summary-section">
+          <h4>Collecte</h4>
+          <div class="summary-lines" id="summaryCollect"><span class="muted">Informations non remplies</span></div>
+        </div>
+
+        <div class="summary-section">
+          <h4>Livraison</h4>
+          <div class="summary-lines" id="summaryDelivery"><span class="muted">Informations non remplies</span></div>
+        </div>
+
+        <div class="summary-section">
+          <h4>Facturation</h4>
+          <div class="summary-lines" id="summaryBilling"><span class="muted">Informations non remplies</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    var currentStep = 1;
+    var totalSteps = 5;
+    var productCount = 0;
+
+    function getUrlParam(name) {
+      var params = new URLSearchParams(window.location.search);
+      return params.get(name);
+    }
+
+    var basePrice = parseFloat(getUrlParam('prix'));
+    if (isNaN(basePrice)) basePrice = 0;
+
+    var vehicleName = getUrlParam('vehicule') || '-';
+
+    function formatPrice(value) {
+      return Number(value).toFixed(2) + ' €';
+    }
+
+    function safeValue(id) {
+      var el = document.getElementById(id);
+      if (!el) return '';
+      return el.value.trim();
+    }
+
+    function getOptionsTotal() {
+      var total = 0;
+      var checks = document.querySelectorAll('.option-check');
+      for (var i = 0; i < checks.length; i++) {
+        if (checks[i].checked) {
+          total += parseFloat(checks[i].getAttribute('data-price') || '0');
+        }
+      }
+      return total;
+    }
+
+    function getSelectedOptions() {
+      var selected = [];
+      var checks = document.querySelectorAll('.option-check');
+      for (var i = 0; i < checks.length; i++) {
+        if (checks[i].checked) {
+          selected.push({
+            label: checks[i].getAttribute('data-label'),
+            price: parseFloat(checks[i].getAttribute('data-price') || '0')
+          });
+        }
+      }
+      return selected;
+    }
+
+    function updatePrices() {
+      var optionsTotal = getOptionsTotal();
+      var total = basePrice + optionsTotal;
+
+      document.getElementById('vehicleDisplay').innerText = vehicleName;
+      document.getElementById('basePriceDisplay').innerText = formatPrice(basePrice);
+      document.getElementById('optionsPriceDisplay').innerText = formatPrice(optionsTotal);
+      document.getElementById('totalPriceDisplay').innerText = formatPrice(total);
+
+      document.getElementById('vehicleField').value = vehicleName;
+      document.getElementById('basePriceField').value = formatPrice(basePrice);
+      document.getElementById('optionsPriceField').value = formatPrice(optionsTotal);
+      document.getElementById('totalPriceField').value = formatPrice(total);
+    }
+
+    function showStep(step) {
+      currentStep = step;
+
+      var steps = document.querySelectorAll('.step');
+      for (var i = 0; i < steps.length; i++) {
+        steps[i].classList.remove('active');
+      }
+      document.querySelector('.step[data-step="' + step + '"]').classList.add('active');
+
+      var titles = {
+        1: 'Options',
+        2: 'Marchandises',
+        3: 'Collecte',
+        4: 'Livraison',
+        5: 'Facturation'
+      };
+
+      document.getElementById('stepCounter').innerText = 'Étape ' + step + ' / 5';
+      document.getElementById('stepTitle').innerText = titles[step];
+      document.getElementById('progressBar').style.width = (step * 20) + '%';
+
+      document.getElementById('prevBtn').style.display = step === 1 ? 'none' : 'inline-block';
+      document.getElementById('nextBtn').style.display = step === 5 ? 'none' : 'inline-block';
+      document.getElementById('submitBtn').style.display = step === 5 ? 'inline-block' : 'none';
+    }
+
+    function refreshProductTitles() {
+      var blocks = document.querySelectorAll('.product-box');
+      for (var i = 0; i < blocks.length; i++) {
+        var title = blocks[i].querySelector('.product-title');
+        if (title) {
+          title.innerText = 'Produit ' + (i + 1);
+        }
+      }
+    }
+
+    function removeProduct(btn) {
+      var block = btn.closest('.product-box');
+      if (block) {
+        block.remove();
+        refreshProductTitles();
+        updateSummary();
+      }
+    }
+
+    function addProduct() {
+      productCount++;
+
+      var html = ''
+        + '<div class="product-box">'
+        +   '<div class="product-head">'
+        +     '<div class="product-title">Produit ' + productCount + '</div>'
+        +     '<button type="button" class="btn-danger" onclick="removeProduct(this)">Supprimer</button>'
+        +   '</div>'
+        +   '<div class="grid-2">'
+        +     '<div class="field">'
+        +       '<label>Type</label>'
+        +       '<select class="select product-type summary-watch-product">'
+        +         '<option value="">Choisir</option>'
+        +         '<option value="Palette">Palette</option>'
+        +         '<option value="Colis">Colis</option>'
+        +         '<option value="Enveloppe">Enveloppe</option>'
+        +         '<option value="Autre">Autre</option>'
+        +       '</select>'
+        +     '</div>'
+        +     '<div class="field">'
+        +       '<label>Description du produit</label>'
+        +       '<input type="text" class="input product-description summary-watch-product" placeholder="Ex : boisson, fenêtre, document">'
+        +     '</div>'
+        +     '<div class="field">'
+        +       '<label>Empilable</label>'
+        +       '<select class="select product-stackable summary-watch-product">'
+        +         '<option value="">Choisir</option>'
+        +         '<option value="Oui">Oui</option>'
+        +         '<option value="Non">Non</option>'
+        +       '</select>'
+        +     '</div>'
+        +     '<div class="field">'
+        +       '<label>Quantité</label>'
+        +       '<input type="number" min="1" class="input product-qty summary-watch-product">'
+        +     '</div>'
+        +     '<div class="field">'
+        +       '<label>Poids par unité (kg)</label>'
+        +       '<input type="number" min="0" step="0.01" class="input product-weight summary-watch-product">'
+        +     '</div>'
+        +     '<div class="field">'
+        +       '<label>Longueur (cm)</label>'
+        +       '<input type="number" min="0" step="0.01" class="input product-length summary-watch-product">'
+        +     '</div>'
+        +     '<div class="field">'
+        +       '<label>Largeur (cm)</label>'
+        +       '<input type="number" min="0" step="0.01" class="input product-width summary-watch-product">'
+        +     '</div>'
+        +     '<div class="field">'
+        +       '<label>Hauteur (cm)</label>'
+        +       '<input type="number" min="0" step="0.01" class="input product-height summary-watch-product">'
+        +     '</div>'
+        +   '</div>'
+        + '</div>';
+
+      document.getElementById('productsContainer').insertAdjacentHTML('beforeend', html);
+      refreshProductTitles();
+      bindDynamicInputs();
+      updateSummary();
+    }
+
+    function validateStep(step) {
+      if (step === 2) {
+        var products = document.querySelectorAll('.product-box');
+        if (products.length === 0) {
+          alert('Veuillez ajouter au moins un produit.');
+          return false;
+        }
+
+        for (var i = 0; i < products.length; i++) {
+          var type = products[i].querySelector('.product-type').value.trim();
+          var desc = products[i].querySelector('.product-description').value.trim();
+          var stack = products[i].querySelector('.product-stackable').value.trim();
+          var qty = products[i].querySelector('.product-qty').value.trim();
+          var weight = products[i].querySelector('.product-weight').value.trim();
+          var length = products[i].querySelector('.product-length').value.trim();
+          var width = products[i].querySelector('.product-width').value.trim();
+          var height = products[i].querySelector('.product-height').value.trim();
+
+          if (!type) {
+            alert('Veuillez choisir le type du produit ' + (i + 1) + '.');
+            return false;
+          }
+          if (!desc) {
+            alert('Veuillez remplir la description du produit ' + (i + 1) + '.');
+            return false;
+          }
+          if (!stack) {
+            alert('Veuillez choisir si le produit ' + (i + 1) + ' est empilable.');
+            return false;
+          }
+          if (!qty) {
+            alert('Veuillez remplir la quantité du produit ' + (i + 1) + '.');
+            return false;
+          }
+          if (!weight) {
+            alert('Veuillez remplir le poids du produit ' + (i + 1) + '.');
+            return false;
+          }
+          if (!length) {
+            alert('Veuillez remplir la longueur du produit ' + (i + 1) + '.');
+            return false;
+          }
+          if (!width) {
+            alert('Veuillez remplir la largeur du produit ' + (i + 1) + '.');
+            return false;
+          }
+          if (!height) {
+            alert('Veuillez remplir la hauteur du produit ' + (i + 1) + '.');
+            return false;
+          }
+        }
+      }
+
+      if (step === 3) {
+        var fields3 = [
+          ['collect_company', 'Veuillez indiquer la société de collecte.'],
+          ['collect_contact', 'Veuillez indiquer le contact de collecte.'],
+          ['collect_address', 'Veuillez indiquer l’adresse de collecte.'],
+          ['collect_phone', 'Veuillez indiquer le téléphone de collecte.'],
+          ['collect_time', 'Veuillez indiquer l’heure souhaitée d’enlèvement.']
+        ];
+
+        for (var j = 0; j < fields3.length; j++) {
+          var el3 = document.getElementById(fields3[j][0]);
+          if (!el3.value.trim()) {
+            alert(fields3[j][1]);
+            el3.focus();
+            return false;
+          }
+        }
+      }
+
+      if (step === 4) {
+        var fields4 = [
+          ['delivery_company', 'Veuillez indiquer la société de livraison.'],
+          ['delivery_contact', 'Veuillez indiquer le contact de livraison.'],
+          ['delivery_address', 'Veuillez indiquer l’adresse de livraison.'],
+          ['delivery_phone', 'Veuillez indiquer le téléphone de livraison.'],
+          ['delivery_time', 'Veuillez indiquer l’heure souhaitée de livraison.']
+        ];
+
+        for (var k = 0; k < fields4.length; k++) {
+          var el4 = document.getElementById(fields4[k][0]);
+          if (!el4.value.trim()) {
+            alert(fields4[k][1]);
+            el4.focus();
+            return false;
+          }
+        }
+      }
+
+      if (step === 5) {
+        var fields5 = [
+          ['billing_email', 'Veuillez indiquer l’email de facturation.'],
+          ['billing_company', 'Veuillez indiquer la société de facturation.'],
+          ['billing_name', 'Veuillez indiquer le nom et prénom de facturation.'],
+          ['billing_address', 'Veuillez indiquer l’adresse de facturation.'],
+          ['billing_phone', 'Veuillez indiquer le téléphone de facturation.']
+        ];
+
+        for (var m = 0; m < fields5.length; m++) {
+          var el5 = document.getElementById(fields5[m][0]);
+          if (!el5.value.trim()) {
+            alert(fields5[m][1]);
+            el5.focus();
+            return false;
+          }
+        }
+      }
+
+      return true;
+    }
+
+    function updateSummaryOptions() {
+      var target = document.getElementById('summaryOptions');
+      var opts = getSelectedOptions();
+
+      if (opts.length === 0) {
+        target.innerHTML = '<span class="muted">Aucune option sélectionnée</span>';
+        return;
+      }
+
+      var html = '';
+      for (var i = 0; i < opts.length; i++) {
+        html += '• ' + opts[i].label + ' (+' + formatPrice(opts[i].price) + ')<br>';
+      }
+      target.innerHTML = html;
+    }
+
+    function updateSummaryProducts() {
+      var target = document.getElementById('summaryProducts');
+      var products = document.querySelectorAll('.product-box');
+
+      if (products.length === 0) {
+        target.innerHTML = '<span class="muted">Aucun produit ajouté</span>';
+        return;
+      }
+
+      var html = '';
+      for (var i = 0; i < products.length; i++) {
+        var type = products[i].querySelector('.product-type').value || '-';
+        var desc = products[i].querySelector('.product-description').value.trim() || '-';
+        var stack = products[i].querySelector('.product-stackable').value || '-';
+        var qty = products[i].querySelector('.product-qty').value.trim() || '-';
+        var weight = products[i].querySelector('.product-weight').value.trim() || '-';
+        var length = products[i].querySelector('.product-length').value.trim() || '-';
+        var width = products[i].querySelector('.product-width').value.trim() || '-';
+        var height = products[i].querySelector('.product-height').value.trim() || '-';
+
+        html += '<strong>Produit ' + (i + 1) + '</strong><br>';
+        html += 'Type : ' + type + '<br>';
+        html += 'Description : ' + desc + '<br>';
+        html += 'Empilable : ' + stack + '<br>';
+        html += 'Qté : ' + qty + ' | Poids : ' + weight + ' kg<br>';
+        html += 'Dimensions : ' + length + ' x ' + width + ' x ' + height + ' cm<br><br>';
+      }
+      target.innerHTML = html;
+    }
+
+    function updateSummaryCollect() {
+      var target = document.getElementById('summaryCollect');
+      var values = [
+        safeValue('collect_company'),
+        safeValue('collect_contact'),
+        safeValue('collect_address'),
+        safeValue('collect_phone'),
+        safeValue('collect_ref'),
+        safeValue('collect_time'),
+        safeValue('collect_instructions')
+      ];
+
+      var hasData = values.some(function(v) { return v !== ''; });
+      if (!hasData) {
+        target.innerHTML = '<span class="muted">Informations non remplies</span>';
+        return;
+      }
+
+      var html = '';
+      if (safeValue('collect_company')) html += 'Société : ' + safeValue('collect_company') + '<br>';
+      if (safeValue('collect_contact')) html += 'Contact : ' + safeValue('collect_contact') + '<br>';
+      if (safeValue('collect_address')) html += 'Adresse : ' + safeValue('collect_address') + '<br>';
+      if (safeValue('collect_phone')) html += 'Téléphone : ' + safeValue('collect_phone') + '<br>';
+      if (safeValue('collect_ref')) html += 'Réf. : ' + safeValue('collect_ref') + '<br>';
+      if (safeValue('collect_time')) html += 'Heure : ' + safeValue('collect_time') + '<br>';
+      if (safeValue('collect_instructions')) html += 'Instructions : ' + safeValue('collect_instructions') + '<br>';
+      target.innerHTML = html;
+    }
+
+    function updateSummaryDelivery() {
+      var target = document.getElementById('summaryDelivery');
+      var values = [
+        safeValue('delivery_company'),
+        safeValue('delivery_contact'),
+        safeValue('delivery_address'),
+        safeValue('delivery_phone'),
+        safeValue('delivery_ref'),
+        safeValue('delivery_time'),
+        safeValue('delivery_instructions')
+      ];
+
+      var hasData = values.some(function(v) { return v !== ''; });
+      if (!hasData) {
+        target.innerHTML = '<span class="muted">Informations non remplies</span>';
+        return;
+      }
+
+      var html = '';
+      if (safeValue('delivery_company')) html += 'Société : ' + safeValue('delivery_company') + '<br>';
+      if (safeValue('delivery_contact')) html += 'Contact : ' + safeValue('delivery_contact') + '<br>';
+      if (safeValue('delivery_address')) html += 'Adresse : ' + safeValue('delivery_address') + '<br>';
+      if (safeValue('delivery_phone')) html += 'Téléphone : ' + safeValue('delivery_phone') + '<br>';
+      if (safeValue('delivery_ref')) html += 'Réf. : ' + safeValue('delivery_ref') + '<br>';
+      if (safeValue('delivery_time')) html += 'Heure : ' + safeValue('delivery_time') + '<br>';
+      if (safeValue('delivery_instructions')) html += 'Instructions : ' + safeValue('delivery_instructions') + '<br>';
+      target.innerHTML = html;
+    }
+
+    function updateSummaryBilling() {
+      var target = document.getElementById('summaryBilling');
+      var values = [
+        safeValue('billing_email'),
+        safeValue('billing_company'),
+        safeValue('billing_name'),
+        safeValue('billing_vat'),
+        safeValue('billing_address'),
+        safeValue('billing_phone')
+      ];
+
+      var hasData = values.some(function(v) { return v !== ''; });
+      if (!hasData) {
+        target.innerHTML = '<span class="muted">Informations non remplies</span>';
+        return;
+      }
+
+      var html = '';
+      if (safeValue('billing_email')) html += 'Email : ' + safeValue('billing_email') + '<br>';
+      if (safeValue('billing_company')) html += 'Société : ' + safeValue('billing_company') + '<br>';
+      if (safeValue('billing_name')) html += 'Nom : ' + safeValue('billing_name') + '<br>';
+      if (safeValue('billing_vat')) html += 'TVA : ' + safeValue('billing_vat') + '<br>';
+      if (safeValue('billing_address')) html += 'Adresse : ' + safeValue('billing_address') + '<br>';
+      if (safeValue('billing_phone')) html += 'Téléphone : ' + safeValue('billing_phone') + '<br>';
+      target.innerHTML = html;
+    }
+
+    function updateFinalReview() {
+      var html = '';
+
+      html += '<strong>Véhicule :</strong> ' + vehicleName + '<br>';
+      html += '<strong>Tarif de base HTVA :</strong> ' + formatPrice(basePrice) + '<br>';
+      html += '<strong>Options HTVA :</strong> ' + formatPrice(getOptionsTotal()) + '<br>';
+      html += '<strong>Total estimé HTVA :</strong> ' + formatPrice(basePrice + getOptionsTotal()) + '<br><br>';
+
+      html += '<strong>Options sélectionnées</strong><br>';
+      var opts = getSelectedOptions();
+      if (opts.length === 0) {
+        html += 'Aucune option sélectionnée<br><br>';
+      } else {
+        for (var i = 0; i < opts.length; i++) {
+          html += '• ' + opts[i].label + ' (+' + formatPrice(opts[i].price) + ')<br>';
+        }
+        html += '<br>';
+      }
+
+      html += '<strong>Marchandises</strong><br>';
+      var products = document.querySelectorAll('.product-box');
+      if (products.length === 0) {
+        html += 'Aucun produit ajouté<br><br>';
+      } else {
+        for (var j = 0; j < products.length; j++) {
+          html += 'Produit ' + (j + 1) + '<br>';
+          html += '- Type : ' + products[j].querySelector('.product-type').value + '<br>';
+          html += '- Description : ' + products[j].querySelector('.product-description').value + '<br>';
+          html += '- Empilable : ' + products[j].querySelector('.product-stackable').value + '<br>';
+          html += '- Quantité : ' + products[j].querySelector('.product-qty').value + '<br>';
+          html += '- Poids par unité : ' + products[j].querySelector('.product-weight').value + ' kg<br>';
+          html += '- Dimensions : '
+            + products[j].querySelector('.product-length').value + ' x '
+            + products[j].querySelector('.product-width').value + ' x '
+            + products[j].querySelector('.product-height').value + ' cm<br><br>';
+        }
+      }
+
+      html += '<strong>Collecte</strong><br>';
+      html += 'Société : ' + safeValue('collect_company') + '<br>';
+      html += 'Contact : ' + safeValue('collect_contact') + '<br>';
+      html += 'Adresse : ' + safeValue('collect_address') + '<br>';
+      html += 'Téléphone : ' + safeValue('collect_phone') + '<br>';
+      html += 'Référence : ' + safeValue('collect_ref') + '<br>';
+      html += 'Instructions : ' + safeValue('collect_instructions') + '<br>';
+      html += 'Heure souhaitée : ' + safeValue('collect_time') + '<br><br>';
+
+      html += '<strong>Livraison</strong><br>';
+      html += 'Société : ' + safeValue('delivery_company') + '<br>';
+      html += 'Contact : ' + safeValue('delivery_contact') + '<br>';
+      html += 'Adresse : ' + safeValue('delivery_address') + '<br>';
+      html += 'Téléphone : ' + safeValue('delivery_phone') + '<br>';
+      html += 'Référence : ' + safeValue('delivery_ref') + '<br>';
+      html += 'Instructions : ' + safeValue('delivery_instructions') + '<br>';
+      html += 'Heure souhaitée : ' + safeValue('delivery_time') + '<br><br>';
+
+      html += '<strong>Facturation</strong><br>';
+      html += 'Email : ' + safeValue('billing_email') + '<br>';
+      html += 'Société : ' + safeValue('billing_company') + '<br>';
+      html += 'Nom : ' + safeValue('billing_name') + '<br>';
+      html += 'N° TVA : ' + safeValue('billing_vat') + '<br>';
+      html += 'Adresse : ' + safeValue('billing_address') + '<br>';
+      html += 'Téléphone : ' + safeValue('billing_phone') + '<br>';
+
+      document.getElementById('finalReviewBox').innerHTML = html;
+    }
+
+    function updateSummary() {
+      updatePrices();
+      updateSummaryOptions();
+      updateSummaryProducts();
+      updateSummaryCollect();
+      updateSummaryDelivery();
+      updateSummaryBilling();
+      updateFinalReview();
+    }
+
+    function buildSummary() {
+      var summary = '';
+
+      summary += '=== PRIX ===\n';
+      summary += 'Véhicule : ' + vehicleName + '\n';
+      summary += 'Tarif de base HTVA : ' + formatPrice(basePrice) + '\n';
+      summary += 'Options HTVA : ' + formatPrice(getOptionsTotal()) + '\n';
+      summary += 'Total estimé HTVA : ' + formatPrice(basePrice + getOptionsTotal()) + '\n\n';
+
+      summary += '=== OPTIONS ===\n';
+      var opts = getSelectedOptions();
+      if (opts.length === 0) {
+        summary += 'Aucune option sélectionnée\n\n';
+      } else {
+        for (var i = 0; i < opts.length; i++) {
+          summary += (i + 1) + '. ' + opts[i].label + ' : +' + formatPrice(opts[i].price) + '\n';
+        }
+        summary += '\n';
+      }
+
+      summary += '=== MARCHANDISES ===\n';
+      var products = document.querySelectorAll('.product-box');
+      for (var j = 0; j < products.length; j++) {
+        summary += 'Produit ' + (j + 1) + '\n';
+        summary += '- Type : ' + products[j].querySelector('.product-type').value + '\n';
+        summary += '- Description : ' + products[j].querySelector('.product-description').value + '\n';
+        summary += '- Empilable : ' + products[j].querySelector('.product-stackable').value + '\n';
+        summary += '- Quantité : ' + products[j].querySelector('.product-qty').value + '\n';
+        summary += '- Poids par unité : ' + products[j].querySelector('.product-weight').value + ' kg\n';
+        summary += '- Dimensions : '
+          + products[j].querySelector('.product-length').value + ' x '
+          + products[j].querySelector('.product-width').value + ' x '
+          + products[j].querySelector('.product-height').value + ' cm\n\n';
+      }
+
+      summary += '=== COLLECTE ===\n';
+      summary += 'Société : ' + document.getElementById('collect_company').value + '\n';
+      summary += 'Contact : ' + document.getElementById('collect_contact').value + '\n';
+      summary += 'Adresse : ' + document.getElementById('collect_address').value + '\n';
+      summary += 'Téléphone : ' + document.getElementById('collect_phone').value + '\n';
+      summary += 'Référence : ' + document.getElementById('collect_ref').value + '\n';
+      summary += 'Instructions : ' + document.getElementById('collect_instructions').value + '\n';
+      summary += 'Heure souhaitée : ' + document.getElementById('collect_time').value + '\n\n';
+
+      summary += '=== LIVRAISON ===\n';
+      summary += 'Société : ' + document.getElementById('delivery_company').value + '\n';
+      summary += 'Contact : ' + document.getElementById('delivery_contact').value + '\n';
+      summary += 'Adresse : ' + document.getElementById('delivery_address').value + '\n';
+      summary += 'Téléphone : ' + document.getElementById('delivery_phone').value + '\n';
+      summary += 'Référence : ' + document.getElementById('delivery_ref').value + '\n';
+      summary += 'Instructions : ' + document.getElementById('delivery_instructions').value + '\n';
+      summary += 'Heure souhaitée : ' + document.getElementById('delivery_time').value + '\n\n';
+
+      summary += '=== FACTURATION ===\n';
+      summary += 'Email : ' + document.getElementById('billing_email').value + '\n';
+      summary += 'Société : ' + document.getElementById('billing_company').value + '\n';
+      summary += 'Nom : ' + document.getElementById('billing_name').value + '\n';
+      summary += 'N° TVA : ' + document.getElementById('billing_vat').value + '\n';
+      summary += 'Adresse : ' + document.getElementById('billing_address').value + '\n';
+      summary += 'Téléphone : ' + document.getElementById('billing_phone').value + '\n';
+
+      document.getElementById('summaryField').value = summary;
+    }
+
+    function bindDynamicInputs() {
+      var productInputs = document.querySelectorAll('.summary-watch-product');
+      for (var i = 0; i < productInputs.length; i++) {
+        productInputs[i].removeEventListener('input', updateSummary);
+        productInputs[i].removeEventListener('change', updateSummary);
+        productInputs[i].addEventListener('input', updateSummary);
+        productInputs[i].addEventListener('change', updateSummary);
+      }
+    }
+
+    document.getElementById('addProductBtn').addEventListener('click', addProduct);
+
+    document.getElementById('prevBtn').addEventListener('click', function () {
+      if (currentStep > 1) {
+        showStep(currentStep - 1);
+      }
+    });
+
+    document.getElementById('nextBtn').addEventListener('click', function () {
+      if (!validateStep(currentStep)) return;
+      if (currentStep < totalSteps) {
+        showStep(currentStep + 1);
+      }
+    });
+
+    document.getElementById('bookingForm').addEventListener('submit', function (e) {
+      if (!validateStep(currentStep)) {
+        e.preventDefault();
+        return;
+      }
+      updateSummary();
+      buildSummary();
+    });
+
+    var optionChecks = document.querySelectorAll('.option-check');
+    for (var i = 0; i < optionChecks.length; i++) {
+      optionChecks[i].addEventListener('change', updateSummary);
+    }
+
+    var watchedFields = document.querySelectorAll('.summary-watch');
+    for (var j = 0; j < watchedFields.length; j++) {
+      watchedFields[j].addEventListener('input', updateSummary);
+      watchedFields[j].addEventListener('change', updateSummary);
+    }
+
+    updatePrices();
+    addProduct();
+    showStep(1);
+    updateSummary();
+  </script>
+</body>
+</html>
