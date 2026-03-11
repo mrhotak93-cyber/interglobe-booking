@@ -86,6 +86,12 @@
       gap: 14px;
     }
 
+    .grid-4 {
+      display: grid;
+      grid-template-columns: 2fr 0.7fr 1fr 1fr;
+      gap: 14px;
+    }
+
     .field {
       margin-bottom: 12px;
     }
@@ -96,6 +102,10 @@
       font-size: 14px;
       margin-bottom: 6px;
       color: #003366;
+    }
+
+    .required-star {
+      color: #dc2626;
     }
 
     .input,
@@ -280,7 +290,8 @@
     }
 
     @media (max-width: 768px) {
-      .grid-2 {
+      .grid-2,
+      .grid-4 {
         grid-template-columns: 1fr;
       }
 
@@ -322,7 +333,9 @@
           <input type="hidden" name="Véhicule" id="vehicleField">
           <input type="hidden" name="Prix de base HTVA" id="basePriceField">
           <input type="hidden" name="Options HTVA" id="optionsPriceField">
-          <input type="hidden" name="Total estimé HTVA" id="totalPriceField">
+          <input type="hidden" name="Total HTVA" id="totalHtvaField">
+          <input type="hidden" name="TVA" id="vatAmountField">
+          <input type="hidden" name="Total TVAC" id="totalTvaIncludedField">
           <input type="hidden" name="Code postal collecte" id="pickupPostalField">
           <input type="hidden" name="Code postal livraison" id="deliveryPostalField">
           <input type="hidden" name="Pays collecte" id="pickupCountryField">
@@ -334,23 +347,23 @@
             <h2>Choisissez vos options</h2>
 
             <label class="option-row">
-              <input type="checkbox" class="option-check" data-label="Aide au chargement par le conducteur" data-price="25">
-              <span>Aide au chargement par le conducteur (+25 €)</span>
+              <input type="checkbox" class="option-check" id="opt_loading_help" data-label="Aide au chargement par le conducteur">
+              <span id="label_loading_help">Aide au chargement par le conducteur (+25 €)</span>
             </label>
 
             <label class="option-row">
-              <input type="checkbox" class="option-check" data-label="Aide au déchargement par le conducteur" data-price="25">
-              <span>Aide au déchargement par le conducteur (+25 €)</span>
+              <input type="checkbox" class="option-check" id="opt_unloading_help" data-label="Aide au déchargement par le conducteur">
+              <span id="label_unloading_help">Aide au déchargement par le conducteur (+25 €)</span>
             </label>
 
             <label class="option-row">
-              <input type="checkbox" class="option-check" data-label="Facture papier" data-price="10">
+              <input type="checkbox" class="option-check" id="opt_paper_invoice" data-label="Facture papier" data-price="10">
               <span>Facture papier (+10 €)</span>
             </label>
 
-            <label class="option-row">
-              <input type="checkbox" class="option-check" data-label="Hayon" data-price="30">
-              <span>Hayon (+30 €)</span>
+            <label class="option-row" id="tailLiftRow" style="display:none;">
+              <input type="checkbox" class="option-check" id="opt_tail_lift" data-label="Hayon élévateur" data-price="30">
+              <span>Hayon élévateur (+30 €)</span>
             </label>
           </div>
 
@@ -369,8 +382,47 @@
 
             <div class="grid-2">
               <div class="field">
-                <label for="collect_company">Nom de la société de collecte</label>
+                <label for="collect_company">Nom de la société de collecte <span class="required-star">*</span></label>
                 <input class="input summary-watch" type="text" id="collect_company">
+              </div>
+
+              <div class="field">
+                <label for="collect_date">Date de collecte <span class="required-star">*</span></label>
+                <input class="input summary-watch" type="date" id="collect_date">
+              </div>
+            </div>
+
+            <div class="grid-4">
+              <div class="field">
+                <label for="collect_street">Rue <span class="required-star">*</span></label>
+                <input class="input summary-watch" type="text" id="collect_street">
+              </div>
+
+              <div class="field">
+                <label for="collect_number">N° <span class="required-star">*</span></label>
+                <input class="input summary-watch" type="text" id="collect_number">
+              </div>
+
+              <div class="field">
+                <label for="collect_postal">Code postal <span class="required-star">*</span></label>
+                <input class="input summary-watch" type="text" id="collect_postal">
+              </div>
+
+              <div class="field">
+                <label for="collect_city">Ville <span class="required-star">*</span></label>
+                <input class="input summary-watch" type="text" id="collect_city">
+              </div>
+            </div>
+
+            <div class="grid-2">
+              <div class="field">
+                <label for="collect_country">Pays <span class="required-star">*</span></label>
+                <input class="input summary-watch" type="text" id="collect_country">
+              </div>
+
+              <div class="field">
+                <label for="collect_time">Heure souhaitée d’enlèvement <span class="required-star">*</span></label>
+                <input class="input summary-watch" type="text" id="collect_time" placeholder="Ex : 09:00 - 11:00">
               </div>
 
               <div class="field">
@@ -379,23 +431,13 @@
               </div>
 
               <div class="field">
-                <label for="collect_address">Adresse</label>
-                <input class="input summary-watch" type="text" id="collect_address">
-              </div>
-
-              <div class="field">
-                <label for="collect_phone">N° de téléphone</label>
+                <label for="collect_phone">N° de téléphone du contact</label>
                 <input class="input summary-watch" type="text" id="collect_phone">
               </div>
 
               <div class="field">
                 <label for="collect_ref">Réf. de collecte</label>
                 <input class="input summary-watch" type="text" id="collect_ref">
-              </div>
-
-              <div class="field">
-                <label for="collect_time">Heure souhaitée d’enlèvement</label>
-                <input class="input summary-watch" type="text" id="collect_time" placeholder="Ex : 09:00 - 11:00">
               </div>
             </div>
 
@@ -411,8 +453,47 @@
 
             <div class="grid-2">
               <div class="field">
-                <label for="delivery_company">Nom de la société de livraison</label>
+                <label for="delivery_company">Nom de la société de livraison <span class="required-star">*</span></label>
                 <input class="input summary-watch" type="text" id="delivery_company">
+              </div>
+
+              <div class="field">
+                <label for="delivery_date">Date de livraison <span class="required-star">*</span></label>
+                <input class="input summary-watch" type="date" id="delivery_date">
+              </div>
+            </div>
+
+            <div class="grid-4">
+              <div class="field">
+                <label for="delivery_street">Rue <span class="required-star">*</span></label>
+                <input class="input summary-watch" type="text" id="delivery_street">
+              </div>
+
+              <div class="field">
+                <label for="delivery_number">N° <span class="required-star">*</span></label>
+                <input class="input summary-watch" type="text" id="delivery_number">
+              </div>
+
+              <div class="field">
+                <label for="delivery_postal">Code postal <span class="required-star">*</span></label>
+                <input class="input summary-watch" type="text" id="delivery_postal">
+              </div>
+
+              <div class="field">
+                <label for="delivery_city">Ville <span class="required-star">*</span></label>
+                <input class="input summary-watch" type="text" id="delivery_city">
+              </div>
+            </div>
+
+            <div class="grid-2">
+              <div class="field">
+                <label for="delivery_country">Pays <span class="required-star">*</span></label>
+                <input class="input summary-watch" type="text" id="delivery_country">
+              </div>
+
+              <div class="field">
+                <label for="delivery_time">Heure souhaitée de livraison <span class="required-star">*</span></label>
+                <input class="input summary-watch" type="text" id="delivery_time" placeholder="Ex : 14:00 - 16:00">
               </div>
 
               <div class="field">
@@ -421,23 +502,13 @@
               </div>
 
               <div class="field">
-                <label for="delivery_address">Adresse</label>
-                <input class="input summary-watch" type="text" id="delivery_address">
-              </div>
-
-              <div class="field">
-                <label for="delivery_phone">N° de téléphone</label>
+                <label for="delivery_phone">N° de téléphone du contact</label>
                 <input class="input summary-watch" type="text" id="delivery_phone">
               </div>
 
               <div class="field">
                 <label for="delivery_ref">Réf. de livraison</label>
                 <input class="input summary-watch" type="text" id="delivery_ref">
-              </div>
-
-              <div class="field">
-                <label for="delivery_time">Heure souhaitée de livraison</label>
-                <input class="input summary-watch" type="text" id="delivery_time" placeholder="Ex : 14:00 - 16:00">
               </div>
             </div>
 
@@ -453,17 +524,17 @@
 
             <div class="grid-2">
               <div class="field">
-                <label for="billing_email">Email</label>
+                <label for="billing_email">Email <span class="required-star">*</span></label>
                 <input class="input summary-watch" type="email" id="billing_email">
               </div>
 
               <div class="field">
-                <label for="billing_company">Nom société</label>
+                <label for="billing_company">Nom société <span class="required-star">*</span></label>
                 <input class="input summary-watch" type="text" id="billing_company">
               </div>
 
               <div class="field">
-                <label for="billing_name">Nom et prénom</label>
+                <label for="billing_name">Nom et prénom <span class="required-star">*</span></label>
                 <input class="input summary-watch" type="text" id="billing_name">
               </div>
 
@@ -471,14 +542,46 @@
                 <label for="billing_vat">N° de TVA</label>
                 <input class="input summary-watch" type="text" id="billing_vat">
               </div>
+            </div>
 
+            <div class="grid-4">
               <div class="field">
-                <label for="billing_address">Adresse</label>
-                <input class="input summary-watch" type="text" id="billing_address">
+                <label for="billing_street">Rue <span class="required-star">*</span></label>
+                <input class="input summary-watch" type="text" id="billing_street">
               </div>
 
               <div class="field">
-                <label for="billing_phone">N° de téléphone</label>
+                <label for="billing_number">N° <span class="required-star">*</span></label>
+                <input class="input summary-watch" type="text" id="billing_number">
+              </div>
+
+              <div class="field">
+                <label for="billing_postal">Code postal <span class="required-star">*</span></label>
+                <input class="input summary-watch" type="text" id="billing_postal">
+              </div>
+
+              <div class="field">
+                <label for="billing_city">Ville <span class="required-star">*</span></label>
+                <input class="input summary-watch" type="text" id="billing_city">
+              </div>
+            </div>
+
+            <div class="grid-2">
+              <div class="field">
+                <label for="billing_country">Pays <span class="required-star">*</span></label>
+                <select class="select summary-watch" id="billing_country">
+                  <option value="">Choisir</option>
+                  <option value="Belgique">Belgique</option>
+                  <option value="France">France</option>
+                  <option value="Pays-Bas">Pays-Bas</option>
+                  <option value="Luxembourg">Luxembourg</option>
+                  <option value="Allemagne">Allemagne</option>
+                  <option value="Autre">Autre</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="billing_phone">N° de téléphone <span class="required-star">*</span></label>
                 <input class="input summary-watch" type="text" id="billing_phone">
               </div>
             </div>
@@ -508,7 +611,8 @@
           <div><strong>Livraison :</strong> <span id="deliveryDisplay">-</span></div>
           <div><strong>Tarif de base HTVA :</strong> <span id="basePriceDisplay">0.00 €</span></div>
           <div><strong>Options HTVA :</strong> <span id="optionsPriceDisplay">0.00 €</span></div>
-          <div class="total-line"><strong>Total estimé HTVA :</strong> <span id="totalPriceDisplay">0.00 €</span></div>
+          <div><strong>TVA :</strong> <span id="vatDisplay">0.00 €</span></div>
+          <div class="total-line"><strong>Total TVAC :</strong> <span id="totalPriceDisplay">0.00 €</span></div>
         </div>
 
         <div class="summary-section">
@@ -608,6 +712,60 @@
       return el.value.trim();
     }
 
+    function isTruckOrSemi(vehicle) {
+      return vehicle === 'Camion' || vehicle === 'Semi-remorque';
+    }
+
+    function allowsTailLift(vehicle) {
+      return vehicle === 'Fourgon' || vehicle === 'Camion';
+    }
+
+    function getDriverHelpPrice(vehicle) {
+      return isTruckOrSemi(vehicle) ? 50 : 25;
+    }
+
+    function normalizeCountryValue(value) {
+      return (value || '').trim().toLowerCase();
+    }
+
+    function shouldApplyVat() {
+      var country = normalizeCountryValue(safeValue('billing_country'));
+      var vatNumber = safeValue('billing_vat');
+
+      if (country === 'belgique') {
+        return true;
+      }
+
+      if (country !== '' && country !== 'belgique' && vatNumber === '') {
+        return true;
+      }
+
+      return false;
+    }
+
+    function setupVehicleDependentOptions() {
+      var helpPrice = getDriverHelpPrice(vehicleName);
+
+      document.getElementById('opt_loading_help').setAttribute('data-price', helpPrice);
+      document.getElementById('opt_unloading_help').setAttribute('data-price', helpPrice);
+
+      document.getElementById('label_loading_help').innerText =
+        'Aide au chargement par le conducteur (+' + helpPrice + ' €)';
+
+      document.getElementById('label_unloading_help').innerText =
+        'Aide au déchargement par le conducteur (+' + helpPrice + ' €)';
+
+      var tailLiftRow = document.getElementById('tailLiftRow');
+      var tailLiftCheckbox = document.getElementById('opt_tail_lift');
+
+      if (allowsTailLift(vehicleName)) {
+        tailLiftRow.style.display = 'flex';
+      } else {
+        tailLiftRow.style.display = 'none';
+        tailLiftCheckbox.checked = false;
+      }
+    }
+
     function getOptionsTotal() {
       var total = 0;
       var checks = document.querySelectorAll('.option-check');
@@ -633,21 +791,37 @@
       return selected;
     }
 
-    function updatePrices() {
+    function calculateTotals() {
       var optionsTotal = getOptionsTotal();
-      var total = basePrice + optionsTotal;
+      var totalHtva = basePrice + optionsTotal;
+      var vatAmount = shouldApplyVat() ? (totalHtva * 0.21) : 0;
+      var totalTvac = totalHtva + vatAmount;
+
+      return {
+        optionsTotal: optionsTotal,
+        totalHtva: totalHtva,
+        vatAmount: vatAmount,
+        totalTvac: totalTvac
+      };
+    }
+
+    function updatePrices() {
+      var totals = calculateTotals();
 
       document.getElementById('vehicleDisplay').innerText = vehicleName;
       document.getElementById('pickupDisplay').innerText = pickupPostal + ' (' + pickupCountry + ')';
       document.getElementById('deliveryDisplay').innerText = deliveryPostal + ' (' + deliveryCountry + ')';
       document.getElementById('basePriceDisplay').innerText = formatPrice(basePrice);
-      document.getElementById('optionsPriceDisplay').innerText = formatPrice(optionsTotal);
-      document.getElementById('totalPriceDisplay').innerText = formatPrice(total);
+      document.getElementById('optionsPriceDisplay').innerText = formatPrice(totals.optionsTotal);
+      document.getElementById('vatDisplay').innerText = formatPrice(totals.vatAmount);
+      document.getElementById('totalPriceDisplay').innerText = formatPrice(totals.totalTvac);
 
       document.getElementById('vehicleField').value = vehicleName;
       document.getElementById('basePriceField').value = formatPrice(basePrice);
-      document.getElementById('optionsPriceField').value = formatPrice(optionsTotal);
-      document.getElementById('totalPriceField').value = formatPrice(total);
+      document.getElementById('optionsPriceField').value = formatPrice(totals.optionsTotal);
+      document.getElementById('totalHtvaField').value = formatPrice(totals.totalHtva);
+      document.getElementById('vatAmountField').value = formatPrice(totals.vatAmount);
+      document.getElementById('totalTvaIncludedField').value = formatPrice(totals.totalTvac);
       document.getElementById('pickupPostalField').value = pickupPostal;
       document.getElementById('deliveryPostalField').value = deliveryPostal;
       document.getElementById('pickupCountryField').value = pickupCountry;
@@ -816,9 +990,12 @@
       if (step === 3) {
         var fields3 = [
           ['collect_company', 'Veuillez indiquer la société de collecte.'],
-          ['collect_contact', 'Veuillez indiquer le contact de collecte.'],
-          ['collect_address', 'Veuillez indiquer l’adresse de collecte.'],
-          ['collect_phone', 'Veuillez indiquer le téléphone de collecte.'],
+          ['collect_date', 'Veuillez indiquer la date de collecte.'],
+          ['collect_street', 'Veuillez indiquer la rue de collecte.'],
+          ['collect_number', 'Veuillez indiquer le numéro de collecte.'],
+          ['collect_postal', 'Veuillez indiquer le code postal de collecte.'],
+          ['collect_city', 'Veuillez indiquer la ville de collecte.'],
+          ['collect_country', 'Veuillez indiquer le pays de collecte.'],
           ['collect_time', 'Veuillez indiquer l’heure souhaitée d’enlèvement.']
         ];
 
@@ -835,9 +1012,12 @@
       if (step === 4) {
         var fields4 = [
           ['delivery_company', 'Veuillez indiquer la société de livraison.'],
-          ['delivery_contact', 'Veuillez indiquer le contact de livraison.'],
-          ['delivery_address', 'Veuillez indiquer l’adresse de livraison.'],
-          ['delivery_phone', 'Veuillez indiquer le téléphone de livraison.'],
+          ['delivery_date', 'Veuillez indiquer la date de livraison.'],
+          ['delivery_street', 'Veuillez indiquer la rue de livraison.'],
+          ['delivery_number', 'Veuillez indiquer le numéro de livraison.'],
+          ['delivery_postal', 'Veuillez indiquer le code postal de livraison.'],
+          ['delivery_city', 'Veuillez indiquer la ville de livraison.'],
+          ['delivery_country', 'Veuillez indiquer le pays de livraison.'],
           ['delivery_time', 'Veuillez indiquer l’heure souhaitée de livraison.']
         ];
 
@@ -856,7 +1036,11 @@
           ['billing_email', 'Veuillez indiquer l’email de facturation.'],
           ['billing_company', 'Veuillez indiquer la société de facturation.'],
           ['billing_name', 'Veuillez indiquer le nom et prénom de facturation.'],
-          ['billing_address', 'Veuillez indiquer l’adresse de facturation.'],
+          ['billing_street', 'Veuillez indiquer la rue de facturation.'],
+          ['billing_number', 'Veuillez indiquer le numéro de facturation.'],
+          ['billing_postal', 'Veuillez indiquer le code postal de facturation.'],
+          ['billing_city', 'Veuillez indiquer la ville de facturation.'],
+          ['billing_country', 'Veuillez indiquer le pays de facturation.'],
           ['billing_phone', 'Veuillez indiquer le téléphone de facturation.']
         ];
 
@@ -923,11 +1107,16 @@
       var target = document.getElementById('summaryCollect');
       var values = [
         safeValue('collect_company'),
+        safeValue('collect_date'),
+        safeValue('collect_street'),
+        safeValue('collect_number'),
+        safeValue('collect_postal'),
+        safeValue('collect_city'),
+        safeValue('collect_country'),
+        safeValue('collect_time'),
         safeValue('collect_contact'),
-        safeValue('collect_address'),
         safeValue('collect_phone'),
         safeValue('collect_ref'),
-        safeValue('collect_time'),
         safeValue('collect_instructions')
       ];
 
@@ -939,11 +1128,19 @@
 
       var html = '';
       if (safeValue('collect_company')) html += 'Société : ' + safeValue('collect_company') + '<br>';
+      if (safeValue('collect_date')) html += 'Date : ' + safeValue('collect_date') + '<br>';
+      if (safeValue('collect_street') || safeValue('collect_number') || safeValue('collect_postal') || safeValue('collect_city') || safeValue('collect_country')) {
+        html += 'Adresse : '
+          + safeValue('collect_street') + ' '
+          + safeValue('collect_number') + ', '
+          + safeValue('collect_postal') + ' '
+          + safeValue('collect_city') + ', '
+          + safeValue('collect_country') + '<br>';
+      }
+      if (safeValue('collect_time')) html += 'Heure : ' + safeValue('collect_time') + '<br>';
       if (safeValue('collect_contact')) html += 'Contact : ' + safeValue('collect_contact') + '<br>';
-      if (safeValue('collect_address')) html += 'Adresse : ' + safeValue('collect_address') + '<br>';
       if (safeValue('collect_phone')) html += 'Téléphone : ' + safeValue('collect_phone') + '<br>';
       if (safeValue('collect_ref')) html += 'Réf. : ' + safeValue('collect_ref') + '<br>';
-      if (safeValue('collect_time')) html += 'Heure : ' + safeValue('collect_time') + '<br>';
       if (safeValue('collect_instructions')) html += 'Instructions : ' + safeValue('collect_instructions') + '<br>';
       target.innerHTML = html;
     }
@@ -952,11 +1149,16 @@
       var target = document.getElementById('summaryDelivery');
       var values = [
         safeValue('delivery_company'),
+        safeValue('delivery_date'),
+        safeValue('delivery_street'),
+        safeValue('delivery_number'),
+        safeValue('delivery_postal'),
+        safeValue('delivery_city'),
+        safeValue('delivery_country'),
+        safeValue('delivery_time'),
         safeValue('delivery_contact'),
-        safeValue('delivery_address'),
         safeValue('delivery_phone'),
         safeValue('delivery_ref'),
-        safeValue('delivery_time'),
         safeValue('delivery_instructions')
       ];
 
@@ -968,11 +1170,19 @@
 
       var html = '';
       if (safeValue('delivery_company')) html += 'Société : ' + safeValue('delivery_company') + '<br>';
+      if (safeValue('delivery_date')) html += 'Date : ' + safeValue('delivery_date') + '<br>';
+      if (safeValue('delivery_street') || safeValue('delivery_number') || safeValue('delivery_postal') || safeValue('delivery_city') || safeValue('delivery_country')) {
+        html += 'Adresse : '
+          + safeValue('delivery_street') + ' '
+          + safeValue('delivery_number') + ', '
+          + safeValue('delivery_postal') + ' '
+          + safeValue('delivery_city') + ', '
+          + safeValue('delivery_country') + '<br>';
+      }
+      if (safeValue('delivery_time')) html += 'Heure : ' + safeValue('delivery_time') + '<br>';
       if (safeValue('delivery_contact')) html += 'Contact : ' + safeValue('delivery_contact') + '<br>';
-      if (safeValue('delivery_address')) html += 'Adresse : ' + safeValue('delivery_address') + '<br>';
       if (safeValue('delivery_phone')) html += 'Téléphone : ' + safeValue('delivery_phone') + '<br>';
       if (safeValue('delivery_ref')) html += 'Réf. : ' + safeValue('delivery_ref') + '<br>';
-      if (safeValue('delivery_time')) html += 'Heure : ' + safeValue('delivery_time') + '<br>';
       if (safeValue('delivery_instructions')) html += 'Instructions : ' + safeValue('delivery_instructions') + '<br>';
       target.innerHTML = html;
     }
@@ -984,7 +1194,11 @@
         safeValue('billing_company'),
         safeValue('billing_name'),
         safeValue('billing_vat'),
-        safeValue('billing_address'),
+        safeValue('billing_street'),
+        safeValue('billing_number'),
+        safeValue('billing_postal'),
+        safeValue('billing_city'),
+        safeValue('billing_country'),
         safeValue('billing_phone')
       ];
 
@@ -999,20 +1213,32 @@
       if (safeValue('billing_company')) html += 'Société : ' + safeValue('billing_company') + '<br>';
       if (safeValue('billing_name')) html += 'Nom : ' + safeValue('billing_name') + '<br>';
       if (safeValue('billing_vat')) html += 'TVA : ' + safeValue('billing_vat') + '<br>';
-      if (safeValue('billing_address')) html += 'Adresse : ' + safeValue('billing_address') + '<br>';
+      if (safeValue('billing_street') || safeValue('billing_number') || safeValue('billing_postal') || safeValue('billing_city') || safeValue('billing_country')) {
+        html += 'Adresse : '
+          + safeValue('billing_street') + ' '
+          + safeValue('billing_number') + ', '
+          + safeValue('billing_postal') + ' '
+          + safeValue('billing_city') + ', '
+          + safeValue('billing_country') + '<br>';
+      }
       if (safeValue('billing_phone')) html += 'Téléphone : ' + safeValue('billing_phone') + '<br>';
+
+      var totals = calculateTotals();
+      html += 'TVA appliquée : ' + formatPrice(totals.vatAmount) + '<br>';
       target.innerHTML = html;
     }
 
     function updateFinalReview() {
+      var totals = calculateTotals();
       var html = '';
 
       html += '<strong>Véhicule :</strong> ' + vehicleName + '<br>';
       html += '<strong>Collecte calculateur :</strong> ' + pickupPostal + ' (' + pickupCountry + ')<br>';
       html += '<strong>Livraison calculateur :</strong> ' + deliveryPostal + ' (' + deliveryCountry + ')<br>';
       html += '<strong>Tarif de base HTVA :</strong> ' + formatPrice(basePrice) + '<br>';
-      html += '<strong>Options HTVA :</strong> ' + formatPrice(getOptionsTotal()) + '<br>';
-      html += '<strong>Total estimé HTVA :</strong> ' + formatPrice(basePrice + getOptionsTotal()) + '<br><br>';
+      html += '<strong>Options HTVA :</strong> ' + formatPrice(totals.optionsTotal) + '<br>';
+      html += '<strong>TVA :</strong> ' + formatPrice(totals.vatAmount) + '<br>';
+      html += '<strong>Total TVAC :</strong> ' + formatPrice(totals.totalTvac) + '<br><br>';
 
       html += '<strong>Options sélectionnées</strong><br>';
       var opts = getSelectedOptions();
@@ -1046,28 +1272,30 @@
 
       html += '<strong>Collecte</strong><br>';
       html += 'Société : ' + safeValue('collect_company') + '<br>';
+      html += 'Date : ' + safeValue('collect_date') + '<br>';
+      html += 'Adresse : ' + safeValue('collect_street') + ' ' + safeValue('collect_number') + ', ' + safeValue('collect_postal') + ' ' + safeValue('collect_city') + ', ' + safeValue('collect_country') + '<br>';
+      html += 'Heure souhaitée : ' + safeValue('collect_time') + '<br>';
       html += 'Contact : ' + safeValue('collect_contact') + '<br>';
-      html += 'Adresse : ' + safeValue('collect_address') + '<br>';
       html += 'Téléphone : ' + safeValue('collect_phone') + '<br>';
       html += 'Référence : ' + safeValue('collect_ref') + '<br>';
-      html += 'Instructions : ' + safeValue('collect_instructions') + '<br>';
-      html += 'Heure souhaitée : ' + safeValue('collect_time') + '<br><br>';
+      html += 'Instructions : ' + safeValue('collect_instructions') + '<br><br>';
 
       html += '<strong>Livraison</strong><br>';
       html += 'Société : ' + safeValue('delivery_company') + '<br>';
+      html += 'Date : ' + safeValue('delivery_date') + '<br>';
+      html += 'Adresse : ' + safeValue('delivery_street') + ' ' + safeValue('delivery_number') + ', ' + safeValue('delivery_postal') + ' ' + safeValue('delivery_city') + ', ' + safeValue('delivery_country') + '<br>';
+      html += 'Heure souhaitée : ' + safeValue('delivery_time') + '<br>';
       html += 'Contact : ' + safeValue('delivery_contact') + '<br>';
-      html += 'Adresse : ' + safeValue('delivery_address') + '<br>';
       html += 'Téléphone : ' + safeValue('delivery_phone') + '<br>';
       html += 'Référence : ' + safeValue('delivery_ref') + '<br>';
-      html += 'Instructions : ' + safeValue('delivery_instructions') + '<br>';
-      html += 'Heure souhaitée : ' + safeValue('delivery_time') + '<br><br>';
+      html += 'Instructions : ' + safeValue('delivery_instructions') + '<br><br>';
 
       html += '<strong>Facturation</strong><br>';
       html += 'Email : ' + safeValue('billing_email') + '<br>';
       html += 'Société : ' + safeValue('billing_company') + '<br>';
       html += 'Nom : ' + safeValue('billing_name') + '<br>';
       html += 'N° TVA : ' + safeValue('billing_vat') + '<br>';
-      html += 'Adresse : ' + safeValue('billing_address') + '<br>';
+      html += 'Adresse : ' + safeValue('billing_street') + ' ' + safeValue('billing_number') + ', ' + safeValue('billing_postal') + ' ' + safeValue('billing_city') + ', ' + safeValue('billing_country') + '<br>';
       html += 'Téléphone : ' + safeValue('billing_phone') + '<br>';
 
       document.getElementById('finalReviewBox').innerHTML = html;
@@ -1084,6 +1312,7 @@
     }
 
     function buildSummary() {
+      var totals = calculateTotals();
       var summary = '';
 
       summary += '=== PRIX ===\n';
@@ -1091,8 +1320,9 @@
       summary += 'Code postal collecte : ' + pickupPostal + ' (' + pickupCountry + ')\n';
       summary += 'Code postal livraison : ' + deliveryPostal + ' (' + deliveryCountry + ')\n';
       summary += 'Tarif de base HTVA : ' + formatPrice(basePrice) + '\n';
-      summary += 'Options HTVA : ' + formatPrice(getOptionsTotal()) + '\n';
-      summary += 'Total estimé HTVA : ' + formatPrice(basePrice + getOptionsTotal()) + '\n\n';
+      summary += 'Options HTVA : ' + formatPrice(totals.optionsTotal) + '\n';
+      summary += 'TVA : ' + formatPrice(totals.vatAmount) + '\n';
+      summary += 'Total TVAC : ' + formatPrice(totals.totalTvac) + '\n\n';
 
       summary += '=== OPTIONS ===\n';
       var opts = getSelectedOptions();
@@ -1121,30 +1351,32 @@
       }
 
       summary += '=== COLLECTE ===\n';
-      summary += 'Société : ' + document.getElementById('collect_company').value + '\n';
-      summary += 'Contact : ' + document.getElementById('collect_contact').value + '\n';
-      summary += 'Adresse : ' + document.getElementById('collect_address').value + '\n';
-      summary += 'Téléphone : ' + document.getElementById('collect_phone').value + '\n';
-      summary += 'Référence : ' + document.getElementById('collect_ref').value + '\n';
-      summary += 'Instructions : ' + document.getElementById('collect_instructions').value + '\n';
-      summary += 'Heure souhaitée : ' + document.getElementById('collect_time').value + '\n\n';
+      summary += 'Société : ' + safeValue('collect_company') + '\n';
+      summary += 'Date : ' + safeValue('collect_date') + '\n';
+      summary += 'Adresse : ' + safeValue('collect_street') + ' ' + safeValue('collect_number') + ', ' + safeValue('collect_postal') + ' ' + safeValue('collect_city') + ', ' + safeValue('collect_country') + '\n';
+      summary += 'Heure souhaitée : ' + safeValue('collect_time') + '\n';
+      summary += 'Contact : ' + safeValue('collect_contact') + '\n';
+      summary += 'Téléphone : ' + safeValue('collect_phone') + '\n';
+      summary += 'Référence : ' + safeValue('collect_ref') + '\n';
+      summary += 'Instructions : ' + safeValue('collect_instructions') + '\n\n';
 
       summary += '=== LIVRAISON ===\n';
-      summary += 'Société : ' + document.getElementById('delivery_company').value + '\n';
-      summary += 'Contact : ' + document.getElementById('delivery_contact').value + '\n';
-      summary += 'Adresse : ' + document.getElementById('delivery_address').value + '\n';
-      summary += 'Téléphone : ' + document.getElementById('delivery_phone').value + '\n';
-      summary += 'Référence : ' + document.getElementById('delivery_ref').value + '\n';
-      summary += 'Instructions : ' + document.getElementById('delivery_instructions').value + '\n';
-      summary += 'Heure souhaitée : ' + document.getElementById('delivery_time').value + '\n\n';
+      summary += 'Société : ' + safeValue('delivery_company') + '\n';
+      summary += 'Date : ' + safeValue('delivery_date') + '\n';
+      summary += 'Adresse : ' + safeValue('delivery_street') + ' ' + safeValue('delivery_number') + ', ' + safeValue('delivery_postal') + ' ' + safeValue('delivery_city') + ', ' + safeValue('delivery_country') + '\n';
+      summary += 'Heure souhaitée : ' + safeValue('delivery_time') + '\n';
+      summary += 'Contact : ' + safeValue('delivery_contact') + '\n';
+      summary += 'Téléphone : ' + safeValue('delivery_phone') + '\n';
+      summary += 'Référence : ' + safeValue('delivery_ref') + '\n';
+      summary += 'Instructions : ' + safeValue('delivery_instructions') + '\n\n';
 
       summary += '=== FACTURATION ===\n';
-      summary += 'Email : ' + document.getElementById('billing_email').value + '\n';
-      summary += 'Société : ' + document.getElementById('billing_company').value + '\n';
-      summary += 'Nom : ' + document.getElementById('billing_name').value + '\n';
-      summary += 'N° TVA : ' + document.getElementById('billing_vat').value + '\n';
-      summary += 'Adresse : ' + document.getElementById('billing_address').value + '\n';
-      summary += 'Téléphone : ' + document.getElementById('billing_phone').value + '\n';
+      summary += 'Email : ' + safeValue('billing_email') + '\n';
+      summary += 'Société : ' + safeValue('billing_company') + '\n';
+      summary += 'Nom : ' + safeValue('billing_name') + '\n';
+      summary += 'N° TVA : ' + safeValue('billing_vat') + '\n';
+      summary += 'Adresse : ' + safeValue('billing_street') + ' ' + safeValue('billing_number') + ', ' + safeValue('billing_postal') + ' ' + safeValue('billing_city') + ', ' + safeValue('billing_country') + '\n';
+      summary += 'Téléphone : ' + safeValue('billing_phone') + '\n';
 
       document.getElementById('summaryField').value = summary;
     }
@@ -1194,6 +1426,7 @@
       watchedFields[j].addEventListener('change', updateSummary);
     }
 
+    setupVehicleDependentOptions();
     updatePrices();
     addProduct();
     showStep(1);
