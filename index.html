@@ -19,6 +19,35 @@
       padding: 18px;
     }
 
+    .topbar {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 12px;
+    }
+
+    .lang-switcher {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .lang-btn {
+      border: 1px solid #cbd5e1;
+      background: white;
+      color: #003366;
+      border-radius: 10px;
+      padding: 8px 12px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    .lang-btn.active {
+      background: #003366;
+      color: white;
+      border-color: #003366;
+    }
+
     .layout {
       display: grid;
       grid-template-columns: minmax(0, 1fr) 360px;
@@ -309,6 +338,14 @@
       min-width: 180px;
     }
 
+    .success-actions {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 16px;
+    }
+
     @media (max-width: 1024px) {
       .layout {
         grid-template-columns: 1fr;
@@ -338,6 +375,14 @@
 </head>
 <body>
   <div class="wrapper">
+    <div class="topbar">
+      <div class="lang-switcher">
+        <button type="button" class="lang-btn active" data-lang="fr">🇫🇷 FR</button>
+        <button type="button" class="lang-btn" data-lang="nl">🇳🇱 NL</button>
+        <button type="button" class="lang-btn" data-lang="en">🇬🇧 EN</button>
+      </div>
+    </div>
+
     <div id="successContainer" style="display:none;"></div>
 
     <div class="layout" id="mainLayout">
@@ -376,7 +421,7 @@
           <textarea name="Résumé de la commande" id="summaryField" style="display:none;"></textarea>
 
           <div class="step active" data-step="1">
-            <h2>Choisissez vos options</h2>
+            <h2 data-i18n="step1_title">Choisissez vos options</h2>
 
             <label class="option-row">
               <input type="checkbox" class="option-check" id="opt_loading_help" data-label="Aide au chargement par le conducteur">
@@ -390,287 +435,292 @@
 
             <label class="option-row">
               <input type="checkbox" class="option-check" id="opt_paper_invoice" data-label="Facture papier" data-price="10">
-              <span>Facture papier (+10 €)</span>
+              <span data-i18n="paper_invoice">Facture papier (+10 €)</span>
             </label>
 
             <label class="option-row" id="tailLiftRow" style="display:none;">
               <input type="checkbox" class="option-check" id="opt_tail_lift" data-label="Hayon élévateur" data-price="30">
-              <span>Hayon élévateur (+30 €)</span>
+              <span data-i18n="tail_lift">Hayon élévateur (+30 €)</span>
             </label>
           </div>
 
           <div class="step" data-step="2">
-            <h2>Décrivez vos marchandises</h2>
+            <h2 data-i18n="step2_title">Décrivez vos marchandises</h2>
             <div id="productsContainer"></div>
 
-            <button type="button" class="btn btn-primary" id="addProductBtn">+ Ajouter un produit</button>
-            <div class="small-note">Ajoutez.</div>
+            <div class="field">
+              <label for="goods_extra_info" data-i18n="extra_info_label">Informations complémentaires</label>
+              <textarea class="textarea summary-watch" id="goods_extra_info" data-i18n-placeholder="extra_info_placeholder" placeholder="Ex : ADR, moins de 1000 points, remise en main propre uniquement..."></textarea>
+            </div>
+
+            <button type="button" class="btn btn-primary" id="addProductBtn" data-i18n="add_product_btn">+ Ajouter un produit</button>
+            <div class="small-note" data-i18n="step2_note">Ajoutez autant de lignes que d’articles différents.</div>
           </div>
 
           <div class="step" data-step="3">
-            <h2>Collecte</h2>
+            <h2 data-i18n="step3_title">Collecte</h2>
 
             <div class="grid-2">
               <div class="field">
-                <label for="collect_company">Nom de la société de collecte <span class="required-star">*</span></label>
+                <label for="collect_company"><span data-i18n="collect_company">Nom de la société de collecte</span> <span class="required-star">*</span></label>
                 <input class="input summary-watch" type="text" id="collect_company">
               </div>
 
               <div class="field">
-                <label for="collect_date">Date de collecte <span class="required-star">*</span></label>
+                <label for="collect_date"><span data-i18n="collect_date">Date de collecte</span> <span class="required-star">*</span></label>
                 <input class="input summary-watch" type="date" id="collect_date">
               </div>
             </div>
 
             <div class="grid-4">
               <div class="field">
-                <label for="collect_street">Rue <span class="required-star">*</span></label>
+                <label for="collect_street"><span data-i18n="street">Rue</span> <span class="required-star">*</span></label>
                 <input class="input summary-watch" type="text" id="collect_street">
               </div>
 
               <div class="field">
-                <label for="collect_number">N° <span class="required-star">*</span></label>
+                <label for="collect_number"><span data-i18n="number">N°</span> <span class="required-star">*</span></label>
                 <input class="input summary-watch" type="text" id="collect_number">
               </div>
 
               <div class="field">
-                <label for="collect_postal">Code postal <span class="required-star">*</span></label>
+                <label for="collect_postal"><span data-i18n="postal_code">Code postal</span> <span class="required-star">*</span></label>
                 <input class="input summary-watch" type="text" id="collect_postal">
               </div>
 
               <div class="field">
-                <label for="collect_city">Ville <span class="required-star">*</span></label>
+                <label for="collect_city"><span data-i18n="city">Ville</span> <span class="required-star">*</span></label>
                 <input class="input summary-watch" type="text" id="collect_city">
               </div>
             </div>
 
             <div class="grid-2">
               <div class="field">
-                <label for="collect_country">Pays <span class="required-star">*</span></label>
+                <label for="collect_country"><span data-i18n="country">Pays</span> <span class="required-star">*</span></label>
                 <input class="input summary-watch" type="text" id="collect_country">
               </div>
 
               <div class="field">
-                <label for="collect_time">Heure souhaitée d’enlèvement <span class="required-star">*</span></label>
+                <label for="collect_time"><span data-i18n="pickup_time">Heure souhaitée d’enlèvement</span> <span class="required-star">*</span></label>
                 <input class="input summary-watch" type="text" id="collect_time" placeholder="Ex : 09:00 - 11:00">
               </div>
 
               <div class="field">
-                <label for="collect_contact">Nom et prénom de la personne de contact</label>
+                <label for="collect_contact" data-i18n="contact_person">Nom et prénom de la personne de contact</label>
                 <input class="input summary-watch" type="text" id="collect_contact">
               </div>
 
               <div class="field">
-                <label for="collect_phone">N° de téléphone du contact</label>
+                <label for="collect_phone" data-i18n="contact_phone">N° de téléphone du contact</label>
                 <input class="input summary-watch" type="text" id="collect_phone">
               </div>
 
               <div class="field">
-                <label for="collect_ref">Réf. de collecte</label>
+                <label for="collect_ref" data-i18n="pickup_ref">Réf. de collecte</label>
                 <input class="input summary-watch" type="text" id="collect_ref">
               </div>
             </div>
 
             <div class="field">
-              <label for="collect_instructions">Instructions spéciales</label>
+              <label for="collect_instructions" data-i18n="special_instructions">Instructions spéciales</label>
               <textarea class="textarea summary-watch" id="collect_instructions"></textarea>
             </div>
           </div>
 
           <div class="step" data-step="4">
-            <h2>Livraison</h2>
+            <h2 data-i18n="step4_title">Livraison</h2>
 
             <div class="grid-2">
               <div class="field">
-                <label for="delivery_company">Nom de la société de livraison <span class="required-star">*</span></label>
+                <label for="delivery_company"><span data-i18n="delivery_company">Nom de la société de livraison</span> <span class="required-star">*</span></label>
                 <input class="input summary-watch" type="text" id="delivery_company">
               </div>
 
               <div class="field">
-                <label for="delivery_date">Date de livraison <span class="required-star">*</span></label>
+                <label for="delivery_date"><span data-i18n="delivery_date">Date de livraison</span> <span class="required-star">*</span></label>
                 <input class="input summary-watch" type="date" id="delivery_date">
               </div>
             </div>
 
             <div class="grid-4">
               <div class="field">
-                <label for="delivery_street">Rue <span class="required-star">*</span></label>
+                <label for="delivery_street"><span data-i18n="street">Rue</span> <span class="required-star">*</span></label>
                 <input class="input summary-watch" type="text" id="delivery_street">
               </div>
 
               <div class="field">
-                <label for="delivery_number">N° <span class="required-star">*</span></label>
+                <label for="delivery_number"><span data-i18n="number">N°</span> <span class="required-star">*</span></label>
                 <input class="input summary-watch" type="text" id="delivery_number">
               </div>
 
               <div class="field">
-                <label for="delivery_postal">Code postal <span class="required-star">*</span></label>
+                <label for="delivery_postal"><span data-i18n="postal_code">Code postal</span> <span class="required-star">*</span></label>
                 <input class="input summary-watch" type="text" id="delivery_postal">
               </div>
 
               <div class="field">
-                <label for="delivery_city">Ville <span class="required-star">*</span></label>
+                <label for="delivery_city"><span data-i18n="city">Ville</span> <span class="required-star">*</span></label>
                 <input class="input summary-watch" type="text" id="delivery_city">
               </div>
             </div>
 
             <div class="grid-2">
               <div class="field">
-                <label for="delivery_country">Pays <span class="required-star">*</span></label>
+                <label for="delivery_country"><span data-i18n="country">Pays</span> <span class="required-star">*</span></label>
                 <input class="input summary-watch" type="text" id="delivery_country">
               </div>
 
               <div class="field">
-                <label for="delivery_time">Heure souhaitée de livraison <span class="required-star">*</span></label>
+                <label for="delivery_time"><span data-i18n="delivery_time">Heure souhaitée de livraison</span> <span class="required-star">*</span></label>
                 <input class="input summary-watch" type="text" id="delivery_time" placeholder="Ex : 14:00 - 16:00">
               </div>
 
               <div class="field">
-                <label for="delivery_contact">Nom et prénom de la personne de contact</label>
+                <label for="delivery_contact" data-i18n="contact_person">Nom et prénom de la personne de contact</label>
                 <input class="input summary-watch" type="text" id="delivery_contact">
               </div>
 
               <div class="field">
-                <label for="delivery_phone">N° de téléphone du contact</label>
+                <label for="delivery_phone" data-i18n="contact_phone">N° de téléphone du contact</label>
                 <input class="input summary-watch" type="text" id="delivery_phone">
               </div>
 
               <div class="field">
-                <label for="delivery_ref">Réf. de livraison</label>
+                <label for="delivery_ref" data-i18n="delivery_ref">Réf. de livraison</label>
                 <input class="input summary-watch" type="text" id="delivery_ref">
               </div>
             </div>
 
             <div class="field">
-              <label for="delivery_instructions">Instructions spéciales</label>
+              <label for="delivery_instructions" data-i18n="special_instructions">Instructions spéciales</label>
               <textarea class="textarea summary-watch" id="delivery_instructions"></textarea>
             </div>
           </div>
 
           <div class="step" data-step="5">
-            <h2>Facturation</h2>
+            <h2 data-i18n="step5_title">Facturation</h2>
 
             <div class="grid-2">
               <div class="field">
-                <label for="billing_email">Email <span class="required-star">*</span></label>
+                <label for="billing_email"><span data-i18n="email">Email</span> <span class="required-star">*</span></label>
                 <input class="input summary-watch" type="email" id="billing_email">
               </div>
 
               <div class="field">
-                <label for="billing_company">Nom société</label>
+                <label for="billing_company" data-i18n="company_name">Nom société</label>
                 <input class="input summary-watch" type="text" id="billing_company">
               </div>
 
               <div class="field">
-                <label for="billing_name">Nom et prénom <span class="required-star">*</span></label>
+                <label for="billing_name"><span data-i18n="full_name">Nom et prénom</span> <span class="required-star">*</span></label>
                 <input class="input summary-watch" type="text" id="billing_name">
               </div>
 
               <div class="field">
-                <label for="billing_vat">N° de TVA</label>
+                <label for="billing_vat" data-i18n="vat_number">N° de TVA</label>
                 <input class="input summary-watch" type="text" id="billing_vat">
               </div>
             </div>
 
             <div class="grid-4">
               <div class="field">
-                <label for="billing_street">Rue <span class="required-star">*</span></label>
+                <label for="billing_street"><span data-i18n="street">Rue</span> <span class="required-star">*</span></label>
                 <input class="input summary-watch" type="text" id="billing_street">
               </div>
 
               <div class="field">
-                <label for="billing_number">N° <span class="required-star">*</span></label>
+                <label for="billing_number"><span data-i18n="number">N°</span> <span class="required-star">*</span></label>
                 <input class="input summary-watch" type="text" id="billing_number">
               </div>
 
               <div class="field">
-                <label for="billing_postal">Code postal <span class="required-star">*</span></label>
+                <label for="billing_postal"><span data-i18n="postal_code">Code postal</span> <span class="required-star">*</span></label>
                 <input class="input summary-watch" type="text" id="billing_postal">
               </div>
 
               <div class="field">
-                <label for="billing_city">Ville <span class="required-star">*</span></label>
+                <label for="billing_city"><span data-i18n="city">Ville</span> <span class="required-star">*</span></label>
                 <input class="input summary-watch" type="text" id="billing_city">
               </div>
             </div>
 
             <div class="grid-2">
               <div class="field">
-                <label for="billing_country">Pays <span class="required-star">*</span></label>
+                <label for="billing_country"><span data-i18n="country">Pays</span> <span class="required-star">*</span></label>
                 <select class="select summary-watch" id="billing_country">
-                  <option value="">Choisir</option>
+                  <option value="" data-i18n="choose">Choisir</option>
                   <option value="Belgique">Belgique</option>
                   <option value="France">France</option>
                   <option value="Pays-Bas">Pays-Bas</option>
                   <option value="Luxembourg">Luxembourg</option>
                   <option value="Allemagne">Allemagne</option>
-                  <option value="Autre">Autre</option>
+                  <option value="Autre" data-i18n="other_country_option">Autre</option>
                 </select>
               </div>
 
               <div class="field">
-                <label for="billing_phone">N° de téléphone <span class="required-star">*</span></label>
+                <label for="billing_phone"><span data-i18n="phone">N° de téléphone</span> <span class="required-star">*</span></label>
                 <input class="input summary-watch" type="text" id="billing_phone">
               </div>
             </div>
 
             <div class="field" id="billingCountryOtherWrap" style="display:none;">
-              <label for="billing_country_other">Veuillez indiquer votre pays <span class="required-star">*</span></label>
+              <label for="billing_country_other"><span data-i18n="specify_country">Veuillez indiquer votre pays</span> <span class="required-star">*</span></label>
               <input class="input summary-watch" type="text" id="billing_country_other">
             </div>
 
             <div class="summary-section" style="margin-top:16px;">
-              <h4>Vérification finale de la commande</h4>
+              <h4 data-i18n="final_review">Vérification finale de la commande</h4>
               <div class="summary-lines" id="finalReviewBox"></div>
             </div>
           </div>
 
           <div class="footer-bar">
             <div class="nav-buttons">
-              <button type="button" class="btn btn-secondary" id="prevBtn" style="display:none;">Retour</button>
-              <button type="button" class="btn btn-primary" id="nextBtn">Suivant</button>
-              <button type="submit" class="btn btn-success" id="submitBtn" style="display:none;">Finaliser la commande</button>
+              <button type="button" class="btn btn-secondary" id="prevBtn" style="display:none;" data-i18n="back_btn">Retour</button>
+              <button type="button" class="btn btn-primary" id="nextBtn" data-i18n="next_btn">Suivant</button>
+              <button type="submit" class="btn btn-success" id="submitBtn" style="display:none;" data-i18n="finalize_btn">Finaliser la commande</button>
             </div>
           </div>
         </form>
       </div>
 
       <div class="sidebar-card">
-        <h3 style="margin-bottom:12px;">Récapitulatif</h3>
+        <h3 style="margin-bottom:12px;" data-i18n="summary_title">Récapitulatif</h3>
 
         <div class="price-box">
-          <div><strong>Véhicule :</strong> <span id="vehicleDisplay">-</span></div>
-          <div><strong>Collecte :</strong> <span id="pickupDisplay">-</span></div>
-          <div><strong>Livraison :</strong> <span id="deliveryDisplay">-</span></div>
-          <div><strong>Tarif de base HTVA :</strong> <span id="basePriceDisplay">0.00 €</span></div>
-          <div><strong>Options HTVA :</strong> <span id="optionsPriceDisplay">0.00 €</span></div>
-          <div><strong>TVA :</strong> <span id="vatDisplay">0.00 €</span></div>
-          <div class="total-line"><strong>Total TVAC :</strong> <span id="totalPriceDisplay">0.00 €</span></div>
+          <div><strong data-i18n="vehicle_label">Véhicule :</strong> <span id="vehicleDisplay">-</span></div>
+          <div><strong data-i18n="pickup_label">Collecte :</strong> <span id="pickupDisplay">-</span></div>
+          <div><strong data-i18n="delivery_label">Livraison :</strong> <span id="deliveryDisplay">-</span></div>
+          <div><strong data-i18n="base_price_label">Tarif de base HTVA :</strong> <span id="basePriceDisplay">0.00 €</span></div>
+          <div><strong data-i18n="options_price_label">Options HTVA :</strong> <span id="optionsPriceDisplay">0.00 €</span></div>
+          <div><strong data-i18n="vat_label">TVA :</strong> <span id="vatDisplay">0.00 €</span></div>
+          <div class="total-line"><strong data-i18n="total_tvac_label">Total TVAC :</strong> <span id="totalPriceDisplay">0.00 €</span></div>
         </div>
 
         <div class="summary-section">
-          <h4>Options</h4>
-          <div class="summary-lines" id="summaryOptions"><span class="muted">Aucune option sélectionnée</span></div>
+          <h4 data-i18n="options_section">Options</h4>
+          <div class="summary-lines" id="summaryOptions"><span class="muted" data-i18n="none_selected">Aucune option sélectionnée</span></div>
         </div>
 
         <div class="summary-section">
-          <h4>Marchandises</h4>
-          <div class="summary-lines" id="summaryProducts"><span class="muted">Aucun produit ajouté</span></div>
+          <h4 data-i18n="goods_section">Marchandises</h4>
+          <div class="summary-lines" id="summaryProducts"><span class="muted" data-i18n="no_product_added">Aucun produit ajouté</span></div>
         </div>
 
         <div class="summary-section">
-          <h4>Collecte</h4>
-          <div class="summary-lines" id="summaryCollect"><span class="muted">Informations non remplies</span></div>
+          <h4 data-i18n="pickup_section">Collecte</h4>
+          <div class="summary-lines" id="summaryCollect"><span class="muted" data-i18n="not_filled">Informations non remplies</span></div>
         </div>
 
         <div class="summary-section">
-          <h4>Livraison</h4>
-          <div class="summary-lines" id="summaryDelivery"><span class="muted">Informations non remplies</span></div>
+          <h4 data-i18n="delivery_section">Livraison</h4>
+          <div class="summary-lines" id="summaryDelivery"><span class="muted" data-i18n="not_filled">Informations non remplies</span></div>
         </div>
 
         <div class="summary-section">
-          <h4>Facturation</h4>
-          <div class="summary-lines" id="summaryBilling"><span class="muted">Informations non remplies</span></div>
+          <h4 data-i18n="billing_section">Facturation</h4>
+          <div class="summary-lines" id="summaryBilling"><span class="muted" data-i18n="not_filled">Informations non remplies</span></div>
         </div>
       </div>
     </div>
@@ -680,8 +730,367 @@
     var currentStep = 1;
     var totalSteps = 5;
     var productCount = 0;
+    var currentLang = 'fr';
 
     const PRICE_SECRET_KEY = "InterGlobe_2026_Key";
+
+    const I18N = {
+      fr: {
+        step1_title: "Choisissez vos options",
+        step2_title: "Décrivez vos marchandises",
+        step3_title: "Collecte",
+        step4_title: "Livraison",
+        step5_title: "Facturation",
+        paper_invoice: "Facture papier (+10 €)",
+        tail_lift: "Hayon élévateur (+30 €)",
+        extra_info_label: "Informations complémentaires",
+        extra_info_placeholder: "Ex : ADR, moins de 1000 points, remise en main propre uniquement...",
+        add_product_btn: "+ Ajouter un produit",
+        step2_note: "Ajoutez autant de lignes que d’articles différents.",
+        collect_company: "Nom de la société de collecte",
+        collect_date: "Date de collecte",
+        delivery_company: "Nom de la société de livraison",
+        delivery_date: "Date de livraison",
+        street: "Rue",
+        number: "N°",
+        postal_code: "Code postal",
+        city: "Ville",
+        country: "Pays",
+        pickup_time: "Heure souhaitée d’enlèvement",
+        delivery_time: "Heure souhaitée de livraison",
+        contact_person: "Nom et prénom de la personne de contact",
+        contact_phone: "N° de téléphone du contact",
+        pickup_ref: "Réf. de collecte",
+        delivery_ref: "Réf. de livraison",
+        special_instructions: "Instructions spéciales",
+        email: "Email",
+        company_name: "Nom société",
+        full_name: "Nom et prénom",
+        vat_number: "N° de TVA",
+        phone: "N° de téléphone",
+        choose: "Choisir",
+        other_country_option: "Autre",
+        specify_country: "Veuillez indiquer votre pays",
+        final_review: "Vérification finale de la commande",
+        back_btn: "Retour",
+        next_btn: "Suivant",
+        finalize_btn: "Finaliser la commande",
+        summary_title: "Récapitulatif",
+        vehicle_label: "Véhicule :",
+        pickup_label: "Collecte :",
+        delivery_label: "Livraison :",
+        base_price_label: "Tarif de base HTVA :",
+        options_price_label: "Options HTVA :",
+        vat_label: "TVA :",
+        total_tvac_label: "Total TVAC :",
+        options_section: "Options",
+        goods_section: "Marchandises",
+        pickup_section: "Collecte",
+        delivery_section: "Livraison",
+        billing_section: "Facturation",
+        none_selected: "Aucune option sélectionnée",
+        no_product_added: "Aucun produit ajouté",
+        not_filled: "Informations non remplies",
+        product: "Produit",
+        type: "Type",
+        description: "Description du produit",
+        stackable: "Empilable",
+        quantity: "Quantité",
+        weight_per_unit: "Poids par unité (kg)",
+        length: "Longueur (cm)",
+        width: "Largeur (cm)",
+        height: "Hauteur (cm)",
+        choose_option: "Choisir",
+        pallet: "Palette",
+        carton: "Carton",
+        envelope: "Enveloppe",
+        other: "Autre",
+        yes: "Oui",
+        no: "Non",
+        delete_btn: "Supprimer",
+        pricing_section: "=== PRIX ===",
+        reservation_section: "=== RESERVATION ===",
+        options_summary_title: "=== OPTIONS ===",
+        goods_summary_title: "=== MARCHANDISES ===",
+        pickup_summary_title: "=== COLLECTE ===",
+        delivery_summary_title: "=== LIVRAISON ===",
+        billing_summary_title: "=== FACTURATION ===",
+        reservation_number_label: "N° réservation",
+        code_postal_pickup: "Code postal collecte",
+        code_postal_delivery: "Code postal livraison",
+        base_price_text: "Tarif de base HTVA",
+        options_htva_text: "Options HTVA",
+        vat_text: "TVA",
+        total_tvac_text: "Total TVAC",
+        no_option_selected: "Aucune option sélectionnée",
+        company: "Société",
+        date: "Date",
+        address: "Adresse",
+        time: "Heure",
+        contact: "Contact",
+        ref: "Référence",
+        instructions: "Instructions",
+        name: "Nom",
+        copied: "Numéro copié dans le presse-papiers.",
+        copy_failed_auto: "Copie automatique impossible. Veuillez utiliser le bouton Copier le numéro.",
+        copy_failed_manual: "Impossible de copier automatiquement ce numéro.",
+        success_line1: "Votre demande est enregistrée sous la réservation n°",
+        success_line2: "Le dispatch confirmera sous peu votre demande, vérifiez vos mails et spams.",
+        copy_number_btn: "Copier le numéro",
+        cgv_btn: "Voir les CGV",
+        decode_warning: "Impossible de récupérer correctement les données du calculateur. Veuillez revenir au calculateur et recommencer."
+      },
+      nl: {
+        step1_title: "Kies uw opties",
+        step2_title: "Beschrijf uw goederen",
+        step3_title: "Ophaling",
+        step4_title: "Levering",
+        step5_title: "Facturatie",
+        paper_invoice: "Papieren factuur (+10 €)",
+        tail_lift: "Laadklep (+30 €)",
+        extra_info_label: "Aanvullende informatie",
+        extra_info_placeholder: "Bijv.: ADR, minder dan 1000 punten, enkel persoonlijke overhandiging...",
+        add_product_btn: "+ Product toevoegen",
+        step2_note: "Voeg zoveel regels toe als er verschillende artikelen zijn.",
+        collect_company: "Naam van het afhaalbedrijf",
+        collect_date: "Afhaaldatum",
+        delivery_company: "Naam van het leveringsbedrijf",
+        delivery_date: "Leveringsdatum",
+        street: "Straat",
+        number: "Nr.",
+        postal_code: "Postcode",
+        city: "Stad",
+        country: "Land",
+        pickup_time: "Gewenst afhaaluur",
+        delivery_time: "Gewenst leveringsuur",
+        contact_person: "Naam van de contactpersoon",
+        contact_phone: "Telefoonnummer contactpersoon",
+        pickup_ref: "Afhaalreferentie",
+        delivery_ref: "Leveringsreferentie",
+        special_instructions: "Bijzondere instructies",
+        email: "E-mail",
+        company_name: "Bedrijfsnaam",
+        full_name: "Naam en voornaam",
+        vat_number: "Btw-nummer",
+        phone: "Telefoonnummer",
+        choose: "Kiezen",
+        other_country_option: "Ander",
+        specify_country: "Gelieve uw land in te vullen",
+        final_review: "Laatste controle van de bestelling",
+        back_btn: "Terug",
+        next_btn: "Volgende",
+        finalize_btn: "Bestelling afronden",
+        summary_title: "Samenvatting",
+        vehicle_label: "Voertuig :",
+        pickup_label: "Ophaling :",
+        delivery_label: "Levering :",
+        base_price_label: "Basistarief excl. btw :",
+        options_price_label: "Opties excl. btw :",
+        vat_label: "Btw :",
+        total_tvac_label: "Totaal incl. btw :",
+        options_section: "Opties",
+        goods_section: "Goederen",
+        pickup_section: "Ophaling",
+        delivery_section: "Levering",
+        billing_section: "Facturatie",
+        none_selected: "Geen optie geselecteerd",
+        no_product_added: "Geen product toegevoegd",
+        not_filled: "Informatie niet ingevuld",
+        product: "Product",
+        type: "Type",
+        description: "Productbeschrijving",
+        stackable: "Stapelbaar",
+        quantity: "Aantal",
+        weight_per_unit: "Gewicht per eenheid (kg)",
+        length: "Lengte (cm)",
+        width: "Breedte (cm)",
+        height: "Hoogte (cm)",
+        choose_option: "Kiezen",
+        pallet: "Pallet",
+        carton: "Doos",
+        envelope: "Envelop",
+        other: "Ander",
+        yes: "Ja",
+        no: "Nee",
+        delete_btn: "Verwijderen",
+        pricing_section: "=== PRIJS ===",
+        reservation_section: "=== RESERVERING ===",
+        options_summary_title: "=== OPTIES ===",
+        goods_summary_title: "=== GOEDEREN ===",
+        pickup_summary_title: "=== OPHALING ===",
+        delivery_summary_title: "=== LEVERING ===",
+        billing_summary_title: "=== FACTURATIE ===",
+        reservation_number_label: "Reservatienummer",
+        code_postal_pickup: "Postcode ophaling",
+        code_postal_delivery: "Postcode levering",
+        base_price_text: "Basistarief excl. btw",
+        options_htva_text: "Opties excl. btw",
+        vat_text: "Btw",
+        total_tvac_text: "Totaal incl. btw",
+        no_option_selected: "Geen optie geselecteerd",
+        company: "Bedrijf",
+        date: "Datum",
+        address: "Adres",
+        time: "Tijd",
+        contact: "Contact",
+        ref: "Referentie",
+        instructions: "Instructies",
+        name: "Naam",
+        copied: "Nummer gekopieerd naar het klembord.",
+        copy_failed_auto: "Automatisch kopiëren niet mogelijk. Gebruik de knop Nummer kopiëren.",
+        copy_failed_manual: "Dit nummer kon niet automatisch worden gekopieerd.",
+        success_line1: "Uw aanvraag is geregistreerd onder reserveringsnummer",
+        success_line2: "De dispatch bevestigt uw aanvraag spoedig. Controleer uw e-mails en spam.",
+        copy_number_btn: "Nummer kopiëren",
+        cgv_btn: "Algemene voorwaarden",
+        decode_warning: "De gegevens van de calculator konden niet correct worden opgehaald. Ga terug naar de calculator en probeer opnieuw."
+      },
+      en: {
+        step1_title: "Choose your options",
+        step2_title: "Describe your goods",
+        step3_title: "Pickup",
+        step4_title: "Delivery",
+        step5_title: "Billing",
+        paper_invoice: "Paper invoice (+10 €)",
+        tail_lift: "Tail lift (+30 €)",
+        extra_info_label: "Additional information",
+        extra_info_placeholder: "E.g.: ADR, under 1000 points, hand delivery only...",
+        add_product_btn: "+ Add a product",
+        step2_note: "Add as many lines as there are different items.",
+        collect_company: "Pickup company name",
+        collect_date: "Pickup date",
+        delivery_company: "Delivery company name",
+        delivery_date: "Delivery date",
+        street: "Street",
+        number: "No.",
+        postal_code: "Postal code",
+        city: "City",
+        country: "Country",
+        pickup_time: "Preferred pickup time",
+        delivery_time: "Preferred delivery time",
+        contact_person: "Contact person name",
+        contact_phone: "Contact phone number",
+        pickup_ref: "Pickup reference",
+        delivery_ref: "Delivery reference",
+        special_instructions: "Special instructions",
+        email: "Email",
+        company_name: "Company name",
+        full_name: "Full name",
+        vat_number: "VAT number",
+        phone: "Phone number",
+        choose: "Choose",
+        other_country_option: "Other",
+        specify_country: "Please specify your country",
+        final_review: "Final order review",
+        back_btn: "Back",
+        next_btn: "Next",
+        finalize_btn: "Finalize order",
+        summary_title: "Summary",
+        vehicle_label: "Vehicle:",
+        pickup_label: "Pickup:",
+        delivery_label: "Delivery:",
+        base_price_label: "Base price excl. VAT:",
+        options_price_label: "Options excl. VAT:",
+        vat_label: "VAT:",
+        total_tvac_label: "Total incl. VAT:",
+        options_section: "Options",
+        goods_section: "Goods",
+        pickup_section: "Pickup",
+        delivery_section: "Delivery",
+        billing_section: "Billing",
+        none_selected: "No option selected",
+        no_product_added: "No product added",
+        not_filled: "Information not filled in",
+        product: "Product",
+        type: "Type",
+        description: "Product description",
+        stackable: "Stackable",
+        quantity: "Quantity",
+        weight_per_unit: "Weight per unit (kg)",
+        length: "Length (cm)",
+        width: "Width (cm)",
+        height: "Height (cm)",
+        choose_option: "Choose",
+        pallet: "Pallet",
+        carton: "Carton",
+        envelope: "Envelope",
+        other: "Other",
+        yes: "Yes",
+        no: "No",
+        delete_btn: "Delete",
+        pricing_section: "=== PRICING ===",
+        reservation_section: "=== RESERVATION ===",
+        options_summary_title: "=== OPTIONS ===",
+        goods_summary_title: "=== GOODS ===",
+        pickup_summary_title: "=== PICKUP ===",
+        delivery_summary_title: "=== DELIVERY ===",
+        billing_summary_title: "=== BILLING ===",
+        reservation_number_label: "Reservation number",
+        code_postal_pickup: "Pickup postal code",
+        code_postal_delivery: "Delivery postal code",
+        base_price_text: "Base price excl. VAT",
+        options_htva_text: "Options excl. VAT",
+        vat_text: "VAT",
+        total_tvac_text: "Total incl. VAT",
+        no_option_selected: "No option selected",
+        company: "Company",
+        date: "Date",
+        address: "Address",
+        time: "Time",
+        contact: "Contact",
+        ref: "Reference",
+        instructions: "Instructions",
+        name: "Name",
+        copied: "Number copied to clipboard.",
+        copy_failed_auto: "Automatic copy unavailable. Please use the Copy number button.",
+        copy_failed_manual: "Unable to copy this number automatically.",
+        success_line1: "Your request has been registered under reservation number",
+        success_line2: "Dispatch will confirm your request shortly. Please check your emails and spam folder.",
+        copy_number_btn: "Copy number",
+        cgv_btn: "View terms",
+        decode_warning: "Unable to retrieve the calculator data correctly. Please go back to the calculator and try again."
+      }
+    };
+
+    function t(key) {
+      return (I18N[currentLang] && I18N[currentLang][key]) || I18N.fr[key] || key;
+    }
+
+    function applyTranslations() {
+      document.documentElement.lang = currentLang;
+
+      var textNodes = document.querySelectorAll('[data-i18n]');
+      for (var i = 0; i < textNodes.length; i++) {
+        var key = textNodes[i].getAttribute('data-i18n');
+        textNodes[i].textContent = t(key);
+      }
+
+      var placeholders = document.querySelectorAll('[data-i18n-placeholder]');
+      for (var j = 0; j < placeholders.length; j++) {
+        var pKey = placeholders[j].getAttribute('data-i18n-placeholder');
+        placeholders[j].setAttribute('placeholder', t(pKey));
+      }
+
+      var langButtons = document.querySelectorAll('.lang-btn');
+      for (var k = 0; k < langButtons.length; k++) {
+        langButtons[k].classList.remove('active');
+        if (langButtons[k].getAttribute('data-lang') === currentLang) {
+          langButtons[k].classList.add('active');
+        }
+      }
+
+      document.getElementById('decodeWarning').innerText = t('decode_warning');
+      updateVehicleDependentLabels();
+      refreshProductTranslations();
+      updateSummary();
+      updateProgressHeader();
+    }
+
+    function setLanguage(lang) {
+      currentLang = lang;
+      localStorage.setItem('ig_booking_lang', lang);
+      applyTranslations();
+    }
 
     function xorDecrypt(text, key) {
       var result = '';
@@ -765,15 +1174,15 @@
       if (navigator.clipboard && window.isSecureContext) {
         navigator.clipboard.writeText(reservationNumber)
           .then(function () {
-            showStatus('Numéro copié dans le presse-papiers.');
+            showStatus(t('copied'));
           })
           .catch(function () {
-            showStatus('Copie automatique impossible. Veuillez utiliser le bouton Copier le numéro.');
+            showStatus(t('copy_failed_auto'));
           });
         return;
       }
 
-      showStatus('Copie automatique impossible. Veuillez utiliser le bouton Copier le numéro.');
+      showStatus(t('copy_failed_auto'));
     }
 
     function manualCopyReservationNumber() {
@@ -793,10 +1202,10 @@
       if (navigator.clipboard && window.isSecureContext) {
         navigator.clipboard.writeText(text)
           .then(function () {
-            showStatus('Numéro copié dans le presse-papiers.');
+            showStatus(t('copied'));
           })
           .catch(function () {
-            showStatus('Impossible de copier automatiquement ce numéro.');
+            showStatus(t('copy_failed_manual'));
           });
         return;
       }
@@ -809,9 +1218,9 @@
         tempInput.setSelectionRange(0, 99999);
         document.execCommand('copy');
         document.body.removeChild(tempInput);
-        showStatus('Numéro copié dans le presse-papiers.');
+        showStatus(t('copied'));
       } catch (e) {
-        showStatus('Impossible de copier automatiquement ce numéro.');
+        showStatus(t('copy_failed_manual'));
       }
     }
 
@@ -827,11 +1236,12 @@
         var html = ''
           + '<div class="success-box">'
           +   '<div class="success-icon">✅</div>'
-          +   '<div>Votre demande est enregistrée sous la réservation n°</div>'
+          +   '<div>' + t('success_line1') + '</div>'
           +   '<div class="success-reservation" id="successReservationNumber">' + res + '</div>'
-          +   '<div style="margin-top:12px;">Le dispatch confirmera sous peu votre demande, vérifiez vos mails et spams.</div>'
-          +   '<div style="margin-top:16px;">'
-          +     '<button type="button" class="btn btn-success" onclick="manualCopyReservationNumber()">Copier le numéro</button>'
+          +   '<div style="margin-top:12px;">' + t('success_line2') + '</div>'
+          +   '<div class="success-actions">'
+          +     '<button type="button" class="btn btn-success" onclick="manualCopyReservationNumber()">' + t('copy_number_btn') + '</button>'
+          +     '<button type="button" class="btn btn-primary" onclick="window.location.href=\'https://www.interglobe.be/CGV\'">' + t('cgv_btn') + '</button>'
           +   '</div>'
           +   '<div id="copyStatus" style="margin-top:12px;font-size:14px;color:#166534;"></div>'
           + '</div>';
@@ -850,6 +1260,11 @@
     }
 
     if (!showSuccessMessageIfNeeded()) {
+      var savedLang = localStorage.getItem('ig_booking_lang');
+      if (savedLang && I18N[savedLang]) {
+        currentLang = savedLang;
+      }
+
       var rawData = getUrlParam('data');
       var decodedData = rawData ? decodePayload(rawData, PRICE_SECRET_KEY) : null;
 
@@ -922,17 +1337,30 @@
         return false;
       }
 
-      function setupVehicleDependentOptions() {
+      function updateVehicleDependentLabels() {
         var helpPrice = getDriverHelpPrice(vehicleName);
-
         document.getElementById('opt_loading_help').setAttribute('data-price', helpPrice);
         document.getElementById('opt_unloading_help').setAttribute('data-price', helpPrice);
 
-        document.getElementById('label_loading_help').innerText =
-          'Aide au chargement par le conducteur (+' + helpPrice + ' €)';
+        var loadingText = {
+          fr: 'Aide au chargement par le conducteur',
+          nl: 'Hulp bij laden door de chauffeur',
+          en: 'Loading assistance by driver'
+        };
+        var unloadingText = {
+          fr: 'Aide au déchargement par le conducteur',
+          nl: 'Hulp bij lossen door de chauffeur',
+          en: 'Unloading assistance by driver'
+        };
 
+        document.getElementById('label_loading_help').innerText =
+          loadingText[currentLang] + ' (+' + helpPrice + ' €)';
         document.getElementById('label_unloading_help').innerText =
-          'Aide au déchargement par le conducteur (+' + helpPrice + ' €)';
+          unloadingText[currentLang] + ' (+' + helpPrice + ' €)';
+      }
+
+      function setupVehicleDependentOptions() {
+        updateVehicleDependentLabels();
 
         var tailLiftRow = document.getElementById('tailLiftRow');
         var tailLiftCheckbox = document.getElementById('opt_tail_lift');
@@ -1017,6 +1445,25 @@
         document.getElementById('deliveryCountryField').value = deliveryCountry;
       }
 
+      function updateProgressHeader() {
+        var titles = {
+          1: t('step1_title'),
+          2: t('step2_title'),
+          3: t('step3_title'),
+          4: t('step4_title'),
+          5: t('step5_title')
+        };
+
+        var stepText = {
+          fr: 'Étape ',
+          nl: 'Stap ',
+          en: 'Step '
+        };
+
+        document.getElementById('stepCounter').innerText = stepText[currentLang] + currentStep + ' / 5';
+        document.getElementById('stepTitle').innerText = titles[currentStep];
+      }
+
       function showStep(step) {
         currentStep = step;
 
@@ -1026,16 +1473,7 @@
         }
         document.querySelector('.step[data-step="' + step + '"]').classList.add('active');
 
-        var titles = {
-          1: 'Options',
-          2: 'Marchandises',
-          3: 'Collecte',
-          4: 'Livraison',
-          5: 'Facturation'
-        };
-
-        document.getElementById('stepCounter').innerText = 'Étape ' + step + ' / 5';
-        document.getElementById('stepTitle').innerText = titles[step];
+        updateProgressHeader();
         document.getElementById('progressBar').style.width = (step * 20) + '%';
 
         document.getElementById('prevBtn').style.display = step === 1 ? 'none' : 'inline-block';
@@ -1048,9 +1486,34 @@
         for (var i = 0; i < blocks.length; i++) {
           var title = blocks[i].querySelector('.product-title');
           if (title) {
-            title.innerText = 'Produit ' + (i + 1);
+            title.innerText = t('product') + ' ' + (i + 1);
           }
         }
+      }
+
+      function refreshProductTranslations() {
+        var products = document.querySelectorAll('.product-box');
+        for (var i = 0; i < products.length; i++) {
+          var fields = products[i].querySelectorAll('[data-product-label]');
+          for (var j = 0; j < fields.length; j++) {
+            fields[j].innerText = t(fields[j].getAttribute('data-product-label'));
+          }
+
+          var placeholders = products[i].querySelectorAll('[data-product-placeholder]');
+          for (var k = 0; k < placeholders.length; k++) {
+            placeholders[k].setAttribute('placeholder', t(placeholders[k].getAttribute('data-product-placeholder')));
+          }
+
+          var options = products[i].querySelectorAll('[data-product-option]');
+          for (var m = 0; m < options.length; m++) {
+            options[m].innerText = t(options[m].getAttribute('data-product-option'));
+          }
+
+          var delBtn = products[i].querySelector('.btn-danger');
+          if (delBtn) delBtn.innerText = t('delete_btn');
+        }
+
+        refreshProductTitles();
       }
 
       window.removeProduct = function(btn) {
@@ -1068,57 +1531,57 @@
         var html = ''
           + '<div class="product-box">'
           +   '<div class="product-head">'
-          +     '<div class="product-title">Produit ' + productCount + '</div>'
-          +     '<button type="button" class="btn-danger" onclick="removeProduct(this)">Supprimer</button>'
+          +     '<div class="product-title">' + t('product') + ' ' + productCount + '</div>'
+          +     '<button type="button" class="btn-danger" onclick="removeProduct(this)">' + t('delete_btn') + '</button>'
           +   '</div>'
           +   '<div class="grid-2">'
           +     '<div class="field">'
-          +       '<label>Type</label>'
+          +       '<label data-product-label="type">' + t('type') + '</label>'
           +       '<select class="select product-type summary-watch-product">'
-          +         '<option value="">Choisir</option>'
-          +         '<option value="Palette">Palette</option>'
-          +         '<option value="Carton">Carton</option>'
-          +         '<option value="Enveloppe">Enveloppe</option>'
-          +         '<option value="Autre">Autre</option>'
+          +         '<option value="" data-product-option="choose_option">' + t('choose_option') + '</option>'
+          +         '<option value="Palette" data-product-option="pallet">' + t('pallet') + '</option>'
+          +         '<option value="Carton" data-product-option="carton">' + t('carton') + '</option>'
+          +         '<option value="Enveloppe" data-product-option="envelope">' + t('envelope') + '</option>'
+          +         '<option value="Autre" data-product-option="other">' + t('other') + '</option>'
           +       '</select>'
           +     '</div>'
           +     '<div class="field">'
-          +       '<label>Description du produit</label>'
-          +       '<input type="text" class="input product-description summary-watch-product" placeholder="Ex : boisson, fenêtre, document">'
+          +       '<label data-product-label="description">' + t('description') + '</label>'
+          +       '<input type="text" class="input product-description summary-watch-product" data-product-placeholder="description" placeholder="' + t('description') + '">'
           +     '</div>'
           +     '<div class="field">'
-          +       '<label>Empilable</label>'
+          +       '<label data-product-label="stackable">' + t('stackable') + '</label>'
           +       '<select class="select product-stackable summary-watch-product">'
-          +         '<option value="">Choisir</option>'
-          +         '<option value="Oui">Oui</option>'
-          +         '<option value="Non">Non</option>'
+          +         '<option value="" data-product-option="choose_option">' + t('choose_option') + '</option>'
+          +         '<option value="Oui" data-product-option="yes">' + t('yes') + '</option>'
+          +         '<option value="Non" data-product-option="no">' + t('no') + '</option>'
           +       '</select>'
           +     '</div>'
           +     '<div class="field">'
-          +       '<label>Quantité</label>'
+          +       '<label data-product-label="quantity">' + t('quantity') + '</label>'
           +       '<input type="number" min="1" class="input product-qty summary-watch-product">'
           +     '</div>'
           +     '<div class="field">'
-          +       '<label>Poids par unité (kg)</label>'
+          +       '<label data-product-label="weight_per_unit">' + t('weight_per_unit') + '</label>'
           +       '<input type="number" min="0" step="0.01" class="input product-weight summary-watch-product">'
           +     '</div>'
           +     '<div class="field">'
-          +       '<label>Longueur (cm)</label>'
+          +       '<label data-product-label="length">' + t('length') + '</label>'
           +       '<input type="number" min="0" step="0.01" class="input product-length summary-watch-product">'
           +     '</div>'
           +     '<div class="field">'
-          +       '<label>Largeur (cm)</label>'
+          +       '<label data-product-label="width">' + t('width') + '</label>'
           +       '<input type="number" min="0" step="0.01" class="input product-width summary-watch-product">'
           +     '</div>'
           +     '<div class="field">'
-          +       '<label>Hauteur (cm)</label>'
+          +       '<label data-product-label="height">' + t('height') + '</label>'
           +       '<input type="number" min="0" step="0.01" class="input product-height summary-watch-product">'
           +     '</div>'
           +   '</div>'
           + '</div>';
 
         document.getElementById('productsContainer').insertAdjacentHTML('beforeend', html);
-        refreshProductTitles();
+        refreshProductTranslations();
         bindDynamicInputs();
         updateSummary();
       }
@@ -1127,7 +1590,7 @@
         if (step === 2) {
           var products = document.querySelectorAll('.product-box');
           if (products.length === 0) {
-            alert('Veuillez ajouter au moins un produit.');
+            alert(t('no_product_added'));
             return false;
           }
 
@@ -1141,36 +1604,8 @@
             var width = products[i].querySelector('.product-width').value.trim();
             var height = products[i].querySelector('.product-height').value.trim();
 
-            if (!type) {
-              alert('Veuillez choisir le type du produit ' + (i + 1) + '.');
-              return false;
-            }
-            if (!desc) {
-              alert('Veuillez remplir la description du produit ' + (i + 1) + '.');
-              return false;
-            }
-            if (!stack) {
-              alert('Veuillez choisir si le produit ' + (i + 1) + ' est empilable.');
-              return false;
-            }
-            if (!qty) {
-              alert('Veuillez remplir la quantité du produit ' + (i + 1) + '.');
-              return false;
-            }
-            if (!weight) {
-              alert('Veuillez remplir le poids du produit ' + (i + 1) + '.');
-              return false;
-            }
-            if (!length) {
-              alert('Veuillez remplir la longueur du produit ' + (i + 1) + '.');
-              return false;
-            }
-            if (!width) {
-              alert('Veuillez remplir la largeur du produit ' + (i + 1) + '.');
-              return false;
-            }
-            if (!height) {
-              alert('Veuillez remplir la hauteur du produit ' + (i + 1) + '.');
+            if (!type || !desc || !stack || !qty || !weight || !length || !width || !height) {
+              alert(t('goods_section') + ' : ' + t('product') + ' ' + (i + 1));
               return false;
             }
           }
@@ -1178,20 +1613,11 @@
 
         if (step === 3) {
           var fields3 = [
-            ['collect_company', 'Veuillez indiquer la société de collecte.'],
-            ['collect_date', 'Veuillez indiquer la date de collecte.'],
-            ['collect_street', 'Veuillez indiquer la rue de collecte.'],
-            ['collect_number', 'Veuillez indiquer le numéro de collecte.'],
-            ['collect_postal', 'Veuillez indiquer le code postal de collecte.'],
-            ['collect_city', 'Veuillez indiquer la ville de collecte.'],
-            ['collect_country', 'Veuillez indiquer le pays de collecte.'],
-            ['collect_time', 'Veuillez indiquer l’heure souhaitée d’enlèvement.']
+            'collect_company','collect_date','collect_street','collect_number','collect_postal','collect_city','collect_country','collect_time'
           ];
-
           for (var j = 0; j < fields3.length; j++) {
-            var el3 = document.getElementById(fields3[j][0]);
+            var el3 = document.getElementById(fields3[j]);
             if (!el3.value.trim()) {
-              alert(fields3[j][1]);
               el3.focus();
               return false;
             }
@@ -1200,20 +1626,11 @@
 
         if (step === 4) {
           var fields4 = [
-            ['delivery_company', 'Veuillez indiquer la société de livraison.'],
-            ['delivery_date', 'Veuillez indiquer la date de livraison.'],
-            ['delivery_street', 'Veuillez indiquer la rue de livraison.'],
-            ['delivery_number', 'Veuillez indiquer le numéro de livraison.'],
-            ['delivery_postal', 'Veuillez indiquer le code postal de livraison.'],
-            ['delivery_city', 'Veuillez indiquer la ville de livraison.'],
-            ['delivery_country', 'Veuillez indiquer le pays de livraison.'],
-            ['delivery_time', 'Veuillez indiquer l’heure souhaitée de livraison.']
+            'delivery_company','delivery_date','delivery_street','delivery_number','delivery_postal','delivery_city','delivery_country','delivery_time'
           ];
-
           for (var k = 0; k < fields4.length; k++) {
-            var el4 = document.getElementById(fields4[k][0]);
+            var el4 = document.getElementById(fields4[k]);
             if (!el4.value.trim()) {
-              alert(fields4[k][1]);
               el4.focus();
               return false;
             }
@@ -1222,27 +1639,17 @@
 
         if (step === 5) {
           var fields5 = [
-            ['billing_email', 'Veuillez indiquer l’email de facturation.'],
-            ['billing_name', 'Veuillez indiquer le nom et prénom de facturation.'],
-            ['billing_street', 'Veuillez indiquer la rue de facturation.'],
-            ['billing_number', 'Veuillez indiquer le numéro de facturation.'],
-            ['billing_postal', 'Veuillez indiquer le code postal de facturation.'],
-            ['billing_city', 'Veuillez indiquer la ville de facturation.'],
-            ['billing_country', 'Veuillez indiquer le pays de facturation.'],
-            ['billing_phone', 'Veuillez indiquer le téléphone de facturation.']
+            'billing_email','billing_name','billing_street','billing_number','billing_postal','billing_city','billing_country','billing_phone'
           ];
-
           for (var m = 0; m < fields5.length; m++) {
-            var el5 = document.getElementById(fields5[m][0]);
+            var el5 = document.getElementById(fields5[m]);
             if (!el5.value.trim()) {
-              alert(fields5[m][1]);
               el5.focus();
               return false;
             }
           }
 
           if (safeValue('billing_country') === 'Autre' && !safeValue('billing_country_other')) {
-            alert('Veuillez indiquer votre pays.');
             document.getElementById('billing_country_other').focus();
             return false;
           }
@@ -1256,7 +1663,7 @@
         var opts = getSelectedOptions();
 
         if (opts.length === 0) {
-          target.innerHTML = '<span class="muted">Aucune option sélectionnée</span>';
+          target.innerHTML = '<span class="muted">' + t('none_selected') + '</span>';
           return;
         }
 
@@ -1272,7 +1679,7 @@
         var products = document.querySelectorAll('.product-box');
 
         if (products.length === 0) {
-          target.innerHTML = '<span class="muted">Aucun produit ajouté</span>';
+          target.innerHTML = '<span class="muted">' + t('no_product_added') + '</span>';
           return;
         }
 
@@ -1287,13 +1694,19 @@
           var width = products[i].querySelector('.product-width').value.trim() || '-';
           var height = products[i].querySelector('.product-height').value.trim() || '-';
 
-          html += '<strong>Produit ' + (i + 1) + '</strong><br>';
-          html += 'Type : ' + type + '<br>';
-          html += 'Description : ' + desc + '<br>';
-          html += 'Empilable : ' + stack + '<br>';
-          html += 'Qté : ' + qty + ' | Poids : ' + weight + ' kg<br>';
-          html += 'Dimensions : ' + length + ' x ' + width + ' x ' + height + ' cm<br><br>';
+          html += '<strong>' + t('product') + ' ' + (i + 1) + '</strong><br>';
+          html += t('type') + ' : ' + type + '<br>';
+          html += t('description') + ' : ' + desc + '<br>';
+          html += t('stackable') + ' : ' + stack + '<br>';
+          html += t('quantity') + ' : ' + qty + ' | ' + t('weight_per_unit') + ' : ' + weight + '<br>';
+          html += t('length') + ' / ' + t('width') + ' / ' + t('height') + ' : ' + length + ' x ' + width + ' x ' + height + ' cm<br><br>';
         }
+
+        var extraInfo = safeValue('goods_extra_info');
+        if (extraInfo) {
+          html += '<strong>' + t('extra_info_label') + '</strong><br>' + extraInfo;
+        }
+
         target.innerHTML = html;
       }
 
@@ -1316,26 +1729,26 @@
 
         var hasData = values.some(function(v) { return v !== ''; });
         if (!hasData) {
-          target.innerHTML = '<span class="muted">Informations non remplies</span>';
+          target.innerHTML = '<span class="muted">' + t('not_filled') + '</span>';
           return;
         }
 
         var html = '';
-        if (safeValue('collect_company')) html += 'Société : ' + safeValue('collect_company') + '<br>';
-        if (safeValue('collect_date')) html += 'Date : ' + safeValue('collect_date') + '<br>';
+        if (safeValue('collect_company')) html += t('company') + ' : ' + safeValue('collect_company') + '<br>';
+        if (safeValue('collect_date')) html += t('date') + ' : ' + safeValue('collect_date') + '<br>';
         if (safeValue('collect_street') || safeValue('collect_number') || safeValue('collect_postal') || safeValue('collect_city') || safeValue('collect_country')) {
-          html += 'Adresse : '
+          html += t('address') + ' : '
             + safeValue('collect_street') + ' '
             + safeValue('collect_number') + ', '
             + safeValue('collect_postal') + ' '
             + safeValue('collect_city') + ', '
             + safeValue('collect_country') + '<br>';
         }
-        if (safeValue('collect_time')) html += 'Heure : ' + safeValue('collect_time') + '<br>';
-        if (safeValue('collect_contact')) html += 'Contact : ' + safeValue('collect_contact') + '<br>';
-        if (safeValue('collect_phone')) html += 'Téléphone : ' + safeValue('collect_phone') + '<br>';
-        if (safeValue('collect_ref')) html += 'Réf. : ' + safeValue('collect_ref') + '<br>';
-        if (safeValue('collect_instructions')) html += 'Instructions : ' + safeValue('collect_instructions') + '<br>';
+        if (safeValue('collect_time')) html += t('time') + ' : ' + safeValue('collect_time') + '<br>';
+        if (safeValue('collect_contact')) html += t('contact') + ' : ' + safeValue('collect_contact') + '<br>';
+        if (safeValue('collect_phone')) html += t('phone') + ' : ' + safeValue('collect_phone') + '<br>';
+        if (safeValue('collect_ref')) html += t('ref') + ' : ' + safeValue('collect_ref') + '<br>';
+        if (safeValue('collect_instructions')) html += t('instructions') + ' : ' + safeValue('collect_instructions') + '<br>';
         target.innerHTML = html;
       }
 
@@ -1358,26 +1771,26 @@
 
         var hasData = values.some(function(v) { return v !== ''; });
         if (!hasData) {
-          target.innerHTML = '<span class="muted">Informations non remplies</span>';
+          target.innerHTML = '<span class="muted">' + t('not_filled') + '</span>';
           return;
         }
 
         var html = '';
-        if (safeValue('delivery_company')) html += 'Société : ' + safeValue('delivery_company') + '<br>';
-        if (safeValue('delivery_date')) html += 'Date : ' + safeValue('delivery_date') + '<br>';
+        if (safeValue('delivery_company')) html += t('company') + ' : ' + safeValue('delivery_company') + '<br>';
+        if (safeValue('delivery_date')) html += t('date') + ' : ' + safeValue('delivery_date') + '<br>';
         if (safeValue('delivery_street') || safeValue('delivery_number') || safeValue('delivery_postal') || safeValue('delivery_city') || safeValue('delivery_country')) {
-          html += 'Adresse : '
+          html += t('address') + ' : '
             + safeValue('delivery_street') + ' '
             + safeValue('delivery_number') + ', '
             + safeValue('delivery_postal') + ' '
             + safeValue('delivery_city') + ', '
             + safeValue('delivery_country') + '<br>';
         }
-        if (safeValue('delivery_time')) html += 'Heure : ' + safeValue('delivery_time') + '<br>';
-        if (safeValue('delivery_contact')) html += 'Contact : ' + safeValue('delivery_contact') + '<br>';
-        if (safeValue('delivery_phone')) html += 'Téléphone : ' + safeValue('delivery_phone') + '<br>';
-        if (safeValue('delivery_ref')) html += 'Réf. : ' + safeValue('delivery_ref') + '<br>';
-        if (safeValue('delivery_instructions')) html += 'Instructions : ' + safeValue('delivery_instructions') + '<br>';
+        if (safeValue('delivery_time')) html += t('time') + ' : ' + safeValue('delivery_time') + '<br>';
+        if (safeValue('delivery_contact')) html += t('contact') + ' : ' + safeValue('delivery_contact') + '<br>';
+        if (safeValue('delivery_phone')) html += t('phone') + ' : ' + safeValue('delivery_phone') + '<br>';
+        if (safeValue('delivery_ref')) html += t('ref') + ' : ' + safeValue('delivery_ref') + '<br>';
+        if (safeValue('delivery_instructions')) html += t('instructions') + ' : ' + safeValue('delivery_instructions') + '<br>';
         target.innerHTML = html;
       }
 
@@ -1398,27 +1811,27 @@
 
         var hasData = values.some(function(v) { return v !== ''; });
         if (!hasData) {
-          target.innerHTML = '<span class="muted">Informations non remplies</span>';
+          target.innerHTML = '<span class="muted">' + t('not_filled') + '</span>';
           return;
         }
 
         var html = '';
-        if (safeValue('billing_email')) html += 'Email : ' + safeValue('billing_email') + '<br>';
-        if (safeValue('billing_company')) html += 'Société : ' + safeValue('billing_company') + '<br>';
-        if (safeValue('billing_name')) html += 'Nom : ' + safeValue('billing_name') + '<br>';
-        if (safeValue('billing_vat')) html += 'TVA : ' + safeValue('billing_vat') + '<br>';
+        if (safeValue('billing_email')) html += t('email') + ' : ' + safeValue('billing_email') + '<br>';
+        if (safeValue('billing_company')) html += t('company') + ' : ' + safeValue('billing_company') + '<br>';
+        if (safeValue('billing_name')) html += t('name') + ' : ' + safeValue('billing_name') + '<br>';
+        if (safeValue('billing_vat')) html += t('vat_number') + ' : ' + safeValue('billing_vat') + '<br>';
         if (safeValue('billing_street') || safeValue('billing_number') || safeValue('billing_postal') || safeValue('billing_city') || getBillingCountryValue()) {
-          html += 'Adresse : '
+          html += t('address') + ' : '
             + safeValue('billing_street') + ' '
             + safeValue('billing_number') + ', '
             + safeValue('billing_postal') + ' '
             + safeValue('billing_city') + ', '
             + getBillingCountryValue() + '<br>';
         }
-        if (safeValue('billing_phone')) html += 'Téléphone : ' + safeValue('billing_phone') + '<br>';
+        if (safeValue('billing_phone')) html += t('phone') + ' : ' + safeValue('billing_phone') + '<br>';
 
         var totals = calculateTotals();
-        html += 'TVA appliquée : ' + formatPrice(totals.vatAmount) + '<br>';
+        html += t('vat_text') + ' : ' + formatPrice(totals.vatAmount) + '<br>';
         target.innerHTML = html;
       }
 
@@ -1426,18 +1839,18 @@
         var totals = calculateTotals();
         var html = '';
 
-        html += '<strong>Véhicule :</strong> ' + vehicleName + '<br>';
-        html += '<strong>Collecte calculateur :</strong> ' + pickupPostal + ' (' + pickupCountry + ')<br>';
-        html += '<strong>Livraison calculateur :</strong> ' + deliveryPostal + ' (' + deliveryCountry + ')<br>';
-        html += '<strong>Tarif de base HTVA :</strong> ' + formatPrice(basePrice) + '<br>';
-        html += '<strong>Options HTVA :</strong> ' + formatPrice(totals.optionsTotal) + '<br>';
-        html += '<strong>TVA :</strong> ' + formatPrice(totals.vatAmount) + '<br>';
-        html += '<strong>Total TVAC :</strong> ' + formatPrice(totals.totalTvac) + '<br><br>';
+        html += '<strong>' + t('vehicle_label') + '</strong> ' + vehicleName + '<br>';
+        html += '<strong>' + t('pickup_label') + '</strong> ' + pickupPostal + ' (' + pickupCountry + ')<br>';
+        html += '<strong>' + t('delivery_label') + '</strong> ' + deliveryPostal + ' (' + deliveryCountry + ')<br>';
+        html += '<strong>' + t('base_price_label') + '</strong> ' + formatPrice(basePrice) + '<br>';
+        html += '<strong>' + t('options_price_label') + '</strong> ' + formatPrice(totals.optionsTotal) + '<br>';
+        html += '<strong>' + t('vat_label') + '</strong> ' + formatPrice(totals.vatAmount) + '<br>';
+        html += '<strong>' + t('total_tvac_label') + '</strong> ' + formatPrice(totals.totalTvac) + '<br><br>';
 
-        html += '<strong>Options sélectionnées</strong><br>';
+        html += '<strong>' + t('options_section') + '</strong><br>';
         var opts = getSelectedOptions();
         if (opts.length === 0) {
-          html += 'Aucune option sélectionnée<br><br>';
+          html += t('none_selected') + '<br><br>';
         } else {
           for (var i = 0; i < opts.length; i++) {
             html += '• ' + opts[i].label + ' (+' + formatPrice(opts[i].price) + ')<br>';
@@ -1445,52 +1858,56 @@
           html += '<br>';
         }
 
-        html += '<strong>Marchandises</strong><br>';
+        html += '<strong>' + t('goods_section') + '</strong><br>';
         var products = document.querySelectorAll('.product-box');
         if (products.length === 0) {
-          html += 'Aucun produit ajouté<br><br>';
+          html += t('no_product_added') + '<br><br>';
         } else {
           for (var j = 0; j < products.length; j++) {
-            html += 'Produit ' + (j + 1) + '<br>';
-            html += '- Type : ' + products[j].querySelector('.product-type').value + '<br>';
-            html += '- Description : ' + products[j].querySelector('.product-description').value + '<br>';
-            html += '- Empilable : ' + products[j].querySelector('.product-stackable').value + '<br>';
-            html += '- Quantité : ' + products[j].querySelector('.product-qty').value + '<br>';
-            html += '- Poids par unité : ' + products[j].querySelector('.product-weight').value + ' kg<br>';
-            html += '- Dimensions : '
+            html += t('product') + ' ' + (j + 1) + '<br>';
+            html += '- ' + t('type') + ' : ' + products[j].querySelector('.product-type').value + '<br>';
+            html += '- ' + t('description') + ' : ' + products[j].querySelector('.product-description').value + '<br>';
+            html += '- ' + t('stackable') + ' : ' + products[j].querySelector('.product-stackable').value + '<br>';
+            html += '- ' + t('quantity') + ' : ' + products[j].querySelector('.product-qty').value + '<br>';
+            html += '- ' + t('weight_per_unit') + ' : ' + products[j].querySelector('.product-weight').value + ' kg<br>';
+            html += '- ' + t('length') + '/' + t('width') + '/' + t('height') + ' : '
               + products[j].querySelector('.product-length').value + ' x '
               + products[j].querySelector('.product-width').value + ' x '
               + products[j].querySelector('.product-height').value + ' cm<br><br>';
           }
         }
 
-        html += '<strong>Collecte</strong><br>';
-        html += 'Société : ' + safeValue('collect_company') + '<br>';
-        html += 'Date : ' + safeValue('collect_date') + '<br>';
-        html += 'Adresse : ' + safeValue('collect_street') + ' ' + safeValue('collect_number') + ', ' + safeValue('collect_postal') + ' ' + safeValue('collect_city') + ', ' + safeValue('collect_country') + '<br>';
-        html += 'Heure souhaitée : ' + safeValue('collect_time') + '<br>';
-        html += 'Contact : ' + safeValue('collect_contact') + '<br>';
-        html += 'Téléphone : ' + safeValue('collect_phone') + '<br>';
-        html += 'Référence : ' + safeValue('collect_ref') + '<br>';
-        html += 'Instructions : ' + safeValue('collect_instructions') + '<br><br>';
+        if (safeValue('goods_extra_info')) {
+          html += '<strong>' + t('extra_info_label') + '</strong><br>' + safeValue('goods_extra_info') + '<br><br>';
+        }
 
-        html += '<strong>Livraison</strong><br>';
-        html += 'Société : ' + safeValue('delivery_company') + '<br>';
-        html += 'Date : ' + safeValue('delivery_date') + '<br>';
-        html += 'Adresse : ' + safeValue('delivery_street') + ' ' + safeValue('delivery_number') + ', ' + safeValue('delivery_postal') + ' ' + safeValue('delivery_city') + ', ' + safeValue('delivery_country') + '<br>';
-        html += 'Heure souhaitée : ' + safeValue('delivery_time') + '<br>';
-        html += 'Contact : ' + safeValue('delivery_contact') + '<br>';
-        html += 'Téléphone : ' + safeValue('delivery_phone') + '<br>';
-        html += 'Référence : ' + safeValue('delivery_ref') + '<br>';
-        html += 'Instructions : ' + safeValue('delivery_instructions') + '<br><br>';
+        html += '<strong>' + t('pickup_section') + '</strong><br>';
+        html += t('company') + ' : ' + safeValue('collect_company') + '<br>';
+        html += t('date') + ' : ' + safeValue('collect_date') + '<br>';
+        html += t('address') + ' : ' + safeValue('collect_street') + ' ' + safeValue('collect_number') + ', ' + safeValue('collect_postal') + ' ' + safeValue('collect_city') + ', ' + safeValue('collect_country') + '<br>';
+        html += t('time') + ' : ' + safeValue('collect_time') + '<br>';
+        html += t('contact') + ' : ' + safeValue('collect_contact') + '<br>';
+        html += t('phone') + ' : ' + safeValue('collect_phone') + '<br>';
+        html += t('ref') + ' : ' + safeValue('collect_ref') + '<br>';
+        html += t('instructions') + ' : ' + safeValue('collect_instructions') + '<br><br>';
 
-        html += '<strong>Facturation</strong><br>';
-        html += 'Email : ' + safeValue('billing_email') + '<br>';
-        html += 'Société : ' + safeValue('billing_company') + '<br>';
-        html += 'Nom : ' + safeValue('billing_name') + '<br>';
-        html += 'N° TVA : ' + safeValue('billing_vat') + '<br>';
-        html += 'Adresse : ' + safeValue('billing_street') + ' ' + safeValue('billing_number') + ', ' + safeValue('billing_postal') + ' ' + safeValue('billing_city') + ', ' + getBillingCountryValue() + '<br>';
-        html += 'Téléphone : ' + safeValue('billing_phone') + '<br>';
+        html += '<strong>' + t('delivery_section') + '</strong><br>';
+        html += t('company') + ' : ' + safeValue('delivery_company') + '<br>';
+        html += t('date') + ' : ' + safeValue('delivery_date') + '<br>';
+        html += t('address') + ' : ' + safeValue('delivery_street') + ' ' + safeValue('delivery_number') + ', ' + safeValue('delivery_postal') + ' ' + safeValue('delivery_city') + ', ' + safeValue('delivery_country') + '<br>';
+        html += t('time') + ' : ' + safeValue('delivery_time') + '<br>';
+        html += t('contact') + ' : ' + safeValue('delivery_contact') + '<br>';
+        html += t('phone') + ' : ' + safeValue('delivery_phone') + '<br>';
+        html += t('ref') + ' : ' + safeValue('delivery_ref') + '<br>';
+        html += t('instructions') + ' : ' + safeValue('delivery_instructions') + '<br><br>';
+
+        html += '<strong>' + t('billing_section') + '</strong><br>';
+        html += t('email') + ' : ' + safeValue('billing_email') + '<br>';
+        html += t('company') + ' : ' + safeValue('billing_company') + '<br>';
+        html += t('name') + ' : ' + safeValue('billing_name') + '<br>';
+        html += t('vat_number') + ' : ' + safeValue('billing_vat') + '<br>';
+        html += t('address') + ' : ' + safeValue('billing_street') + ' ' + safeValue('billing_number') + ', ' + safeValue('billing_postal') + ' ' + safeValue('billing_city') + ', ' + getBillingCountryValue() + '<br>';
+        html += t('phone') + ' : ' + safeValue('billing_phone') + '<br>';
 
         document.getElementById('finalReviewBox').innerHTML = html;
       }
@@ -1511,22 +1928,22 @@
         var reservationNumber = document.getElementById('reservationNumberField').value;
         var summary = '';
 
-        summary += '=== RESERVATION ===\n';
-        summary += 'N° réservation : ' + reservationNumber + '\n\n';
+        summary += t('reservation_section') + '\n';
+        summary += t('reservation_number_label') + ' : ' + reservationNumber + '\n\n';
 
-        summary += '=== PRIX ===\n';
-        summary += 'Véhicule : ' + vehicleName + '\n';
-        summary += 'Code postal collecte : ' + pickupPostal + ' (' + pickupCountry + ')\n';
-        summary += 'Code postal livraison : ' + deliveryPostal + ' (' + deliveryCountry + ')\n';
-        summary += 'Tarif de base HTVA : ' + formatPrice(basePrice) + '\n';
-        summary += 'Options HTVA : ' + formatPrice(totals.optionsTotal) + '\n';
-        summary += 'TVA : ' + formatPrice(totals.vatAmount) + '\n';
-        summary += 'Total TVAC : ' + formatPrice(totals.totalTvac) + '\n\n';
+        summary += t('pricing_section') + '\n';
+        summary += t('vehicle_label') + ' ' + vehicleName + '\n';
+        summary += t('code_postal_pickup') + ' : ' + pickupPostal + ' (' + pickupCountry + ')\n';
+        summary += t('code_postal_delivery') + ' : ' + deliveryPostal + ' (' + deliveryCountry + ')\n';
+        summary += t('base_price_text') + ' : ' + formatPrice(basePrice) + '\n';
+        summary += t('options_htva_text') + ' : ' + formatPrice(totals.optionsTotal) + '\n';
+        summary += t('vat_text') + ' : ' + formatPrice(totals.vatAmount) + '\n';
+        summary += t('total_tvac_text') + ' : ' + formatPrice(totals.totalTvac) + '\n\n';
 
-        summary += '=== OPTIONS ===\n';
+        summary += t('options_summary_title') + '\n';
         var opts = getSelectedOptions();
         if (opts.length === 0) {
-          summary += 'Aucune option sélectionnée\n\n';
+          summary += t('no_option_selected') + '\n\n';
         } else {
           for (var i = 0; i < opts.length; i++) {
             summary += (i + 1) + '. ' + opts[i].label + ' : +' + formatPrice(opts[i].price) + '\n';
@@ -1534,48 +1951,52 @@
           summary += '\n';
         }
 
-        summary += '=== MARCHANDISES ===\n';
+        summary += t('goods_summary_title') + '\n';
         var products = document.querySelectorAll('.product-box');
         for (var j = 0; j < products.length; j++) {
-          summary += 'Produit ' + (j + 1) + '\n';
-          summary += '- Type : ' + products[j].querySelector('.product-type').value + '\n';
-          summary += '- Description : ' + products[j].querySelector('.product-description').value + '\n';
-          summary += '- Empilable : ' + products[j].querySelector('.product-stackable').value + '\n';
-          summary += '- Quantité : ' + products[j].querySelector('.product-qty').value + '\n';
-          summary += '- Poids par unité : ' + products[j].querySelector('.product-weight').value + ' kg\n';
-          summary += '- Dimensions : '
+          summary += t('product') + ' ' + (j + 1) + '\n';
+          summary += '- ' + t('type') + ' : ' + products[j].querySelector('.product-type').value + '\n';
+          summary += '- ' + t('description') + ' : ' + products[j].querySelector('.product-description').value + '\n';
+          summary += '- ' + t('stackable') + ' : ' + products[j].querySelector('.product-stackable').value + '\n';
+          summary += '- ' + t('quantity') + ' : ' + products[j].querySelector('.product-qty').value + '\n';
+          summary += '- ' + t('weight_per_unit') + ' : ' + products[j].querySelector('.product-weight').value + ' kg\n';
+          summary += '- ' + t('length') + '/' + t('width') + '/' + t('height') + ' : '
             + products[j].querySelector('.product-length').value + ' x '
             + products[j].querySelector('.product-width').value + ' x '
             + products[j].querySelector('.product-height').value + ' cm\n\n';
         }
 
-        summary += '=== COLLECTE ===\n';
-        summary += 'Société : ' + safeValue('collect_company') + '\n';
-        summary += 'Date : ' + safeValue('collect_date') + '\n';
-        summary += 'Adresse : ' + safeValue('collect_street') + ' ' + safeValue('collect_number') + ', ' + safeValue('collect_postal') + ' ' + safeValue('collect_city') + ', ' + safeValue('collect_country') + '\n';
-        summary += 'Heure souhaitée : ' + safeValue('collect_time') + '\n';
-        summary += 'Contact : ' + safeValue('collect_contact') + '\n';
-        summary += 'Téléphone : ' + safeValue('collect_phone') + '\n';
-        summary += 'Référence : ' + safeValue('collect_ref') + '\n';
-        summary += 'Instructions : ' + safeValue('collect_instructions') + '\n\n';
+        if (safeValue('goods_extra_info')) {
+          summary += t('extra_info_label') + ' : ' + safeValue('goods_extra_info') + '\n\n';
+        }
 
-        summary += '=== LIVRAISON ===\n';
-        summary += 'Société : ' + safeValue('delivery_company') + '\n';
-        summary += 'Date : ' + safeValue('delivery_date') + '\n';
-        summary += 'Adresse : ' + safeValue('delivery_street') + ' ' + safeValue('delivery_number') + ', ' + safeValue('delivery_postal') + ' ' + safeValue('delivery_city') + ', ' + safeValue('delivery_country') + '\n';
-        summary += 'Heure souhaitée : ' + safeValue('delivery_time') + '\n';
-        summary += 'Contact : ' + safeValue('delivery_contact') + '\n';
-        summary += 'Téléphone : ' + safeValue('delivery_phone') + '\n';
-        summary += 'Référence : ' + safeValue('delivery_ref') + '\n';
-        summary += 'Instructions : ' + safeValue('delivery_instructions') + '\n\n';
+        summary += t('pickup_summary_title') + '\n';
+        summary += t('company') + ' : ' + safeValue('collect_company') + '\n';
+        summary += t('date') + ' : ' + safeValue('collect_date') + '\n';
+        summary += t('address') + ' : ' + safeValue('collect_street') + ' ' + safeValue('collect_number') + ', ' + safeValue('collect_postal') + ' ' + safeValue('collect_city') + ', ' + safeValue('collect_country') + '\n';
+        summary += t('time') + ' : ' + safeValue('collect_time') + '\n';
+        summary += t('contact') + ' : ' + safeValue('collect_contact') + '\n';
+        summary += t('phone') + ' : ' + safeValue('collect_phone') + '\n';
+        summary += t('ref') + ' : ' + safeValue('collect_ref') + '\n';
+        summary += t('instructions') + ' : ' + safeValue('collect_instructions') + '\n\n';
 
-        summary += '=== FACTURATION ===\n';
-        summary += 'Email : ' + safeValue('billing_email') + '\n';
-        summary += 'Société : ' + safeValue('billing_company') + '\n';
-        summary += 'Nom : ' + safeValue('billing_name') + '\n';
-        summary += 'N° TVA : ' + safeValue('billing_vat') + '\n';
-        summary += 'Adresse : ' + safeValue('billing_street') + ' ' + safeValue('billing_number') + ', ' + safeValue('billing_postal') + ' ' + safeValue('billing_city') + ', ' + getBillingCountryValue() + '\n';
-        summary += 'Téléphone : ' + safeValue('billing_phone') + '\n';
+        summary += t('delivery_summary_title') + '\n';
+        summary += t('company') + ' : ' + safeValue('delivery_company') + '\n';
+        summary += t('date') + ' : ' + safeValue('delivery_date') + '\n';
+        summary += t('address') + ' : ' + safeValue('delivery_street') + ' ' + safeValue('delivery_number') + ', ' + safeValue('delivery_postal') + ' ' + safeValue('delivery_city') + ', ' + safeValue('delivery_country') + '\n';
+        summary += t('time') + ' : ' + safeValue('delivery_time') + '\n';
+        summary += t('contact') + ' : ' + safeValue('delivery_contact') + '\n';
+        summary += t('phone') + ' : ' + safeValue('delivery_phone') + '\n';
+        summary += t('ref') + ' : ' + safeValue('delivery_ref') + '\n';
+        summary += t('instructions') + ' : ' + safeValue('delivery_instructions') + '\n\n';
+
+        summary += t('billing_summary_title') + '\n';
+        summary += t('email') + ' : ' + safeValue('billing_email') + '\n';
+        summary += t('company') + ' : ' + safeValue('billing_company') + '\n';
+        summary += t('name') + ' : ' + safeValue('billing_name') + '\n';
+        summary += t('vat_number') + ' : ' + safeValue('billing_vat') + '\n';
+        summary += t('address') + ' : ' + safeValue('billing_street') + ' ' + safeValue('billing_number') + ', ' + safeValue('billing_postal') + ' ' + safeValue('billing_city') + ', ' + getBillingCountryValue() + '\n';
+        summary += t('phone') + ' : ' + safeValue('billing_phone') + '\n';
 
         document.getElementById('summaryField').value = summary;
       }
@@ -1638,11 +2059,18 @@
         watchedFields[j].addEventListener('change', updateSummary);
       }
 
+      var langBtns = document.querySelectorAll('.lang-btn');
+      for (var n = 0; n < langBtns.length; n++) {
+        langBtns[n].addEventListener('click', function() {
+          setLanguage(this.getAttribute('data-lang'));
+        });
+      }
+
       setupVehicleDependentOptions();
       updatePrices();
       addProduct();
       showStep(1);
-      updateSummary();
+      applyTranslations();
     }
   </script>
 </body>
