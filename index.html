@@ -401,12 +401,7 @@
           </div>
         </div>
 
-        <form id="bookingForm" action="https://formsubmit.co/info@interglobe.be" method="POST">
-          <input type="hidden" name="_subject" id="subjectField" value="Nouvel ordre de transport - InterGlobe">
-          <input type="hidden" name="_captcha" value="false">
-          <input type="hidden" name="_template" value="table">
-          <input type="hidden" name="_next" id="nextUrlField" value="https://booking.interglobe.be/">
-
+        <form id="bookingForm">
           <input type="hidden" name="Numéro de réservation" id="reservationNumberField">
           <input type="hidden" name="Véhicule" id="vehicleField">
           <input type="hidden" name="Prix de base HTVA" id="basePriceField">
@@ -679,9 +674,11 @@
             <div class="nav-buttons">
               <button type="button" class="btn btn-secondary" id="prevBtn" style="display:none;">Retour</button>
               <button type="button" class="btn btn-primary" id="nextBtn">Suivant</button>
-              <button type="submit" class="btn btn-success" id="submitBtn" style="display:none;">Finaliser la commande</button>
+              <button type="button" class="btn btn-success" id="submitBtn" style="display:none;">Finaliser et payer</button>
             </div>
           </div>
+
+          <div id="paymentStatus" class="small-note" style="display:none; margin-top:12px;"></div>
         </form>
       </div>
 
@@ -733,6 +730,7 @@
     var currentLang = localStorage.getItem('ig_booking_lang') || 'fr';
 
     const PRICE_SECRET_KEY = "InterGlobe_2026_Key";
+    const PAYMENT_WORKER_URL = "https://long-cake-e1c6.interglobe1932.workers.dev/create-payment";
 
     const TEXTS = {
       fr: {
@@ -784,7 +782,7 @@
           countryOther:"Veuillez indiquer votre pays",
           prev:"Retour",
           next:"Suivant",
-          submit:"Finaliser la commande",
+          submit:"Finaliser et payer",
           vehicle:"Véhicule",
           pickup:"Collecte",
           delivery:"Livraison",
@@ -903,7 +901,7 @@
           countryOther:"Gelieve uw land in te vullen",
           prev:"Terug",
           next:"Volgende",
-          submit:"Bestelling afronden",
+          submit:"Afronden en betalen",
           vehicle:"Voertuig",
           pickup:"Ophaling",
           delivery:"Levering",
@@ -1022,7 +1020,7 @@
           countryOther:"Please specify your country",
           prev:"Back",
           next:"Next",
-          submit:"Finalize order",
+          submit:"Finalize and pay",
           vehicle:"Vehicle",
           pickup:"Pickup",
           delivery:"Delivery",
@@ -2033,6 +2031,72 @@
       }
     }
 
+    async function startMolliePayment() {
+      if (!validateStep(currentStep)) return;
+
+      var statusBox = document.getElementById('paymentStatus');
+      var submitBtn = document.getElementById('submitBtn');
+
+      var reservationNumber = generateReservationNumber();
+      document.getElementById('reservationNumberField').value = reservationNumber;
+
+      updateSummary();
+      buildSummary();
+
+      var totals = calculateTotals();
+
+      var payload = {
+        price: Number(totals.totalTvac.toFixed(2)),
+        reservationNumber: reservationNumber,
+        vehicle: vehicleName,
+        pickupPostal: pickupPostal,
+        pickupCountry: pickupCountry,
+        deliveryPostal: deliveryPostal,
+        deliveryCountry: deliveryCountry,
+        billingEmail: safeValue('billing_email'),
+        billingName: safeValue('billing_name'),
+        billingCompany: safeValue('billing_company'),
+        billingPhone: safeValue('billing_phone'),
+        summary: document.getElementById('summaryField').value
+      };
+
+      try {
+        submitBtn.disabled = true;
+        statusBox.style.display = 'block';
+        statusBox.innerText = 'Création du paiement sécurisé en cours...';
+
+        const response = await fetch(PAYMENT_WORKER_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(payload)
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+          console.error(result);
+          statusBox.innerText = 'Erreur lors de la création du paiement.';
+          submitBtn.disabled = false;
+          return;
+        }
+
+        if (result.checkout) {
+          window.location.href = result.checkout;
+          return;
+        }
+
+        statusBox.innerText = 'Lien de paiement introuvable.';
+        submitBtn.disabled = false;
+
+      } catch (error) {
+        console.error(error);
+        statusBox.innerText = 'Erreur technique. Veuillez réessayer.';
+        submitBtn.disabled = false;
+      }
+    }
+
     var successMode = showSuccessMessageIfNeeded();
 
     if (successMode) {
@@ -2089,19 +2153,11 @@
       });
 
       document.getElementById('bookingForm').addEventListener('submit', function (e) {
-        if (!validateStep(currentStep)) {
-          e.preventDefault();
-          return;
-        }
+        e.preventDefault();
+      });
 
-        var reservationNumber = generateReservationNumber();
-        document.getElementById('reservationNumberField').value = reservationNumber;
-        document.getElementById('subjectField').value = 'Nouvel ordre de transport - ' + reservationNumber;
-        document.getElementById('nextUrlField').value =
-          'https://booking.interglobe.be/?success=1&res=' + encodeURIComponent(reservationNumber);
-
-        updateSummary();
-        buildSummary();
+      document.getElementById('submitBtn').addEventListener('click', function () {
+        startMolliePayment();
       });
 
       var optionChecks = document.querySelectorAll('.option-check');
