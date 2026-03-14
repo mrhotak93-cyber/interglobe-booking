@@ -1967,18 +1967,19 @@
       const totals = calculateTotals();
 
       const payload = {
-        price: Number(totals.totalTvac.toFixed(2)),
-        reservationNumber: reservationNumber,
-        vehicle: vehicleName,
-        pickupPostal: pickupPostal,
-        pickupCountry: pickupCountry,
-        deliveryPostal: deliveryPostal,
-        deliveryCountry: deliveryCountry,
-        billingEmail: safeValue('billing_email'),
-        billingName: safeValue('billing_name'),
-        billingCompany: safeValue('billing_company'),
-        billingPhone: safeValue('billing_phone')
-      };
+  price: Number(totals.totalTvac.toFixed(2)),
+  reservationNumber: reservationNumber,
+  vehicle: vehicleName,
+  pickupPostal: pickupPostal,
+  pickupCountry: pickupCountry,
+  deliveryPostal: deliveryPostal,
+  deliveryCountry: deliveryCountry,
+  billingEmail: safeValue('billing_email'),
+  billingName: safeValue('billing_name'),
+  billingCompany: safeValue('billing_company'),
+  billingPhone: safeValue('billing_phone'),
+  summary: document.getElementById('summaryField').value
+};
 
       try {
         submitBtn.disabled = true;
