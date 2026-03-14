@@ -1348,17 +1348,88 @@
     function buildSummary() {
       const totals = calculateTotals();
       const reservationNumber = document.getElementById('reservationNumberField').value;
+      const opts = getSelectedOptions();
+      const products = document.querySelectorAll('.product-box');
+
       let summary = '';
 
       summary += '=== RESERVATION ===\n';
       summary += 'N°: ' + reservationNumber + '\n\n';
+
+      summary += '=== TARIFS ===\n';
       summary += 'Véhicule: ' + vehicleName + '\n';
-      summary += 'Collecte: ' + pickupPostal + ' (' + pickupCountry + ')\n';
-      summary += 'Livraison: ' + deliveryPostal + ' (' + deliveryCountry + ')\n';
+      summary += 'Collecte calculateur: ' + pickupPostal + ' (' + pickupCountry + ')\n';
+      summary += 'Livraison calculateur: ' + deliveryPostal + ' (' + deliveryCountry + ')\n';
       summary += 'Base HTVA: ' + formatPrice(basePrice) + '\n';
       summary += 'Options HTVA: ' + formatPrice(totals.optionsTotal) + '\n';
       summary += 'TVA: ' + formatPrice(totals.vatAmount) + '\n';
-      summary += 'Total TVAC: ' + formatPrice(totals.totalTvac) + '\n';
+      summary += 'Total TVAC: ' + formatPrice(totals.totalTvac) + '\n\n';
+
+      summary += '=== OPTIONS ===\n';
+      if (opts.length === 0) {
+        summary += 'Aucune option sélectionnée\n\n';
+      } else {
+        for (let i = 0; i < opts.length; i++) {
+          summary += '- ' + opts[i].label + ' (+' + formatPrice(opts[i].price) + ')\n';
+        }
+        summary += '\n';
+      }
+
+      summary += '=== MARCHANDISES ===\n';
+      if (products.length === 0) {
+        summary += 'Aucun produit ajouté\n\n';
+      } else {
+        for (let i = 0; i < products.length; i++) {
+          const type = products[i].querySelector('.product-type').value || '-';
+          const desc = products[i].querySelector('.product-description').value.trim() || '-';
+          const stack = products[i].querySelector('.product-stackable').value || '-';
+          const qty = products[i].querySelector('.product-qty').value.trim() || '-';
+          const weight = products[i].querySelector('.product-weight').value.trim() || '-';
+          const length = products[i].querySelector('.product-length').value.trim() || '-';
+          const width = products[i].querySelector('.product-width').value.trim() || '-';
+          const height = products[i].querySelector('.product-height').value.trim() || '-';
+
+          summary += 'Produit ' + (i + 1) + '\n';
+          summary += 'Type: ' + type + '\n';
+          summary += 'Description: ' + desc + '\n';
+          summary += 'Empilable: ' + stack + '\n';
+          summary += 'Quantité: ' + qty + '\n';
+          summary += 'Poids par unité: ' + weight + ' kg\n';
+          summary += 'Dimensions: ' + length + ' x ' + width + ' x ' + height + ' cm\n\n';
+        }
+      }
+
+      if (safeValue('goods_extra_info')) {
+        summary += 'Informations complémentaires marchandises: ' + safeValue('goods_extra_info') + '\n\n';
+      }
+
+      summary += '=== COLLECTE ===\n';
+      summary += 'Société: ' + safeValue('collect_company') + '\n';
+      summary += 'Date: ' + safeValue('collect_date') + '\n';
+      summary += 'Adresse: ' + safeValue('collect_street') + ' ' + safeValue('collect_number') + ', ' + safeValue('collect_postal') + ' ' + safeValue('collect_city') + ', ' + safeValue('collect_country') + '\n';
+      summary += 'Heure: ' + safeValue('collect_time') + '\n';
+      summary += 'Contact: ' + safeValue('collect_contact') + '\n';
+      summary += 'Téléphone: ' + safeValue('collect_phone') + '\n';
+      summary += 'Réf.: ' + safeValue('collect_ref') + '\n';
+      summary += 'Instructions: ' + safeValue('collect_instructions') + '\n\n';
+
+      summary += '=== LIVRAISON ===\n';
+      summary += 'Société: ' + safeValue('delivery_company') + '\n';
+      summary += 'Date: ' + safeValue('delivery_date') + '\n';
+      summary += 'Adresse: ' + safeValue('delivery_street') + ' ' + safeValue('delivery_number') + ', ' + safeValue('delivery_postal') + ' ' + safeValue('delivery_city') + ', ' + safeValue('delivery_country') + '\n';
+      summary += 'Heure: ' + safeValue('delivery_time') + '\n';
+      summary += 'Contact: ' + safeValue('delivery_contact') + '\n';
+      summary += 'Téléphone: ' + safeValue('delivery_phone') + '\n';
+      summary += 'Réf.: ' + safeValue('delivery_ref') + '\n';
+      summary += 'Instructions: ' + safeValue('delivery_instructions') + '\n\n';
+
+      summary += '=== FACTURATION ===\n';
+      summary += 'Email: ' + safeValue('billing_email') + '\n';
+      summary += 'Société: ' + safeValue('billing_company') + '\n';
+      summary += 'Nom: ' + safeValue('billing_name') + '\n';
+      summary += 'N° de TVA: ' + safeValue('billing_vat') + '\n';
+      summary += 'Adresse: ' + safeValue('billing_street') + ' ' + safeValue('billing_number') + ', ' + safeValue('billing_postal') + ' ' + safeValue('billing_city') + ', ' + getBillingCountryValue() + '\n';
+      summary += 'Téléphone: ' + safeValue('billing_phone') + '\n';
 
       document.getElementById('summaryField').value = summary;
     }
@@ -1391,7 +1462,15 @@
         price: Number(totals.totalTvac.toFixed(2)),
         reservationNumber: reservationNumber,
         vehicle: vehicleName,
-        billingEmail: safeValue('billing_email')
+        pickupPostal: pickupPostal,
+        pickupCountry: pickupCountry,
+        deliveryPostal: deliveryPostal,
+        deliveryCountry: deliveryCountry,
+        billingEmail: safeValue('billing_email'),
+        billingName: safeValue('billing_name'),
+        billingCompany: safeValue('billing_company'),
+        billingPhone: safeValue('billing_phone'),
+        summary: document.getElementById('summaryField').value
       };
 
       try {
