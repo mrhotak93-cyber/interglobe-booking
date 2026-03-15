@@ -794,7 +794,12 @@
           noProduct:"Aucun produit ajouté",
           notFilled:"Informations non remplies",
           choose:"Choisir",
-          otherCountry:"Autre"
+          otherCountry:"Autre",
+          address:"Adresse",
+          dateWord:"Date",
+          timeWord:"Heure",
+          contactWord:"Contact",
+          refWord:"Réf."
         },
         product: {
           title:"Produit",
@@ -898,7 +903,12 @@
           noProduct:"Geen product toegevoegd",
           notFilled:"Informatie niet ingevuld",
           choose:"Kiezen",
-          otherCountry:"Ander"
+          otherCountry:"Ander",
+          address:"Adres",
+          dateWord:"Datum",
+          timeWord:"Tijd",
+          contactWord:"Contact",
+          refWord:"Ref."
         },
         product: {
           title:"Product",
@@ -1002,7 +1012,12 @@
           noProduct:"No product added",
           notFilled:"Information not filled in",
           choose:"Choose",
-          otherCountry:"Other"
+          otherCountry:"Other",
+          address:"Address",
+          dateWord:"Date",
+          timeWord:"Time",
+          contactWord:"Contact",
+          refWord:"Ref."
         },
         product: {
           title:"Product",
@@ -1725,14 +1740,14 @@
 
       let html = '';
       if (safeValue('collect_company')) html += tr('labels.company') + ' : ' + safeValue('collect_company') + '<br>';
-      if (safeValue('collect_date')) html += 'Date : ' + safeValue('collect_date') + '<br>';
+      if (safeValue('collect_date')) html += tr('labels.dateWord') + ' : ' + safeValue('collect_date') + '<br>';
       if (safeValue('collect_street') || safeValue('collect_number') || safeValue('collect_postal') || safeValue('collect_city') || safeValue('collect_country')) {
-        html += 'Adresse : ' + safeValue('collect_street') + ' ' + safeValue('collect_number') + ', ' + safeValue('collect_postal') + ' ' + safeValue('collect_city') + ', ' + safeValue('collect_country') + '<br>';
+        html += tr('labels.address') + ' : ' + safeValue('collect_street') + ' ' + safeValue('collect_number') + ', ' + safeValue('collect_postal') + ' ' + safeValue('collect_city') + ', ' + safeValue('collect_country') + '<br>';
       }
-      if (safeValue('collect_time')) html += 'Heure : ' + safeValue('collect_time') + '<br>';
-      if (safeValue('collect_contact')) html += 'Contact : ' + safeValue('collect_contact') + '<br>';
+      if (safeValue('collect_time')) html += tr('labels.timeWord') + ' : ' + safeValue('collect_time') + '<br>';
+      if (safeValue('collect_contact')) html += tr('labels.contactWord') + ' : ' + safeValue('collect_contact') + '<br>';
       if (safeValue('collect_phone')) html += tr('labels.phone') + ' : ' + safeValue('collect_phone') + '<br>';
-      if (safeValue('collect_ref')) html += 'Réf. : ' + safeValue('collect_ref') + '<br>';
+      if (safeValue('collect_ref')) html += tr('labels.refWord') + ' : ' + safeValue('collect_ref') + '<br>';
       if (safeValue('collect_instructions')) html += tr('labels.instructions') + ' : ' + safeValue('collect_instructions') + '<br>';
       target.innerHTML = html;
     }
@@ -1762,14 +1777,14 @@
 
       let html = '';
       if (safeValue('delivery_company')) html += tr('labels.company') + ' : ' + safeValue('delivery_company') + '<br>';
-      if (safeValue('delivery_date')) html += 'Date : ' + safeValue('delivery_date') + '<br>';
+      if (safeValue('delivery_date')) html += tr('labels.dateWord') + ' : ' + safeValue('delivery_date') + '<br>';
       if (safeValue('delivery_street') || safeValue('delivery_number') || safeValue('delivery_postal') || safeValue('delivery_city') || safeValue('delivery_country')) {
-        html += 'Adresse : ' + safeValue('delivery_street') + ' ' + safeValue('delivery_number') + ', ' + safeValue('delivery_postal') + ' ' + safeValue('delivery_city') + ', ' + safeValue('delivery_country') + '<br>';
+        html += tr('labels.address') + ' : ' + safeValue('delivery_street') + ' ' + safeValue('delivery_number') + ', ' + safeValue('delivery_postal') + ' ' + safeValue('delivery_city') + ', ' + safeValue('delivery_country') + '<br>';
       }
-      if (safeValue('delivery_time')) html += 'Heure : ' + safeValue('delivery_time') + '<br>';
-      if (safeValue('delivery_contact')) html += 'Contact : ' + safeValue('delivery_contact') + '<br>';
+      if (safeValue('delivery_time')) html += tr('labels.timeWord') + ' : ' + safeValue('delivery_time') + '<br>';
+      if (safeValue('delivery_contact')) html += tr('labels.contactWord') + ' : ' + safeValue('delivery_contact') + '<br>';
       if (safeValue('delivery_phone')) html += tr('labels.phone') + ' : ' + safeValue('delivery_phone') + '<br>';
-      if (safeValue('delivery_ref')) html += 'Réf. : ' + safeValue('delivery_ref') + '<br>';
+      if (safeValue('delivery_ref')) html += tr('labels.refWord') + ' : ' + safeValue('delivery_ref') + '<br>';
       if (safeValue('delivery_instructions')) html += tr('labels.instructions') + ' : ' + safeValue('delivery_instructions') + '<br>';
       target.innerHTML = html;
     }
@@ -1801,7 +1816,7 @@
       if (safeValue('billing_name')) html += tr('labels.fullname') + ' : ' + safeValue('billing_name') + '<br>';
       if (safeValue('billing_vat')) html += tr('labels.vat') + ' : ' + safeValue('billing_vat') + '<br>';
       if (safeValue('billing_street') || safeValue('billing_number') || safeValue('billing_postal') || safeValue('billing_city') || getBillingCountryValue()) {
-        html += 'Adresse : ' + safeValue('billing_street') + ' ' + safeValue('billing_number') + ', ' + safeValue('billing_postal') + ' ' + safeValue('billing_city') + ', ' + getBillingCountryValue() + '<br>';
+        html += tr('labels.address') + ' : ' + safeValue('billing_street') + ' ' + safeValue('billing_number') + ', ' + safeValue('billing_postal') + ' ' + safeValue('billing_city') + ', ' + getBillingCountryValue() + '<br>';
       }
       if (safeValue('billing_phone')) html += tr('labels.phone') + ' : ' + safeValue('billing_phone') + '<br>';
 
@@ -1965,21 +1980,24 @@
       buildSummary();
 
       const totals = calculateTotals();
+      const summaryValue = document.getElementById('summaryField').value;
+
+      alert(summaryValue);
 
       const payload = {
-  price: Number(totals.totalTvac.toFixed(2)),
-  reservationNumber: reservationNumber,
-  vehicle: vehicleName,
-  pickupPostal: pickupPostal,
-  pickupCountry: pickupCountry,
-  deliveryPostal: deliveryPostal,
-  deliveryCountry: deliveryCountry,
-  billingEmail: safeValue('billing_email'),
-  billingName: safeValue('billing_name'),
-  billingCompany: safeValue('billing_company'),
-  billingPhone: safeValue('billing_phone'),
-  summary: document.getElementById('summaryField').value
-};
+        price: Number(totals.totalTvac.toFixed(2)),
+        reservationNumber: reservationNumber,
+        vehicle: vehicleName,
+        pickupPostal: pickupPostal,
+        pickupCountry: pickupCountry,
+        deliveryPostal: deliveryPostal,
+        deliveryCountry: deliveryCountry,
+        billingEmail: safeValue('billing_email'),
+        billingName: safeValue('billing_name'),
+        billingCompany: safeValue('billing_company'),
+        billingPhone: safeValue('billing_phone'),
+        summary: summaryValue
+      };
 
       try {
         submitBtn.disabled = true;
@@ -2003,8 +2021,6 @@
           return;
         }
 
-        sessionStorage.setItem('interglobe_booking_summary', document.getElementById('summaryField').value);
-
         if (result.checkout) {
           window.location.href = result.checkout;
           return;
@@ -2012,7 +2028,6 @@
 
         statusBox.innerText = 'Lien de paiement introuvable.';
         submitBtn.disabled = false;
-
       } catch (error) {
         console.error(error);
         statusBox.innerText = 'Erreur technique : ' + error.message;
