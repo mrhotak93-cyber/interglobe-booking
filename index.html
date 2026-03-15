@@ -729,8 +729,10 @@
     var productCount = 0;
     var currentLang = localStorage.getItem('ig_booking_lang') || 'fr';
 
-    const PRICE_SECRET_KEY = "InterGlobe_2026_Key";
     const PAYMENT_WORKER_URL = "https://long-cake-e1c6.interglobe1932.workers.dev/create-payment";
+    const QUOTE_READ_URL = "https://long-cake-e1c6.interglobe1932.workers.dev/quote";
+
+    let currentQuoteId = "";
 
     const TEXTS = {
       fr: {
@@ -1084,29 +1086,45 @@
       }
     }
 
-    function xorDecrypt(text, key) {
-      let result = '';
-      for (let i = 0; i < text.length; i++) {
-        result += String.fromCharCode(text.charCodeAt(i) ^ key.charCodeAt(i % key.length));
-      }
-      return result;
-    }
-
-    function decodePayload(encoded, key) {
-      try {
-        let base64 = encoded.replace(/-/g, '+').replace(/_/g, '/');
-        while (base64.length % 4) base64 += '=';
-        const encrypted = atob(base64);
-        const json = xorDecrypt(encrypted, key);
-        return JSON.parse(json);
-      } catch (e) {
-        return null;
-      }
-    }
-
     function getUrlParam(name) {
       const params = new URLSearchParams(window.location.search);
       return params.get(name);
+    }
+
+    async function loadQuote() {
+      const quoteIdFromUrl = getUrlParam('quoteId');
+
+      if (!quoteIdFromUrl) {
+        document.getElementById('decodeWarning').style.display = 'block';
+        return false;
+      }
+
+      try {
+        const response = await fetch(`${QUOTE_READ_URL}?quoteId=${encodeURIComponent(quoteIdFromUrl)}`);
+        const quote = await response.json();
+
+        if (!response.ok) {
+          console.error('Quote read error:', quote);
+          document.getElementById('decodeWarning').style.display = 'block';
+          return false;
+        }
+
+        currentQuoteId = quote.quoteId || '';
+        basePrice = parseFloat(quote.basePriceHtva || 0);
+        if (isNaN(basePrice)) basePrice = 0;
+
+        vehicleName = quote.vehicleName || '-';
+        pickupPostal = quote.pickupPostal || '-';
+        deliveryPostal = quote.deliveryPostal || '-';
+        pickupCountry = quote.pickupCountry || '-';
+        deliveryCountry = quote.deliveryCountry || '-';
+
+        return true;
+      } catch (e) {
+        console.error('loadQuote error:', e);
+        document.getElementById('decodeWarning').style.display = 'block';
+        return false;
+      }
     }
 
     function formatPrice(value) {
@@ -1979,18 +1997,11 @@
       updateSummary();
       buildSummary();
 
-      const totals = calculateTotals();
       const summaryValue = document.getElementById('summaryField').value;
 
-
       const payload = {
-        price: Number(totals.totalTvac.toFixed(2)),
+        quoteId: currentQuoteId,
         reservationNumber: reservationNumber,
-        vehicle: vehicleName,
-        pickupPostal: pickupPostal,
-        pickupCountry: pickupCountry,
-        deliveryPostal: deliveryPostal,
-        deliveryCountry: deliveryCountry,
         billingEmail: safeValue('billing_email'),
         billingName: safeValue('billing_name'),
         billingCompany: safeValue('billing_company'),
@@ -2050,78 +2061,66 @@
           document.getElementById('successContainer').style.display = 'block';
         });
       }
-    } else {
-      const rawData = getUrlParam('data');
-      const decodedData = rawData ? decodePayload(rawData, PRICE_SECRET_KEY) : null;
-
-      var basePrice = 0;
+    } else {      var basePrice = 0;
       var vehicleName = '-';
       var pickupPostal = '-';
       var deliveryPostal = '-';
       var pickupCountry = '-';
-      var deliveryCountry = '-';
+      var deliveryCountry = '-';      (async function initBooking() {
+        const ok = await loadQuote();
+        if (!ok) return;
 
-      if (decodedData && decodedData.prix && decodedData.vehicule) {
-        basePrice = parseFloat(decodedData.prix);
-        if (isNaN(basePrice)) basePrice = 0;
-        vehicleName = decodedData.vehicule || '-';
-        pickupPostal = decodedData.collecte || '-';
-        deliveryPostal = decodedData.livraison || '-';
-        pickupCountry = decodedData.paysCollecte || '-';
-        deliveryCountry = decodedData.paysLivraison || '-';
-      } else {
-        document.getElementById('decodeWarning').style.display = 'block';
-      }
+        document.getElementById('addProductBtn').addEventListener('click', addProduct);
 
-      document.getElementById('addProductBtn').addEventListener('click', addProduct);
-
-      document.getElementById('prevBtn').addEventListener('click', function () {
-        if (currentStep > 1) showStep(currentStep - 1);
-      });
-
-      document.getElementById('nextBtn').addEventListener('click', function () {
-        if (!validateStep(currentStep)) return;
-        if (currentStep < totalSteps) showStep(currentStep + 1);
-      });
-
-      document.getElementById('billing_country').addEventListener('change', function() {
-        toggleOtherCountryField();
-        updateSummary();
-      });
-
-      document.getElementById('bookingForm').addEventListener('submit', function (e) {
-        e.preventDefault();
-      });
-
-      document.getElementById('submitBtn').addEventListener('click', function () {
-        startMolliePayment();
-      });
-
-      const optionChecks = document.querySelectorAll('.option-check');
-      for (let i = 0; i < optionChecks.length; i++) {
-        optionChecks[i].addEventListener('change', updateSummary);
-      }
-
-      const watchedFields = document.querySelectorAll('.summary-watch');
-      for (let j = 0; j < watchedFields.length; j++) {
-        watchedFields[j].addEventListener('input', updateSummary);
-        watchedFields[j].addEventListener('change', updateSummary);
-      }
-
-      const langBtns = document.querySelectorAll('.lang-btn');
-      for (let n = 0; n < langBtns.length; n++) {
-        langBtns[n].addEventListener('click', function () {
-          currentLang = this.getAttribute('data-lang');
-          localStorage.setItem('ig_booking_lang', currentLang);
-          applyStaticTranslations();
+        document.getElementById('prevBtn').addEventListener('click', function () {
+          if (currentStep > 1) showStep(currentStep - 1);
         });
-      }
 
-      setupVehicleDependentOptions();
-      updatePrices();
-      addProduct();
-      showStep(1);
-      applyStaticTranslations();
+        document.getElementById('nextBtn').addEventListener('click', function () {
+          if (!validateStep(currentStep)) return;
+          if (currentStep < totalSteps) showStep(currentStep + 1);
+        });
+
+        document.getElementById('billing_country').addEventListener('change', function() {
+          toggleOtherCountryField();
+          updateSummary();
+        });
+
+        document.getElementById('bookingForm').addEventListener('submit', function (e) {
+          e.preventDefault();
+        });
+
+        document.getElementById('submitBtn').addEventListener('click', function () {
+          startMolliePayment();
+        });
+
+        const optionChecks = document.querySelectorAll('.option-check');
+        for (let i = 0; i < optionChecks.length; i++) {
+          optionChecks[i].addEventListener('change', updateSummary);
+        }
+
+        const watchedFields = document.querySelectorAll('.summary-watch');
+        for (let j = 0; j < watchedFields.length; j++) {
+          watchedFields[j].addEventListener('input', updateSummary);
+          watchedFields[j].addEventListener('change', updateSummary);
+        }
+
+        const langBtns = document.querySelectorAll('.lang-btn');
+        for (let n = 0; n < langBtns.length; n++) {
+          langBtns[n].addEventListener('click', function () {
+            currentLang = this.getAttribute('data-lang');
+            localStorage.setItem('ig_booking_lang', currentLang);
+            applyStaticTranslations();
+          });
+        }
+
+        setupVehicleDependentOptions();
+        updatePrices();
+        addProduct();
+        showStep(1);
+        applyStaticTranslations();
+        updateSummary();
+      })();
     }
   </script>
 </body>
