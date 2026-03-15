@@ -731,7 +731,6 @@
 
     const PAYMENT_WORKER_URL = "https://long-cake-e1c6.interglobe1932.workers.dev/create-payment";
     const QUOTE_READ_URL = "https://long-cake-e1c6.interglobe1932.workers.dev/quote";
-
     let currentQuoteId = "";
 
     const TEXTS = {
@@ -1093,6 +1092,42 @@
 
     function formatPrice(value) {
       return Number(value).toFixed(2) + ' €';
+    }
+
+    async function loadQuote() {
+      const quoteIdFromUrl = getUrlParam('quoteId');
+
+      if (!quoteIdFromUrl) {
+        document.getElementById('decodeWarning').style.display = 'block';
+        return false;
+      }
+
+      try {
+        const response = await fetch(`${QUOTE_READ_URL}?quoteId=${encodeURIComponent(quoteIdFromUrl)}`);
+        const quote = await response.json();
+
+        if (!response.ok) {
+          console.error("Quote read error:", quote);
+          document.getElementById('decodeWarning').style.display = 'block';
+          return false;
+        }
+
+        currentQuoteId = quote.quoteId || "";
+        basePrice = parseFloat(quote.basePriceHtva || 0);
+        if (isNaN(basePrice)) basePrice = 0;
+
+        vehicleName = quote.vehicleName || '-';
+        pickupPostal = quote.pickupPostal || '-';
+        deliveryPostal = quote.deliveryPostal || '-';
+        pickupCountry = quote.pickupCountry || '-';
+        deliveryCountry = quote.deliveryCountry || '-';
+
+        return true;
+      } catch (e) {
+        console.error("loadQuote error:", e);
+        document.getElementById('decodeWarning').style.display = 'block';
+        return false;
+      }
     }
 
     function safeValue(id) {
@@ -2035,7 +2070,10 @@
 
       (async function initBooking() {
         const ok = await loadQuote();
-        if (!ok) return;
+        if (!ok) {
+          console.error("Impossible de charger le devis.");
+          return;
+        }
 
         document.getElementById('addProductBtn').addEventListener('click', addProduct);
 
