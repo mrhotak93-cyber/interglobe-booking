@@ -1,375 +1,2128 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<title>Booking InterGlobe</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Réserver la course - InterGlobe</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background: #f7f9fc;
+      color: #003366;
+    }
 
-<style>
-body{
-font-family:Arial,Helvetica,sans-serif;
-background:#f5f7fb;
-margin:0;
-padding:0;
-}
+    .wrapper {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 18px;
+    }
 
-.container{
-max-width:900px;
-margin:auto;
-padding:30px;
-background:white;
-border-radius:10px;
-margin-top:40px;
-box-shadow:0 4px 20px rgba(0,0,0,0.08);
-}
+    .topbar {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 12px;
+    }
 
-h1{
-color:#17365d;
-margin-top:0;
-}
+    .lang-switcher {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
 
-.section{
-margin-bottom:25px;
-}
+    .lang-btn {
+      border: 1px solid #cbd5e1;
+      background: white;
+      color: #003366;
+      border-radius: 10px;
+      padding: 8px 12px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 14px;
+    }
 
-label{
-display:block;
-margin-bottom:6px;
-font-weight:bold;
-}
+    .lang-btn.active {
+      background: #003366;
+      color: white;
+      border-color: #003366;
+    }
 
-input,select{
-width:100%;
-padding:10px;
-margin-bottom:12px;
-border:1px solid #ddd;
-border-radius:6px;
-box-sizing:border-box;
-}
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 360px;
+      gap: 18px;
+      align-items: start;
+    }
 
-button{
-background:#17365d;
-color:white;
-border:none;
-padding:12px 20px;
-border-radius:6px;
-cursor:pointer;
-font-size:16px;
-}
+    .card,
+    .sidebar-card {
+      background: #fff;
+      border-radius: 14px;
+      box-shadow: 0 4px 18px rgba(0,0,0,0.08);
+      padding: 20px;
+    }
 
-button:hover{
-background:#1f4c83;
-}
+    .sidebar-card {
+      position: sticky;
+      top: 18px;
+    }
 
-.summary{
-background:#f8fafc;
-border:1px solid #e5e7eb;
-padding:15px;
-border-radius:8px;
-margin-top:20px;
-}
+    h2, h3, h4 {
+      margin-top: 0;
+      color: #003366;
+    }
 
-.option{
-margin-bottom:8px;
-}
+    .progress-top {
+      margin-bottom: 20px;
+    }
 
-.price{
-font-size:20px;
-font-weight:bold;
-color:#17365d;
-margin-top:10px;
-}
-</style>
+    .progress-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 15px;
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+
+    .progress-bar-wrap {
+      width: 100%;
+      height: 12px;
+      background: #e5e7eb;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 20%;
+      background: #16a34a;
+      transition: width 0.25s ease;
+    }
+
+    .step {
+      display: none;
+    }
+
+    .step.active {
+      display: block;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .grid-4 {
+      display: grid;
+      grid-template-columns: 2fr 0.7fr 1fr 1fr;
+      gap: 14px;
+    }
+
+    .field {
+      margin-bottom: 12px;
+    }
+
+    .field label {
+      display: block;
+      font-weight: bold;
+      font-size: 14px;
+      margin-bottom: 6px;
+      color: #003366;
+    }
+
+    .required-star {
+      color: #dc2626;
+    }
+
+    .input,
+    .select,
+    .textarea {
+      width: 100%;
+      padding: 11px 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
+      box-sizing: border-box;
+      font-size: 15px;
+      background: #fff;
+    }
+
+    .textarea {
+      min-height: 90px;
+      resize: vertical;
+    }
+
+    .option-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+      border: 1px solid #dbe4ee;
+      border-radius: 12px;
+      background: #f8fafc;
+      cursor: pointer;
+      margin-bottom: 12px;
+    }
+
+    .option-row input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      min-width: 18px;
+      accent-color: #003366;
+      margin: 0;
+    }
+
+    .option-row span {
+      font-size: 17px;
+      color: #003366;
+      line-height: 1.4;
+      font-weight: 500;
+    }
+
+    .product-box {
+      border: 1px solid #dbe4ee;
+      border-radius: 14px;
+      background: #f8fafc;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+
+    .product-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .product-title {
+      color: #003366;
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .btn {
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 15px;
+      padding: 12px 18px;
+    }
+
+    .btn-primary {
+      background: #003366;
+      color: #fff;
+    }
+
+    .btn-secondary {
+      background: #e5e7eb;
+      color: #111827;
+    }
+
+    .btn-success {
+      background: #16a34a;
+      color: #fff;
+    }
+
+    .btn-danger {
+      background: #dc2626;
+      color: #fff;
+      padding: 10px 12px;
+      border-radius: 8px;
+      font-size: 14px;
+    }
+
+    .footer-bar {
+      margin-top: 24px;
+      border-top: 1px solid #e5e7eb;
+      padding-top: 16px;
+      display: flex;
+      justify-content: flex-end;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .nav-buttons {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .small-note {
+      font-size: 13px;
+      color: #475569;
+      margin-top: 8px;
+    }
+
+    .summary-section {
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      background: #f8fafc;
+      padding: 12px;
+      margin-bottom: 12px;
+    }
+
+    .summary-section h4 {
+      margin: 0 0 8px 0;
+      font-size: 15px;
+    }
+
+    .summary-lines {
+      font-size: 14px;
+      line-height: 1.6;
+      color: #334155;
+      white-space: pre-line;
+    }
+
+    .price-box {
+      border: 1px solid #dbe4ee;
+      padding: 14px;
+      border-radius: 12px;
+      background: #eef4fb;
+      margin-bottom: 12px;
+      line-height: 1.8;
+      font-size: 15px;
+    }
+
+    .price-box .total-line {
+      font-size: 22px;
+      font-weight: bold;
+    }
+
+    .muted {
+      color: #64748b;
+    }
+
+    .warning-box {
+      border: 1px solid #fecaca;
+      background: #fff1f2;
+      color: #9f1239;
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 16px;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .success-box {
+      border: 1px solid #86efac;
+      background: #f0fdf4;
+      color: #166534;
+      border-radius: 16px;
+      padding: 22px;
+      font-size: 17px;
+      line-height: 1.7;
+      text-align: center;
+      margin-bottom: 18px;
+    }
+
+    .success-icon {
+      font-size: 48px;
+      line-height: 1;
+      margin-bottom: 10px;
+    }
+
+    .success-reservation {
+      font-size: 24px;
+      font-weight: bold;
+      margin: 10px 0;
+      color: #166534;
+      word-break: break-word;
+    }
+
+    .success-actions {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 16px;
+    }
+
+    .success-box .btn {
+      min-width: 180px;
+    }
+
+    @media (max-width: 1024px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar-card {
+        position: static;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .grid-2,
+      .grid-4 {
+        grid-template-columns: 1fr;
+      }
+
+      .product-head {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .option-row span {
+        font-size: 15px;
+      }
+    }
+  </style>
 </head>
-
 <body>
+  <div class="wrapper">
+    <div class="topbar">
+      <div class="lang-switcher">
+        <button type="button" class="lang-btn active" data-lang="fr">🇫🇷 FR</button>
+        <button type="button" class="lang-btn" data-lang="nl">🇳🇱 NL</button>
+        <button type="button" class="lang-btn" data-lang="en">🇬🇧 EN</button>
+      </div>
+    </div>
 
-<div class="container">
+    <div id="successContainer" style="display:none;"></div>
 
-<h1>Réservation transport</h1>
+    <div class="layout" id="mainLayout">
+      <div class="card">
+        <div id="decodeWarning" class="warning-box" style="display:none;">
+          Impossible de récupérer correctement les données du calculateur. Veuillez revenir au calculateur et recommencer.
+        </div>
 
-<div id="decodeWarning" style="display:none;color:red;margin-bottom:20px;">
-Impossible de charger le devis.
-</div>
+        <div class="progress-top">
+          <div class="progress-head">
+            <span id="stepCounter">Étape 1 / 5</span>
+            <span id="stepTitle">Options</span>
+          </div>
+          <div class="progress-bar-wrap">
+            <div class="progress-bar" id="progressBar"></div>
+          </div>
+        </div>
 
-<div class="section">
-<h3>Trajet</h3>
+        <form id="bookingForm">
+          <input type="hidden" id="reservationNumberField">
+          <input type="hidden" id="vehicleField">
+          <input type="hidden" id="basePriceField">
+          <input type="hidden" id="optionsPriceField">
+          <input type="hidden" id="totalHtvaField">
+          <input type="hidden" id="vatAmountField">
+          <input type="hidden" id="totalTvaIncludedField">
+          <input type="hidden" id="pickupPostalField">
+          <input type="hidden" id="deliveryPostalField">
+          <input type="hidden" id="pickupCountryField">
+          <input type="hidden" id="deliveryCountryField">
+          <textarea id="summaryField" style="display:none;"></textarea>
 
-<div>Véhicule : <strong id="vehicleName">-</strong></div>
-<div>Collecte : <span id="pickupPostal">-</span> (<span id="pickupCountry">-</span>)</div>
-<div>Livraison : <span id="deliveryPostal">-</span> (<span id="deliveryCountry">-</span>)</div>
+          <div class="step active" data-step="1">
+            <h2 id="step1Heading">Choisissez vos options</h2>
 
-</div>
+            <label class="option-row">
+              <input type="checkbox" class="option-check" id="opt_loading_help">
+              <span id="label_loading_help">Aide au chargement par le conducteur (+25 €)</span>
+            </label>
 
-<div class="section">
+            <label class="option-row">
+              <input type="checkbox" class="option-check" id="opt_unloading_help">
+              <span id="label_unloading_help">Aide au déchargement par le conducteur (+25 €)</span>
+            </label>
 
-<h3>Options</h3>
+            <label class="option-row">
+              <input type="checkbox" class="option-check" id="opt_paper_invoice" data-price="10">
+              <span id="label_paper_invoice">Facture papier (+10 €)</span>
+            </label>
 
-<label class="option">
-<input type="checkbox" id="opt_loading_help">
-Aide au chargement
-</label>
+            <label class="option-row" id="tailLiftRow" style="display:none;">
+              <input type="checkbox" class="option-check" id="opt_tail_lift" data-price="30">
+              <span id="label_tail_lift">Hayon élévateur (+30 €)</span>
+            </label>
+          </div>
 
-<label class="option">
-<input type="checkbox" id="opt_unloading_help">
-Aide au déchargement
-</label>
+          <div class="step" data-step="2">
+            <h2 id="step2Heading">Décrivez vos marchandises</h2>
+            <div id="productsContainer"></div>
 
-<label class="option">
-<input type="checkbox" id="opt_tail_lift">
-Hayon élévateur
-</label>
+            <div class="field">
+              <label for="goods_extra_info" id="label_goods_extra_info">Informations complémentaires</label>
+              <textarea class="textarea summary-watch" id="goods_extra_info" placeholder="Ex : ADR, moins de 1000 points..."></textarea>
+            </div>
 
-<label class="option">
-<input type="checkbox" id="opt_paper_invoice">
-Facture papier
-</label>
+            <button type="button" class="btn btn-primary" id="addProductBtn">+ Ajouter un produit</button>
+            <div class="small-note" id="step2Note">Ajoutez autant de lignes que d’articles différents.</div>
+          </div>
 
-</div>
+          <div class="step" data-step="3">
+            <h2 id="step3Heading">Collecte</h2>
 
-<div class="section">
+            <div class="grid-2">
+              <div class="field">
+                <label for="collect_company" id="label_collect_company">Nom de la société de collecte <span class="required-star">*</span></label>
+                <input class="input summary-watch" type="text" id="collect_company">
+              </div>
 
-<h3>Facturation</h3>
+              <div class="field">
+                <label for="collect_date" id="label_collect_date">Date de collecte <span class="required-star">*</span></label>
+                <input class="input summary-watch" type="date" id="collect_date">
+              </div>
+            </div>
 
-<input id="billing_name" placeholder="Nom">
-<input id="billing_company" placeholder="Société">
-<input id="billing_email" placeholder="Email">
-<input id="billing_phone" placeholder="Téléphone">
+            <div class="grid-4">
+              <div class="field">
+                <label for="collect_street" id="label_collect_street">Rue <span class="required-star">*</span></label>
+                <input class="input summary-watch" type="text" id="collect_street">
+              </div>
 
-<select id="billing_country">
-<option value="">Pays</option>
-<option value="Belgique">Belgique</option>
-<option value="France">France</option>
-<option value="Pays-Bas">Pays-Bas</option>
-<option value="Luxembourg">Luxembourg</option>
-<option value="Allemagne">Allemagne</option>
-</select>
+              <div class="field">
+                <label for="collect_number" id="label_collect_number">N° <span class="required-star">*</span></label>
+                <input class="input summary-watch" type="text" id="collect_number">
+              </div>
 
-<input id="billing_vat" placeholder="Numéro TVA (optionnel)">
+              <div class="field">
+                <label for="collect_postal" id="label_collect_postal">Code postal <span class="required-star">*</span></label>
+                <input class="input summary-watch" type="text" id="collect_postal">
+              </div>
 
-</div>
+              <div class="field">
+                <label for="collect_city" id="label_collect_city">Ville <span class="required-star">*</span></label>
+                <input class="input summary-watch" type="text" id="collect_city">
+              </div>
+            </div>
 
-<div class="summary">
+            <div class="grid-2">
+              <div class="field">
+                <label for="collect_country" id="label_collect_country">Pays <span class="required-star">*</span></label>
+                <input class="input summary-watch" type="text" id="collect_country">
+              </div>
 
-<div>Prix base HTVA : <span id="basePrice">0 €</span></div>
-<div>Options : <span id="optionsPrice">0 €</span></div>
-<div>TVA : <span id="vatPrice">0 €</span></div>
+              <div class="field">
+                <label for="collect_time" id="label_collect_time">Heure souhaitée d’enlèvement <span class="required-star">*</span></label>
+                <input class="input summary-watch" type="text" id="collect_time" placeholder="Ex : 09:00 - 11:00">
+              </div>
 
-<div class="price">
-Total : <span id="totalPrice">0 €</span>
-</div>
+              <div class="field">
+                <label for="collect_contact" id="label_collect_contact">Nom et prénom de la personne de contact</label>
+                <input class="input summary-watch" type="text" id="collect_contact">
+              </div>
 
-</div>
+              <div class="field">
+                <label for="collect_phone" id="label_collect_phone">N° de téléphone du contact</label>
+                <input class="input summary-watch" type="text" id="collect_phone">
+              </div>
 
-<div style="margin-top:25px;">
-<button id="submitBtn">Payer</button>
-</div>
+              <div class="field">
+                <label for="collect_ref" id="label_collect_ref">Réf. de collecte</label>
+                <input class="input summary-watch" type="text" id="collect_ref">
+              </div>
+            </div>
 
-<div id="paymentStatus" style="margin-top:15px;"></div>
+            <div class="field">
+              <label for="collect_instructions" id="label_collect_instructions">Instructions spéciales</label>
+              <textarea class="textarea summary-watch" id="collect_instructions"></textarea>
+            </div>
+          </div>
 
-<input type="hidden" id="reservationNumberField">
-<input type="hidden" id="summaryField">
+          <div class="step" data-step="4">
+            <h2 id="step4Heading">Livraison</h2>
 
-</div>
+            <div class="grid-2">
+              <div class="field">
+                <label for="delivery_company" id="label_delivery_company">Nom de la société de livraison <span class="required-star">*</span></label>
+                <input class="input summary-watch" type="text" id="delivery_company">
+              </div>
 
-<script>
-const PAYMENT_WORKER_URL = "https://long-cake-e1c6.interglobe1932.workers.dev/create-payment";
-const QUOTE_READ_URL = "https://long-cake-e1c6.interglobe1932.workers.dev/quote";
+              <div class="field">
+                <label for="delivery_date" id="label_delivery_date">Date de livraison <span class="required-star">*</span></label>
+                <input class="input summary-watch" type="date" id="delivery_date">
+              </div>
+            </div>
 
-let currentQuoteId = "";
-let basePrice = 0;
-let vehicleName = "";
-let pickupPostal = "";
-let deliveryPostal = "";
-let pickupCountry = "";
-let deliveryCountry = "";
+            <div class="grid-4">
+              <div class="field">
+                <label for="delivery_street" id="label_delivery_street">Rue <span class="required-star">*</span></label>
+                <input class="input summary-watch" type="text" id="delivery_street">
+              </div>
 
-function getUrlParam(name) {
-  const params = new URLSearchParams(window.location.search);
-  return params.get(name);
-}
+              <div class="field">
+                <label for="delivery_number" id="label_delivery_number">N° <span class="required-star">*</span></label>
+                <input class="input summary-watch" type="text" id="delivery_number">
+              </div>
 
-function formatPrice(v) {
-  return Number(v || 0).toFixed(2) + " €";
-}
+              <div class="field">
+                <label for="delivery_postal" id="label_delivery_postal">Code postal <span class="required-star">*</span></label>
+                <input class="input summary-watch" type="text" id="delivery_postal">
+              </div>
 
-function safeValue(id) {
-  return document.getElementById(id)?.value || "";
-}
+              <div class="field">
+                <label for="delivery_city" id="label_delivery_city">Ville <span class="required-star">*</span></label>
+                <input class="input summary-watch" type="text" id="delivery_city">
+              </div>
+            </div>
 
-function generateReservationNumber() {
-  return Date.now().toString();
-}
+            <div class="grid-2">
+              <div class="field">
+                <label for="delivery_country" id="label_delivery_country">Pays <span class="required-star">*</span></label>
+                <input class="input summary-watch" type="text" id="delivery_country">
+              </div>
 
-function calculateOptions() {
-  let total = 0;
+              <div class="field">
+                <label for="delivery_time" id="label_delivery_time">Heure souhaitée de livraison <span class="required-star">*</span></label>
+                <input class="input summary-watch" type="text" id="delivery_time" placeholder="Ex : 14:00 - 16:00">
+              </div>
 
-  if (document.getElementById("opt_loading_help").checked) total += 25;
-  if (document.getElementById("opt_unloading_help").checked) total += 25;
-  if (document.getElementById("opt_tail_lift").checked) total += 30;
-  if (document.getElementById("opt_paper_invoice").checked) total += 10;
+              <div class="field">
+                <label for="delivery_contact" id="label_delivery_contact">Nom et prénom de la personne de contact</label>
+                <input class="input summary-watch" type="text" id="delivery_contact">
+              </div>
 
-  return total;
-}
+              <div class="field">
+                <label for="delivery_phone" id="label_delivery_phone">N° de téléphone du contact</label>
+                <input class="input summary-watch" type="text" id="delivery_phone">
+              </div>
 
-function calculateTotals() {
-  const optionsTotal = calculateOptions();
-  const totalHtva = basePrice + optionsTotal;
+              <div class="field">
+                <label for="delivery_ref" id="label_delivery_ref">Réf. de livraison</label>
+                <input class="input summary-watch" type="text" id="delivery_ref">
+              </div>
+            </div>
 
-  let vat = 0;
+            <div class="field">
+              <label for="delivery_instructions" id="label_delivery_instructions">Instructions spéciales</label>
+              <textarea class="textarea summary-watch" id="delivery_instructions"></textarea>
+            </div>
+          </div>
 
-  const country = document.getElementById("billing_country").value;
-  const vatNumber = document.getElementById("billing_vat").value.trim();
+          <div class="step" data-step="5">
+            <h2 id="step5Heading">Facturation</h2>
 
-  if (country === "Belgique" || (country !== "" && vatNumber === "")) {
-    vat = totalHtva * 0.21;
-  }
+            <div class="grid-2">
+              <div class="field">
+                <label for="billing_email" id="label_billing_email">Email <span class="required-star">*</span></label>
+                <input class="input summary-watch" type="email" id="billing_email">
+              </div>
 
-  const total = totalHtva + vat;
+              <div class="field">
+                <label for="billing_company" id="label_billing_company">Nom société</label>
+                <input class="input summary-watch" type="text" id="billing_company">
+              </div>
 
-  return {
-    optionsTotal,
-    vat,
-    total
-  };
-}
+              <div class="field">
+                <label for="billing_name" id="label_billing_name">Nom et prénom <span class="required-star">*</span></label>
+                <input class="input summary-watch" type="text" id="billing_name">
+              </div>
 
-function updateSummary() {
-  const totals = calculateTotals();
+              <div class="field">
+                <label for="billing_vat" id="label_billing_vat">N° de TVA</label>
+                <input class="input summary-watch" type="text" id="billing_vat">
+              </div>
+            </div>
 
-  document.getElementById("basePrice").innerText = formatPrice(basePrice);
-  document.getElementById("optionsPrice").innerText = formatPrice(totals.optionsTotal);
-  document.getElementById("vatPrice").innerText = formatPrice(totals.vat);
-  document.getElementById("totalPrice").innerText = formatPrice(totals.total);
+            <div class="grid-4">
+              <div class="field">
+                <label for="billing_street" id="label_billing_street">Rue <span class="required-star">*</span></label>
+                <input class="input summary-watch" type="text" id="billing_street">
+              </div>
 
-  const summaryText = [
-    `Véhicule : ${vehicleName}`,
-    `Collecte : ${pickupPostal} (${pickupCountry})`,
-    `Livraison : ${deliveryPostal} (${deliveryCountry})`,
-    `Prix base HTVA : ${formatPrice(basePrice)}`,
-    `Options : ${formatPrice(totals.optionsTotal)}`,
-    `TVA : ${formatPrice(totals.vat)}`,
-    `Total : ${formatPrice(totals.total)}`,
-    `Nom : ${safeValue("billing_name")}`,
-    `Société : ${safeValue("billing_company")}`,
-    `Email : ${safeValue("billing_email")}`,
-    `Téléphone : ${safeValue("billing_phone")}`,
-    `Pays : ${safeValue("billing_country")}`,
-    `TVA client : ${safeValue("billing_vat")}`,
-    `Aide chargement : ${document.getElementById("opt_loading_help").checked ? "Oui" : "Non"}`,
-    `Aide déchargement : ${document.getElementById("opt_unloading_help").checked ? "Oui" : "Non"}`,
-    `Hayon : ${document.getElementById("opt_tail_lift").checked ? "Oui" : "Non"}`,
-    `Facture papier : ${document.getElementById("opt_paper_invoice").checked ? "Oui" : "Non"}`
-  ].join("\n");
+              <div class="field">
+                <label for="billing_number" id="label_billing_number">N° <span class="required-star">*</span></label>
+                <input class="input summary-watch" type="text" id="billing_number">
+              </div>
 
-  document.getElementById("summaryField").value = summaryText;
-}
+              <div class="field">
+                <label for="billing_postal" id="label_billing_postal">Code postal <span class="required-star">*</span></label>
+                <input class="input summary-watch" type="text" id="billing_postal">
+              </div>
 
-async function loadQuote() {
-  const quoteId = getUrlParam("quoteId");
+              <div class="field">
+                <label for="billing_city" id="label_billing_city">Ville <span class="required-star">*</span></label>
+                <input class="input summary-watch" type="text" id="billing_city">
+              </div>
+            </div>
 
-  if (!quoteId) {
-    document.getElementById("decodeWarning").style.display = "block";
-    return;
-  }
+            <div class="grid-2">
+              <div class="field">
+                <label for="billing_country" id="label_billing_country">Pays <span class="required-star">*</span></label>
+                <select class="select summary-watch" id="billing_country">
+                  <option value="">Choisir</option>
+                  <option value="Belgique">Belgique</option>
+                  <option value="France">France</option>
+                  <option value="Pays-Bas">Pays-Bas</option>
+                  <option value="Luxembourg">Luxembourg</option>
+                  <option value="Allemagne">Allemagne</option>
+                  <option value="Autre">Autre</option>
+                </select>
+              </div>
 
-  try {
-    const res = await fetch(`${QUOTE_READ_URL}?quoteId=${encodeURIComponent(quoteId)}`);
-    const quote = await res.json();
+              <div class="field">
+                <label for="billing_phone" id="label_billing_phone">N° de téléphone <span class="required-star">*</span></label>
+                <input class="input summary-watch" type="text" id="billing_phone">
+              </div>
+            </div>
 
-    if (!res.ok) {
-      document.getElementById("decodeWarning").style.display = "block";
-      console.error("Erreur quote:", quote);
-      return;
+            <div class="field" id="billingCountryOtherWrap" style="display:none;">
+              <label for="billing_country_other" id="label_billing_country_other">Veuillez indiquer votre pays <span class="required-star">*</span></label>
+              <input class="input summary-watch" type="text" id="billing_country_other">
+            </div>
+
+            <div class="summary-section" style="margin-top:16px;">
+              <h4 id="finalReviewHeading">Vérification finale de la commande</h4>
+              <div class="summary-lines" id="finalReviewBox"></div>
+            </div>
+          </div>
+
+          <div class="footer-bar">
+            <div class="nav-buttons">
+              <button type="button" class="btn btn-secondary" id="prevBtn" style="display:none;">Retour</button>
+              <button type="button" class="btn btn-primary" id="nextBtn">Suivant</button>
+              <button type="button" class="btn btn-success" id="submitBtn" style="display:none;">Finaliser et payer</button>
+            </div>
+          </div>
+
+          <div id="paymentStatus" class="small-note" style="display:none; margin-top:12px;"></div>
+        </form>
+      </div>
+
+      <div class="sidebar-card">
+        <h3 style="margin-bottom:12px;" id="summaryHeading">Récapitulatif</h3>
+
+        <div class="price-box">
+          <div><strong id="priceLabelVehicle">Véhicule :</strong> <span id="vehicleDisplay">-</span></div>
+          <div><strong id="priceLabelPickup">Collecte :</strong> <span id="pickupDisplay">-</span></div>
+          <div><strong id="priceLabelDelivery">Livraison :</strong> <span id="deliveryDisplay">-</span></div>
+          <div><strong id="priceLabelBase">Tarif de base HTVA :</strong> <span id="basePriceDisplay">0.00 €</span></div>
+          <div><strong id="priceLabelOptions">Options HTVA :</strong> <span id="optionsPriceDisplay">0.00 €</span></div>
+          <div><strong id="priceLabelVat">TVA :</strong> <span id="vatDisplay">0.00 €</span></div>
+          <div class="total-line"><strong id="priceLabelTotal">Total TVAC :</strong> <span id="totalPriceDisplay">0.00 €</span></div>
+        </div>
+
+        <div class="summary-section">
+          <h4 id="summaryOptionsHeading">Options</h4>
+          <div class="summary-lines" id="summaryOptions"><span class="muted">Aucune option sélectionnée</span></div>
+        </div>
+
+        <div class="summary-section">
+          <h4 id="summaryProductsHeading">Marchandises</h4>
+          <div class="summary-lines" id="summaryProducts"><span class="muted">Aucun produit ajouté</span></div>
+        </div>
+
+        <div class="summary-section">
+          <h4 id="summaryCollectHeading">Collecte</h4>
+          <div class="summary-lines" id="summaryCollect"><span class="muted">Informations non remplies</span></div>
+        </div>
+
+        <div class="summary-section">
+          <h4 id="summaryDeliveryHeading">Livraison</h4>
+          <div class="summary-lines" id="summaryDelivery"><span class="muted">Informations non remplies</span></div>
+        </div>
+
+        <div class="summary-section">
+          <h4 id="summaryBillingHeading">Facturation</h4>
+          <div class="summary-lines" id="summaryBilling"><span class="muted">Informations non remplies</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    var currentStep = 1;
+    var totalSteps = 5;
+    var productCount = 0;
+    var currentLang = localStorage.getItem('ig_booking_lang') || 'fr';
+
+    const PRICE_SECRET_KEY = "InterGlobe_2026_Key";
+    const PAYMENT_WORKER_URL = "https://long-cake-e1c6.interglobe1932.workers.dev/create-payment";
+
+    const TEXTS = {
+      fr: {
+        step_word: "Étape",
+        steps: {1:"Options",2:"Marchandises",3:"Collecte",4:"Livraison",5:"Facturation"},
+        headings: {
+          step1:"Choisissez vos options",
+          step2:"Décrivez vos marchandises",
+          step3:"Collecte",
+          step4:"Livraison",
+          step5:"Facturation",
+          summary:"Récapitulatif",
+          finalReview:"Vérification finale de la commande",
+          options:"Options",
+          goods:"Marchandises",
+          pickup:"Collecte",
+          delivery:"Livraison",
+          billing:"Facturation"
+        },
+        labels: {
+          loadingHelp:"Aide au chargement par le conducteur",
+          unloadingHelp:"Aide au déchargement par le conducteur",
+          paperInvoice:"Facture papier (+10 €)",
+          tailLift:"Hayon élévateur (+30 €)",
+          extraInfo:"Informations complémentaires",
+          addProduct:"+ Ajouter un produit",
+          step2Note:"Ajoutez autant de lignes que d’articles différents.",
+          collectCompany:"Nom de la société de collecte",
+          collectDate:"Date de collecte",
+          deliveryCompany:"Nom de la société de livraison",
+          deliveryDate:"Date de livraison",
+          street:"Rue",
+          number:"N°",
+          postal:"Code postal",
+          city:"Ville",
+          country:"Pays",
+          collectTime:"Heure souhaitée d’enlèvement",
+          deliveryTime:"Heure souhaitée de livraison",
+          contactName:"Nom et prénom de la personne de contact",
+          contactPhone:"N° de téléphone du contact",
+          collectRef:"Réf. de collecte",
+          deliveryRef:"Réf. de livraison",
+          instructions:"Instructions spéciales",
+          email:"Email",
+          company:"Nom société",
+          fullname:"Nom et prénom",
+          vat:"N° de TVA",
+          phone:"N° de téléphone",
+          countryOther:"Veuillez indiquer votre pays",
+          prev:"Retour",
+          next:"Suivant",
+          submit:"Finaliser et payer",
+          vehicle:"Véhicule",
+          pickup:"Collecte",
+          delivery:"Livraison",
+          basePrice:"Tarif de base HTVA",
+          optionsPrice:"Options HTVA",
+          vatShort:"TVA",
+          total:"Total TVAC",
+          noneSelected:"Aucune option sélectionnée",
+          noProduct:"Aucun produit ajouté",
+          notFilled:"Informations non remplies",
+          choose:"Choisir",
+          otherCountry:"Autre",
+          address:"Adresse",
+          dateWord:"Date",
+          timeWord:"Heure",
+          contactWord:"Contact",
+          refWord:"Réf."
+        },
+        product: {
+          title:"Produit",
+          type:"Type",
+          description:"Description du produit",
+          stackable:"Empilable",
+          qty:"Quantité",
+          weight:"Poids par unité (kg)",
+          length:"Longueur (cm)",
+          width:"Largeur (cm)",
+          height:"Hauteur (cm)",
+          delete:"Supprimer",
+          choose:"Choisir",
+          palette:"Palette",
+          carton:"Carton",
+          envelope:"Enveloppe",
+          other:"Autre",
+          yes:"Oui",
+          no:"Non",
+          placeholder:"Ex : boisson, fenêtre, document"
+        },
+        placeholders: {
+          extraInfo:"Ex : ADR, moins de 1000 points...",
+          collectTime:"Ex : 09:00 - 11:00",
+          deliveryTime:"Ex : 14:00 - 16:00"
+        },
+        success: {
+          line1:"Votre demande est enregistrée sous la réservation n°",
+          line2:"Le dispatch confirmera sous peu votre demande, vérifiez vos mails et spams.",
+          copy:"Copier le numéro",
+          cgv:"Voir les CGV",
+          copied:"Numéro copié dans le presse-papiers.",
+          copyAutoFail:"Copie automatique impossible. Veuillez utiliser le bouton Copier le numéro.",
+          copyManualFail:"Impossible de copier automatiquement ce numéro."
+        },
+        validation: {
+          addOneProduct:"Veuillez ajouter au moins un produit.",
+          productPrefix:"Veuillez compléter les informations du produit",
+          required:"Veuillez compléter ce champ obligatoire.",
+          specifyCountry:"Veuillez indiquer votre pays."
+        }
+      },
+      nl: {
+        step_word: "Stap",
+        steps: {1:"Opties",2:"Goederen",3:"Ophaling",4:"Levering",5:"Facturatie"},
+        headings: {
+          step1:"Kies uw opties",
+          step2:"Beschrijf uw goederen",
+          step3:"Ophaling",
+          step4:"Levering",
+          step5:"Facturatie",
+          summary:"Samenvatting",
+          finalReview:"Laatste controle van de bestelling",
+          options:"Opties",
+          goods:"Goederen",
+          pickup:"Ophaling",
+          delivery:"Levering",
+          billing:"Facturatie"
+        },
+        labels: {
+          loadingHelp:"Hulp bij laden door de chauffeur",
+          unloadingHelp:"Hulp bij lossen door de chauffeur",
+          paperInvoice:"Papieren factuur (+10 €)",
+          tailLift:"Laadklep (+30 €)",
+          extraInfo:"Aanvullende informatie",
+          addProduct:"+ Product toevoegen",
+          step2Note:"Voeg zoveel regels toe als er verschillende artikelen zijn.",
+          collectCompany:"Naam van het afhaalbedrijf",
+          collectDate:"Afhaaldatum",
+          deliveryCompany:"Naam van het leveringsbedrijf",
+          deliveryDate:"Leveringsdatum",
+          street:"Straat",
+          number:"Nr.",
+          postal:"Postcode",
+          city:"Stad",
+          country:"Land",
+          collectTime:"Gewenst afhaaluur",
+          deliveryTime:"Gewenst leveringsuur",
+          contactName:"Naam van de contactpersoon",
+          contactPhone:"Telefoonnummer contactpersoon",
+          collectRef:"Afhaalreferentie",
+          deliveryRef:"Leveringsreferentie",
+          instructions:"Bijzondere instructies",
+          email:"E-mail",
+          company:"Bedrijfsnaam",
+          fullname:"Naam en voornaam",
+          vat:"Btw-nummer",
+          phone:"Telefoonnummer",
+          countryOther:"Gelieve uw land in te vullen",
+          prev:"Terug",
+          next:"Volgende",
+          submit:"Afronden en betalen",
+          vehicle:"Voertuig",
+          pickup:"Ophaling",
+          delivery:"Levering",
+          basePrice:"Basistarief excl. btw",
+          optionsPrice:"Opties excl. btw",
+          vatShort:"Btw",
+          total:"Totaal incl. btw",
+          noneSelected:"Geen optie geselecteerd",
+          noProduct:"Geen product toegevoegd",
+          notFilled:"Informatie niet ingevuld",
+          choose:"Kiezen",
+          otherCountry:"Ander",
+          address:"Adres",
+          dateWord:"Datum",
+          timeWord:"Tijd",
+          contactWord:"Contact",
+          refWord:"Ref."
+        },
+        product: {
+          title:"Product",
+          type:"Type",
+          description:"Productbeschrijving",
+          stackable:"Stapelbaar",
+          qty:"Aantal",
+          weight:"Gewicht per eenheid (kg)",
+          length:"Lengte (cm)",
+          width:"Breedte (cm)",
+          height:"Hoogte (cm)",
+          delete:"Verwijderen",
+          choose:"Kiezen",
+          palette:"Pallet",
+          carton:"Doos",
+          envelope:"Envelop",
+          other:"Ander",
+          yes:"Ja",
+          no:"Nee",
+          placeholder:"Bijv.: drank, raam, document"
+        },
+        placeholders: {
+          extraInfo:"Bijv.: ADR, minder dan 1000 punten...",
+          collectTime:"Bijv.: 09:00 - 11:00",
+          deliveryTime:"Bijv.: 14:00 - 16:00"
+        },
+        success: {
+          line1:"Uw aanvraag is geregistreerd onder reserveringsnummer",
+          line2:"De dispatch bevestigt uw aanvraag spoedig. Controleer uw e-mails en spam.",
+          copy:"Nummer kopiëren",
+          cgv:"Algemene voorwaarden",
+          copied:"Nummer gekopieerd naar het klembord.",
+          copyAutoFail:"Automatisch kopiëren niet mogelijk. Gebruik de knop Nummer kopiëren.",
+          copyManualFail:"Dit nummer kon niet automatisch worden gekopieerd."
+        },
+        validation: {
+          addOneProduct:"Gelieve minstens één product toe te voegen.",
+          productPrefix:"Gelieve de gegevens van product in te vullen",
+          required:"Gelieve dit verplichte veld in te vullen.",
+          specifyCountry:"Gelieve uw land in te vullen."
+        }
+      },
+      en: {
+        step_word: "Step",
+        steps: {1:"Options",2:"Goods",3:"Pickup",4:"Delivery",5:"Billing"},
+        headings: {
+          step1:"Choose your options",
+          step2:"Describe your goods",
+          step3:"Pickup",
+          step4:"Delivery",
+          step5:"Billing",
+          summary:"Summary",
+          finalReview:"Final order review",
+          options:"Options",
+          goods:"Goods",
+          pickup:"Pickup",
+          delivery:"Delivery",
+          billing:"Billing"
+        },
+        labels: {
+          loadingHelp:"Loading assistance by driver",
+          unloadingHelp:"Unloading assistance by driver",
+          paperInvoice:"Paper invoice (+10 €)",
+          tailLift:"Tail lift (+30 €)",
+          extraInfo:"Additional information",
+          addProduct:"+ Add a product",
+          step2Note:"Add as many lines as there are different items.",
+          collectCompany:"Pickup company name",
+          collectDate:"Pickup date",
+          deliveryCompany:"Delivery company name",
+          deliveryDate:"Delivery date",
+          street:"Street",
+          number:"No.",
+          postal:"Postal code",
+          city:"City",
+          country:"Country",
+          collectTime:"Preferred pickup time",
+          deliveryTime:"Preferred delivery time",
+          contactName:"Contact person name",
+          contactPhone:"Contact phone number",
+          collectRef:"Pickup reference",
+          deliveryRef:"Delivery reference",
+          instructions:"Special instructions",
+          email:"Email",
+          company:"Company name",
+          fullname:"Full name",
+          vat:"VAT number",
+          phone:"Phone number",
+          countryOther:"Please specify your country",
+          prev:"Back",
+          next:"Next",
+          submit:"Finalize and pay",
+          vehicle:"Vehicle",
+          pickup:"Pickup",
+          delivery:"Delivery",
+          basePrice:"Base price excl. VAT",
+          optionsPrice:"Options excl. VAT",
+          vatShort:"VAT",
+          total:"Total incl. VAT",
+          noneSelected:"No option selected",
+          noProduct:"No product added",
+          notFilled:"Information not filled in",
+          choose:"Choose",
+          otherCountry:"Other",
+          address:"Address",
+          dateWord:"Date",
+          timeWord:"Time",
+          contactWord:"Contact",
+          refWord:"Ref."
+        },
+        product: {
+          title:"Product",
+          type:"Type",
+          description:"Product description",
+          stackable:"Stackable",
+          qty:"Quantity",
+          weight:"Weight per unit (kg)",
+          length:"Length (cm)",
+          width:"Width (cm)",
+          height:"Height (cm)",
+          delete:"Delete",
+          choose:"Choose",
+          palette:"Pallet",
+          carton:"Carton",
+          envelope:"Envelope",
+          other:"Other",
+          yes:"Yes",
+          no:"No",
+          placeholder:"E.g.: drinks, window, document"
+        },
+        placeholders: {
+          extraInfo:"E.g.: ADR, under 1000 points...",
+          collectTime:"E.g.: 09:00 - 11:00",
+          deliveryTime:"E.g.: 14:00 - 16:00"
+        },
+        success: {
+          line1:"Your request has been registered under reservation number",
+          line2:"Dispatch will confirm your request shortly. Please check your emails and spam folder.",
+          copy:"Copy number",
+          cgv:"View terms",
+          copied:"Number copied to clipboard.",
+          copyAutoFail:"Automatic copy unavailable. Please use the Copy number button.",
+          copyManualFail:"Unable to copy this number automatically."
+        },
+        validation: {
+          addOneProduct:"Please add at least one product.",
+          productPrefix:"Please complete the information for product",
+          required:"Please complete this required field.",
+          specifyCountry:"Please specify your country."
+        }
+      }
+    };
+
+    function tr(path) {
+      const parts = path.split('.');
+      let obj = TEXTS[currentLang] || TEXTS.fr;
+      for (let i = 0; i < parts.length; i++) obj = obj && obj[parts[i]];
+      if (obj == null) {
+        let fallback = TEXTS.fr;
+        for (let j = 0; j < parts.length; j++) fallback = fallback && fallback[parts[j]];
+        return fallback != null ? fallback : path;
+      }
+      return obj;
     }
 
-    currentQuoteId = quote.quoteId || "";
-    basePrice = parseFloat(quote.basePriceHtva || 0);
-    vehicleName = quote.vehicleName || "";
-    pickupPostal = quote.pickupPostal || "";
-    pickupCountry = quote.pickupCountry || "";
-    deliveryPostal = quote.deliveryPostal || "";
-    deliveryCountry = quote.deliveryCountry || "";
+    function setLangButtons() {
+      const buttons = document.querySelectorAll('.lang-btn');
+      for (let i = 0; i < buttons.length; i++) {
+        buttons[i].classList.remove('active');
+        if (buttons[i].getAttribute('data-lang') === currentLang) {
+          buttons[i].classList.add('active');
+        }
+      }
+    }
 
-    document.getElementById("vehicleName").innerText = vehicleName;
-    document.getElementById("pickupPostal").innerText = pickupPostal;
-    document.getElementById("pickupCountry").innerText = pickupCountry;
-    document.getElementById("deliveryPostal").innerText = deliveryPostal;
-    document.getElementById("deliveryCountry").innerText = deliveryCountry;
+    function xorDecrypt(text, key) {
+      let result = '';
+      for (let i = 0; i < text.length; i++) {
+        result += String.fromCharCode(text.charCodeAt(i) ^ key.charCodeAt(i % key.length));
+      }
+      return result;
+    }
 
-    updateSummary();
-  } catch (e) {
-    console.error(e);
-    document.getElementById("decodeWarning").style.display = "block";
-  }
-}
+    function decodePayload(encoded, key) {
+      try {
+        let base64 = encoded.replace(/-/g, '+').replace(/_/g, '/');
+        while (base64.length % 4) base64 += '=';
+        const encrypted = atob(base64);
+        const json = xorDecrypt(encrypted, key);
+        return JSON.parse(json);
+      } catch (e) {
+        return null;
+      }
+    }
 
-async function startMolliePayment() {
-  if (!currentQuoteId || basePrice <= 0) {
-    document.getElementById("paymentStatus").innerText = "Devis non chargé.";
-    return;
-  }
+    function getUrlParam(name) {
+      const params = new URLSearchParams(window.location.search);
+      return params.get(name);
+    }
 
-  updateSummary();
+    function formatPrice(value) {
+      return Number(value).toFixed(2) + ' €';
+    }
 
-  const reservationNumber = generateReservationNumber();
-  document.getElementById("reservationNumberField").value = reservationNumber;
+    function safeValue(id) {
+      const el = document.getElementById(id);
+      return el ? el.value.trim() : '';
+    }
 
-  const payload = {
-    quoteId: currentQuoteId,
-    reservationNumber: reservationNumber,
+    function getVehicleCode(vehicle) {
+      if (vehicle === 'Compact') return '1';
+      if (vehicle === 'Van') return '2';
+      if (vehicle === 'Fourgon') return '3';
+      if (vehicle === 'Camion') return '4';
+      if (vehicle === 'Semi-remorque') return '5';
+      return '0';
+    }
 
-    billingEmail: safeValue("billing_email"),
-    billingName: safeValue("billing_name"),
-    billingCompany: safeValue("billing_company"),
-    billingPhone: safeValue("billing_phone"),
+    function getOptionFlag(id) {
+      const el = document.getElementById(id);
+      return el && el.checked ? '1' : '0';
+    }
 
-    billingCountry: safeValue("billing_country"),
-    billingVat: safeValue("billing_vat"),
+    function generateReservationNumber() {
+      const now = new Date();
+      const y = now.getFullYear().toString();
+      const m = String(now.getMonth() + 1).padStart(2, '0');
+      const d = String(now.getDate()).padStart(2, '0');
+      const hh = String(now.getHours()).padStart(2, '0');
+      const mm = String(now.getMinutes()).padStart(2, '0');
+      const ss = String(now.getSeconds()).padStart(2, '0');
 
-    options: {
-      loadingHelp: document.getElementById("opt_loading_help").checked,
-      unloadingHelp: document.getElementById("opt_unloading_help").checked,
-      paperInvoice: document.getElementById("opt_paper_invoice").checked,
-      tailLift: document.getElementById("opt_tail_lift").checked
-    },
+      const datePart = y + m + d;
+      const timePart = hh + mm + ss;
 
-    summary: document.getElementById("summaryField").value
-  };
+      const vehicleCode = getVehicleCode(vehicleName);
+      const tailLiftFlag = getOptionFlag('opt_tail_lift');
+      const loadingFlag = getOptionFlag('opt_loading_help');
+      const unloadingFlag = getOptionFlag('opt_unloading_help');
+      const paperInvoiceFlag = getOptionFlag('opt_paper_invoice');
 
-  try {
-    document.getElementById("paymentStatus").innerText = "Création du paiement...";
+      return datePart + vehicleCode + tailLiftFlag + loadingFlag + unloadingFlag + paperInvoiceFlag + timePart;
+    }
 
-    const response = await fetch(PAYMENT_WORKER_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
-    });
+    function copyReservationNumber(reservationNumber) {
+      const statusEl = document.getElementById('copyStatus');
 
-    const result = await response.json();
-    console.log("create-payment result:", result);
+      function showStatus(message) {
+        if (statusEl) statusEl.innerText = message;
+      }
 
-    if (result.checkout) {
-      window.location.href = result.checkout;
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(reservationNumber)
+          .then(function () { showStatus(tr('success.copied')); })
+          .catch(function () { showStatus(tr('success.copyAutoFail')); });
+        return;
+      }
+
+      showStatus(tr('success.copyAutoFail'));
+    }
+
+    function manualCopyReservationNumber() {
+      const reservationEl = document.getElementById('successReservationNumber');
+      const statusEl = document.getElementById('copyStatus');
+      if (!reservationEl) return;
+
+      const text = reservationEl.innerText || reservationEl.textContent || '';
+
+      function showStatus(message) {
+        if (statusEl) statusEl.innerText = message;
+      }
+
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text)
+          .then(function () { showStatus(tr('success.copied')); })
+          .catch(function () { showStatus(tr('success.copyManualFail')); });
+        return;
+      }
+
+      try {
+        const tempInput = document.createElement('input');
+        tempInput.value = text;
+        document.body.appendChild(tempInput);
+        tempInput.select();
+        tempInput.setSelectionRange(0, 99999);
+        document.execCommand('copy');
+        document.body.removeChild(tempInput);
+        showStatus(tr('success.copied'));
+      } catch (e) {
+        showStatus(tr('success.copyManualFail'));
+      }
+    }
+
+    window.manualCopyReservationNumber = manualCopyReservationNumber;
+
+    function getSuccessHtml(res) {
+      return ''
+        + '<div class="success-box">'
+        +   '<div class="success-icon">✅</div>'
+        +   '<div>' + tr('success.line1') + '</div>'
+        +   '<div class="success-reservation" id="successReservationNumber">' + res + '</div>'
+        +   '<div style="margin-top:12px;">' + tr('success.line2') + '</div>'
+        +   '<div class="success-actions">'
+        +     '<button type="button" class="btn btn-success" onclick="manualCopyReservationNumber()">' + tr('success.copy') + '</button>'
+        +     '<button type="button" class="btn btn-primary" onclick="window.location.href=\'https://www.interglobe.be/CGV\'">' + tr('success.cgv') + '</button>'
+        +   '</div>'
+        +   '<div id="copyStatus" style="margin-top:12px;font-size:14px;color:#166534;"></div>'
+        + '</div>';
+    }
+
+    function showSuccessMessageIfNeeded() {
+      const success = getUrlParam('success');
+      const res = getUrlParam('res');
+
+      if (success === '1' && res) {
+        document.getElementById('mainLayout').style.display = 'none';
+        document.getElementById('successContainer').innerHTML = getSuccessHtml(res);
+        document.getElementById('successContainer').style.display = 'block';
+        setTimeout(function () { copyReservationNumber(res); }, 150);
+        return true;
+      }
+      return false;
+    }
+
+    function setLabelText(id, text) {
+      const label = document.querySelector('label[for="' + id + '"]');
+      if (!label) return;
+      const star = label.querySelector('.required-star');
+      if (star) {
+        label.innerHTML = text + ' <span class="required-star">*</span>';
+      } else {
+        label.textContent = text;
+      }
+    }
+
+    function applyStaticTranslations() {
+      setLangButtons();
+
+      document.getElementById('step1Heading').innerText = tr('headings.step1');
+      document.getElementById('step2Heading').innerText = tr('headings.step2');
+      document.getElementById('step3Heading').innerText = tr('headings.step3');
+      document.getElementById('step4Heading').innerText = tr('headings.step4');
+      document.getElementById('step5Heading').innerText = tr('headings.step5');
+
+      document.getElementById('summaryHeading').innerText = tr('headings.summary');
+      document.getElementById('summaryOptionsHeading').innerText = tr('headings.options');
+      document.getElementById('summaryProductsHeading').innerText = tr('headings.goods');
+      document.getElementById('summaryCollectHeading').innerText = tr('headings.pickup');
+      document.getElementById('summaryDeliveryHeading').innerText = tr('headings.delivery');
+      document.getElementById('summaryBillingHeading').innerText = tr('headings.billing');
+      document.getElementById('finalReviewHeading').innerText = tr('headings.finalReview');
+
+      document.getElementById('addProductBtn').innerText = tr('labels.addProduct');
+      document.getElementById('step2Note').innerText = tr('labels.step2Note');
+
+      document.getElementById('goods_extra_info').placeholder = tr('placeholders.extraInfo');
+      document.getElementById('collect_time').placeholder = tr('placeholders.collectTime');
+      document.getElementById('delivery_time').placeholder = tr('placeholders.deliveryTime');
+
+      document.getElementById('prevBtn').innerText = tr('labels.prev');
+      document.getElementById('nextBtn').innerText = tr('labels.next');
+      document.getElementById('submitBtn').innerText = tr('labels.submit');
+
+      setLabelText('goods_extra_info', tr('labels.extraInfo'));
+      setLabelText('collect_company', tr('labels.collectCompany'));
+      setLabelText('collect_date', tr('labels.collectDate'));
+      setLabelText('collect_street', tr('labels.street'));
+      setLabelText('collect_number', tr('labels.number'));
+      setLabelText('collect_postal', tr('labels.postal'));
+      setLabelText('collect_city', tr('labels.city'));
+      setLabelText('collect_country', tr('labels.country'));
+      setLabelText('collect_time', tr('labels.collectTime'));
+      setLabelText('collect_contact', tr('labels.contactName'));
+      setLabelText('collect_phone', tr('labels.contactPhone'));
+      setLabelText('collect_ref', tr('labels.collectRef'));
+      setLabelText('collect_instructions', tr('labels.instructions'));
+
+      setLabelText('delivery_company', tr('labels.deliveryCompany'));
+      setLabelText('delivery_date', tr('labels.deliveryDate'));
+      setLabelText('delivery_street', tr('labels.street'));
+      setLabelText('delivery_number', tr('labels.number'));
+      setLabelText('delivery_postal', tr('labels.postal'));
+      setLabelText('delivery_city', tr('labels.city'));
+      setLabelText('delivery_country', tr('labels.country'));
+      setLabelText('delivery_time', tr('labels.deliveryTime'));
+      setLabelText('delivery_contact', tr('labels.contactName'));
+      setLabelText('delivery_phone', tr('labels.contactPhone'));
+      setLabelText('delivery_ref', tr('labels.deliveryRef'));
+      setLabelText('delivery_instructions', tr('labels.instructions'));
+
+      setLabelText('billing_email', tr('labels.email'));
+      setLabelText('billing_company', tr('labels.company'));
+      setLabelText('billing_name', tr('labels.fullname'));
+      setLabelText('billing_vat', tr('labels.vat'));
+      setLabelText('billing_street', tr('labels.street'));
+      setLabelText('billing_number', tr('labels.number'));
+      setLabelText('billing_postal', tr('labels.postal'));
+      setLabelText('billing_city', tr('labels.city'));
+      setLabelText('billing_country', tr('labels.country'));
+      setLabelText('billing_phone', tr('labels.phone'));
+      setLabelText('billing_country_other', tr('labels.countryOther'));
+
+      const billingCountry = document.getElementById('billing_country');
+      billingCountry.options[0].text = tr('labels.choose');
+      billingCountry.options[6].text = tr('labels.otherCountry');
+
+      updateVehicleDependentLabels();
+      refreshProductTranslations();
+      updateProgressHeader();
+      updateSummary();
+    }
+
+    function updateProgressHeader() {
+      document.getElementById('stepCounter').innerText = tr('step_word') + ' ' + currentStep + ' / 5';
+      document.getElementById('stepTitle').innerText = tr('steps.' + currentStep);
+    }
+
+    function getBillingCountryValue() {
+      const country = safeValue('billing_country');
+      if (country === 'Autre') return safeValue('billing_country_other');
+      return country;
+    }
+
+    function isTruckOrSemi(vehicle) {
+      return vehicle === 'Camion' || vehicle === 'Semi-remorque';
+    }
+
+    function allowsTailLift(vehicle) {
+      return vehicle === 'Fourgon' || vehicle === 'Camion';
+    }
+
+    function getDriverHelpPrice(vehicle) {
+      return isTruckOrSemi(vehicle) ? 50 : 25;
+    }
+
+    function normalizeCountryValue(value) {
+      return (value || '').trim().toLowerCase();
+    }
+
+    function shouldApplyVat() {
+      const country = normalizeCountryValue(getBillingCountryValue());
+      const vatNumber = safeValue('billing_vat');
+      if (country === 'belgique') return true;
+      if (country !== '' && country !== 'belgique' && vatNumber === '') return true;
+      return false;
+    }
+
+    function updateVehicleDependentLabels() {
+      const helpPrice = getDriverHelpPrice(vehicleName);
+
+      document.getElementById('opt_loading_help').setAttribute('data-price', helpPrice);
+      document.getElementById('opt_unloading_help').setAttribute('data-price', helpPrice);
+
+      document.getElementById('label_loading_help').innerText =
+        tr('labels.loadingHelp') + ' (+' + helpPrice + ' €)';
+      document.getElementById('label_unloading_help').innerText =
+        tr('labels.unloadingHelp') + ' (+' + helpPrice + ' €)';
+
+      document.getElementById('label_paper_invoice').innerText = tr('labels.paperInvoice');
+      document.getElementById('label_tail_lift').innerText = tr('labels.tailLift');
+    }
+
+    function setupVehicleDependentOptions() {
+      updateVehicleDependentLabels();
+
+      const tailLiftRow = document.getElementById('tailLiftRow');
+      const tailLiftCheckbox = document.getElementById('opt_tail_lift');
+
+      if (allowsTailLift(vehicleName)) {
+        tailLiftRow.style.display = 'flex';
+      } else {
+        tailLiftRow.style.display = 'none';
+        tailLiftCheckbox.checked = false;
+      }
+    }
+
+    function toggleOtherCountryField() {
+      const wrap = document.getElementById('billingCountryOtherWrap');
+      if (safeValue('billing_country') === 'Autre') {
+        wrap.style.display = 'block';
+      } else {
+        wrap.style.display = 'none';
+        document.getElementById('billing_country_other').value = '';
+      }
+    }
+
+    function getOptionsTotal() {
+      let total = 0;
+      const checks = document.querySelectorAll('.option-check');
+      for (let i = 0; i < checks.length; i++) {
+        if (checks[i].checked) {
+          total += parseFloat(checks[i].getAttribute('data-price') || '0');
+        }
+      }
+      return total;
+    }
+
+    function getSelectedOptions() {
+      const selected = [];
+      const checks = document.querySelectorAll('.option-check');
+      for (let i = 0; i < checks.length; i++) {
+        if (checks[i].checked) {
+          selected.push({
+            label: checks[i].parentNode.querySelector('span').innerText,
+            price: parseFloat(checks[i].getAttribute('data-price') || '0')
+          });
+        }
+      }
+      return selected;
+    }
+
+    function calculateTotals() {
+      const optionsTotal = getOptionsTotal();
+      const totalHtva = basePrice + optionsTotal;
+      const vatAmount = shouldApplyVat() ? (totalHtva * 0.21) : 0;
+      const totalTvac = totalHtva + vatAmount;
+
+      return {
+        optionsTotal: optionsTotal,
+        totalHtva: totalHtva,
+        vatAmount: vatAmount,
+        totalTvac: totalTvac
+      };
+    }
+
+    function updatePrices() {
+      const totals = calculateTotals();
+
+      document.getElementById('vehicleDisplay').innerText = vehicleName;
+      document.getElementById('pickupDisplay').innerText = pickupPostal + ' (' + pickupCountry + ')';
+      document.getElementById('deliveryDisplay').innerText = deliveryPostal + ' (' + deliveryCountry + ')';
+      document.getElementById('basePriceDisplay').innerText = formatPrice(basePrice);
+      document.getElementById('optionsPriceDisplay').innerText = formatPrice(totals.optionsTotal);
+      document.getElementById('vatDisplay').innerText = formatPrice(totals.vatAmount);
+      document.getElementById('totalPriceDisplay').innerText = formatPrice(totals.totalTvac);
+
+      document.getElementById('priceLabelVehicle').innerText = tr('labels.vehicle') + ' :';
+      document.getElementById('priceLabelPickup').innerText = tr('labels.pickup') + ' :';
+      document.getElementById('priceLabelDelivery').innerText = tr('labels.delivery') + ' :';
+      document.getElementById('priceLabelBase').innerText = tr('labels.basePrice') + ' :';
+      document.getElementById('priceLabelOptions').innerText = tr('labels.optionsPrice') + ' :';
+      document.getElementById('priceLabelVat').innerText = tr('labels.vatShort') + ' :';
+      document.getElementById('priceLabelTotal').innerText = tr('labels.total') + ' :';
+
+      document.getElementById('vehicleField').value = vehicleName;
+      document.getElementById('basePriceField').value = formatPrice(basePrice);
+      document.getElementById('optionsPriceField').value = formatPrice(totals.optionsTotal);
+      document.getElementById('totalHtvaField').value = formatPrice(totals.totalHtva);
+      document.getElementById('vatAmountField').value = formatPrice(totals.vatAmount);
+      document.getElementById('totalTvaIncludedField').value = formatPrice(totals.totalTvac);
+      document.getElementById('pickupPostalField').value = pickupPostal;
+      document.getElementById('deliveryPostalField').value = deliveryPostal;
+      document.getElementById('pickupCountryField').value = pickupCountry;
+      document.getElementById('deliveryCountryField').value = deliveryCountry;
+    }
+
+    function showStep(step) {
+      currentStep = step;
+
+      const steps = document.querySelectorAll('.step');
+      for (let i = 0; i < steps.length; i++) {
+        steps[i].classList.remove('active');
+      }
+      document.querySelector('.step[data-step="' + step + '"]').classList.add('active');
+
+      updateProgressHeader();
+      document.getElementById('progressBar').style.width = (step * 20) + '%';
+
+      document.getElementById('prevBtn').style.display = step === 1 ? 'none' : 'inline-block';
+      document.getElementById('nextBtn').style.display = step === 5 ? 'none' : 'inline-block';
+      document.getElementById('submitBtn').style.display = step === 5 ? 'inline-block' : 'none';
+    }
+
+    function refreshProductTitles() {
+      const blocks = document.querySelectorAll('.product-box');
+      for (let i = 0; i < blocks.length; i++) {
+        const title = blocks[i].querySelector('.product-title');
+        if (title) title.innerText = tr('product.title') + ' ' + (i + 1);
+      }
+    }
+
+    function refreshProductTranslations() {
+      const blocks = document.querySelectorAll('.product-box');
+      for (let i = 0; i < blocks.length; i++) {
+        const box = blocks[i];
+        const labels = box.querySelectorAll('.field label');
+        if (labels[0]) labels[0].innerText = tr('product.type');
+        if (labels[1]) labels[1].innerText = tr('product.description');
+        if (labels[2]) labels[2].innerText = tr('product.stackable');
+        if (labels[3]) labels[3].innerText = tr('product.qty');
+        if (labels[4]) labels[4].innerText = tr('product.weight');
+        if (labels[5]) labels[5].innerText = tr('product.length');
+        if (labels[6]) labels[6].innerText = tr('product.width');
+        if (labels[7]) labels[7].innerText = tr('product.height');
+
+        const delBtn = box.querySelector('.btn-danger');
+        if (delBtn) delBtn.innerText = tr('product.delete');
+
+        const desc = box.querySelector('.product-description');
+        if (desc) desc.placeholder = tr('product.placeholder');
+
+        const typeSel = box.querySelector('.product-type');
+        if (typeSel) {
+          typeSel.options[0].text = tr('product.choose');
+          typeSel.options[1].text = tr('product.palette');
+          typeSel.options[2].text = tr('product.carton');
+          typeSel.options[3].text = tr('product.envelope');
+          typeSel.options[4].text = tr('product.other');
+        }
+
+        const stackSel = box.querySelector('.product-stackable');
+        if (stackSel) {
+          stackSel.options[0].text = tr('product.choose');
+          stackSel.options[1].text = tr('product.yes');
+          stackSel.options[2].text = tr('product.no');
+        }
+      }
+
+      refreshProductTitles();
+    }
+
+    window.removeProduct = function(btn) {
+      const block = btn.closest('.product-box');
+      if (block) {
+        block.remove();
+        refreshProductTitles();
+        updateSummary();
+      }
+    };
+
+    function addProduct() {
+      productCount++;
+
+      const html = ''
+        + '<div class="product-box">'
+        +   '<div class="product-head">'
+        +     '<div class="product-title">' + tr('product.title') + ' ' + productCount + '</div>'
+        +     '<button type="button" class="btn-danger" onclick="removeProduct(this)">' + tr('product.delete') + '</button>'
+        +   '</div>'
+        +   '<div class="grid-2">'
+        +     '<div class="field">'
+        +       '<label>' + tr('product.type') + '</label>'
+        +       '<select class="select product-type summary-watch-product">'
+        +         '<option value="">' + tr('product.choose') + '</option>'
+        +         '<option value="Palette">' + tr('product.palette') + '</option>'
+        +         '<option value="Carton">' + tr('product.carton') + '</option>'
+        +         '<option value="Enveloppe">' + tr('product.envelope') + '</option>'
+        +         '<option value="Autre">' + tr('product.other') + '</option>'
+        +       '</select>'
+        +     '</div>'
+        +     '<div class="field">'
+        +       '<label>' + tr('product.description') + '</label>'
+        +       '<input type="text" class="input product-description summary-watch-product" placeholder="' + tr('product.placeholder') + '">'
+        +     '</div>'
+        +     '<div class="field">'
+        +       '<label>' + tr('product.stackable') + '</label>'
+        +       '<select class="select product-stackable summary-watch-product">'
+        +         '<option value="">' + tr('product.choose') + '</option>'
+        +         '<option value="Oui">' + tr('product.yes') + '</option>'
+        +         '<option value="Non">' + tr('product.no') + '</option>'
+        +       '</select>'
+        +     '</div>'
+        +     '<div class="field">'
+        +       '<label>' + tr('product.qty') + '</label>'
+        +       '<input type="number" min="1" class="input product-qty summary-watch-product">'
+        +     '</div>'
+        +     '<div class="field">'
+        +       '<label>' + tr('product.weight') + '</label>'
+        +       '<input type="number" min="0" step="0.01" class="input product-weight summary-watch-product">'
+        +     '</div>'
+        +     '<div class="field">'
+        +       '<label>' + tr('product.length') + '</label>'
+        +       '<input type="number" min="0" step="0.01" class="input product-length summary-watch-product">'
+        +     '</div>'
+        +     '<div class="field">'
+        +       '<label>' + tr('product.width') + '</label>'
+        +       '<input type="number" min="0" step="0.01" class="input product-width summary-watch-product">'
+        +     '</div>'
+        +     '<div class="field">'
+        +       '<label>' + tr('product.height') + '</label>'
+        +       '<input type="number" min="0" step="0.01" class="input product-height summary-watch-product">'
+        +     '</div>'
+        +   '</div>'
+        + '</div>';
+
+      document.getElementById('productsContainer').insertAdjacentHTML('beforeend', html);
+      refreshProductTranslations();
+      bindDynamicInputs();
+      updateSummary();
+    }
+
+    function showValidationMessage(message, fieldEl) {
+      alert(message);
+      if (fieldEl) fieldEl.focus();
+      return false;
+    }
+
+    function validateStep(step) {
+      if (step === 2) {
+        const products = document.querySelectorAll('.product-box');
+        if (products.length === 0) {
+          return showValidationMessage(tr('validation.addOneProduct'));
+        }
+
+        for (let i = 0; i < products.length; i++) {
+          const fields = [
+            products[i].querySelector('.product-type'),
+            products[i].querySelector('.product-description'),
+            products[i].querySelector('.product-stackable'),
+            products[i].querySelector('.product-qty'),
+            products[i].querySelector('.product-weight'),
+            products[i].querySelector('.product-length'),
+            products[i].querySelector('.product-width'),
+            products[i].querySelector('.product-height')
+          ];
+
+          for (let j = 0; j < fields.length; j++) {
+            if (!fields[j].value.trim()) {
+              return showValidationMessage(tr('validation.productPrefix') + ' ' + (i + 1) + '.', fields[j]);
+            }
+          }
+        }
+      }
+
+      if (step === 3) {
+        const fields3 = ['collect_company','collect_date','collect_street','collect_number','collect_postal','collect_city','collect_country','collect_time'];
+        for (let k = 0; k < fields3.length; k++) {
+          const el3 = document.getElementById(fields3[k]);
+          if (!el3.value.trim()) return showValidationMessage(tr('validation.required'), el3);
+        }
+      }
+
+      if (step === 4) {
+        const fields4 = ['delivery_company','delivery_date','delivery_street','delivery_number','delivery_postal','delivery_city','delivery_country','delivery_time'];
+        for (let m = 0; m < fields4.length; m++) {
+          const el4 = document.getElementById(fields4[m]);
+          if (!el4.value.trim()) return showValidationMessage(tr('validation.required'), el4);
+        }
+      }
+
+      if (step === 5) {
+        const fields5 = ['billing_email','billing_name','billing_street','billing_number','billing_postal','billing_city','billing_country','billing_phone'];
+        for (let n = 0; n < fields5.length; n++) {
+          const el5 = document.getElementById(fields5[n]);
+          if (!el5.value.trim()) return showValidationMessage(tr('validation.required'), el5);
+        }
+
+        if (safeValue('billing_country') === 'Autre' && !safeValue('billing_country_other')) {
+          return showValidationMessage(tr('validation.specifyCountry'), document.getElementById('billing_country_other'));
+        }
+      }
+
+      return true;
+    }
+
+    function updateSummaryOptions() {
+      const target = document.getElementById('summaryOptions');
+      const opts = getSelectedOptions();
+
+      if (opts.length === 0) {
+        target.innerHTML = '<span class="muted">' + tr('labels.noneSelected') + '</span>';
+        return;
+      }
+
+      let html = '';
+      for (let i = 0; i < opts.length; i++) {
+        html += '• ' + opts[i].label + ' (+' + formatPrice(opts[i].price) + ')<br>';
+      }
+      target.innerHTML = html;
+    }
+
+    function updateSummaryProducts() {
+      const target = document.getElementById('summaryProducts');
+      const products = document.querySelectorAll('.product-box');
+
+      if (products.length === 0) {
+        target.innerHTML = '<span class="muted">' + tr('labels.noProduct') + '</span>';
+        return;
+      }
+
+      let html = '';
+      for (let i = 0; i < products.length; i++) {
+        const type = products[i].querySelector('.product-type').value || '-';
+        const desc = products[i].querySelector('.product-description').value.trim() || '-';
+        const stack = products[i].querySelector('.product-stackable').value || '-';
+        const qty = products[i].querySelector('.product-qty').value.trim() || '-';
+        const weight = products[i].querySelector('.product-weight').value.trim() || '-';
+        const length = products[i].querySelector('.product-length').value.trim() || '-';
+        const width = products[i].querySelector('.product-width').value.trim() || '-';
+        const height = products[i].querySelector('.product-height').value.trim() || '-';
+
+        html += '<strong>' + tr('product.title') + ' ' + (i + 1) + '</strong><br>';
+        html += tr('product.type') + ' : ' + type + '<br>';
+        html += tr('product.description') + ' : ' + desc + '<br>';
+        html += tr('product.stackable') + ' : ' + stack + '<br>';
+        html += tr('product.qty') + ' : ' + qty + ' | ' + tr('product.weight') + ' : ' + weight + '<br>';
+        html += tr('product.length') + ' / ' + tr('product.width') + ' / ' + tr('product.height') + ' : ' + length + ' x ' + width + ' x ' + height + ' cm<br><br>';
+      }
+
+      if (safeValue('goods_extra_info')) {
+        html += '<strong>' + tr('labels.extraInfo') + '</strong><br>' + safeValue('goods_extra_info');
+      }
+
+      target.innerHTML = html;
+    }
+
+    function updateSummaryCollect() {
+      const target = document.getElementById('summaryCollect');
+      const values = [
+        safeValue('collect_company'),
+        safeValue('collect_date'),
+        safeValue('collect_street'),
+        safeValue('collect_number'),
+        safeValue('collect_postal'),
+        safeValue('collect_city'),
+        safeValue('collect_country'),
+        safeValue('collect_time'),
+        safeValue('collect_contact'),
+        safeValue('collect_phone'),
+        safeValue('collect_ref'),
+        safeValue('collect_instructions')
+      ];
+
+      const hasData = values.some(function(v) { return v !== ''; });
+      if (!hasData) {
+        target.innerHTML = '<span class="muted">' + tr('labels.notFilled') + '</span>';
+        return;
+      }
+
+      let html = '';
+      if (safeValue('collect_company')) html += tr('labels.company') + ' : ' + safeValue('collect_company') + '<br>';
+      if (safeValue('collect_date')) html += tr('labels.dateWord') + ' : ' + safeValue('collect_date') + '<br>';
+      if (safeValue('collect_street') || safeValue('collect_number') || safeValue('collect_postal') || safeValue('collect_city') || safeValue('collect_country')) {
+        html += tr('labels.address') + ' : ' + safeValue('collect_street') + ' ' + safeValue('collect_number') + ', ' + safeValue('collect_postal') + ' ' + safeValue('collect_city') + ', ' + safeValue('collect_country') + '<br>';
+      }
+      if (safeValue('collect_time')) html += tr('labels.timeWord') + ' : ' + safeValue('collect_time') + '<br>';
+      if (safeValue('collect_contact')) html += tr('labels.contactWord') + ' : ' + safeValue('collect_contact') + '<br>';
+      if (safeValue('collect_phone')) html += tr('labels.phone') + ' : ' + safeValue('collect_phone') + '<br>';
+      if (safeValue('collect_ref')) html += tr('labels.refWord') + ' : ' + safeValue('collect_ref') + '<br>';
+      if (safeValue('collect_instructions')) html += tr('labels.instructions') + ' : ' + safeValue('collect_instructions') + '<br>';
+      target.innerHTML = html;
+    }
+
+    function updateSummaryDelivery() {
+      const target = document.getElementById('summaryDelivery');
+      const values = [
+        safeValue('delivery_company'),
+        safeValue('delivery_date'),
+        safeValue('delivery_street'),
+        safeValue('delivery_number'),
+        safeValue('delivery_postal'),
+        safeValue('delivery_city'),
+        safeValue('delivery_country'),
+        safeValue('delivery_time'),
+        safeValue('delivery_contact'),
+        safeValue('delivery_phone'),
+        safeValue('delivery_ref'),
+        safeValue('delivery_instructions')
+      ];
+
+      const hasData = values.some(function(v) { return v !== ''; });
+      if (!hasData) {
+        target.innerHTML = '<span class="muted">' + tr('labels.notFilled') + '</span>';
+        return;
+      }
+
+      let html = '';
+      if (safeValue('delivery_company')) html += tr('labels.company') + ' : ' + safeValue('delivery_company') + '<br>';
+      if (safeValue('delivery_date')) html += tr('labels.dateWord') + ' : ' + safeValue('delivery_date') + '<br>';
+      if (safeValue('delivery_street') || safeValue('delivery_number') || safeValue('delivery_postal') || safeValue('delivery_city') || safeValue('delivery_country')) {
+        html += tr('labels.address') + ' : ' + safeValue('delivery_street') + ' ' + safeValue('delivery_number') + ', ' + safeValue('delivery_postal') + ' ' + safeValue('delivery_city') + ', ' + safeValue('delivery_country') + '<br>';
+      }
+      if (safeValue('delivery_time')) html += tr('labels.timeWord') + ' : ' + safeValue('delivery_time') + '<br>';
+      if (safeValue('delivery_contact')) html += tr('labels.contactWord') + ' : ' + safeValue('delivery_contact') + '<br>';
+      if (safeValue('delivery_phone')) html += tr('labels.phone') + ' : ' + safeValue('delivery_phone') + '<br>';
+      if (safeValue('delivery_ref')) html += tr('labels.refWord') + ' : ' + safeValue('delivery_ref') + '<br>';
+      if (safeValue('delivery_instructions')) html += tr('labels.instructions') + ' : ' + safeValue('delivery_instructions') + '<br>';
+      target.innerHTML = html;
+    }
+
+    function updateSummaryBilling() {
+      const target = document.getElementById('summaryBilling');
+      const values = [
+        safeValue('billing_email'),
+        safeValue('billing_company'),
+        safeValue('billing_name'),
+        safeValue('billing_vat'),
+        safeValue('billing_street'),
+        safeValue('billing_number'),
+        safeValue('billing_postal'),
+        safeValue('billing_city'),
+        getBillingCountryValue(),
+        safeValue('billing_phone')
+      ];
+
+      const hasData = values.some(function(v) { return v !== ''; });
+      if (!hasData) {
+        target.innerHTML = '<span class="muted">' + tr('labels.notFilled') + '</span>';
+        return;
+      }
+
+      let html = '';
+      if (safeValue('billing_email')) html += tr('labels.email') + ' : ' + safeValue('billing_email') + '<br>';
+      if (safeValue('billing_company')) html += tr('labels.company') + ' : ' + safeValue('billing_company') + '<br>';
+      if (safeValue('billing_name')) html += tr('labels.fullname') + ' : ' + safeValue('billing_name') + '<br>';
+      if (safeValue('billing_vat')) html += tr('labels.vat') + ' : ' + safeValue('billing_vat') + '<br>';
+      if (safeValue('billing_street') || safeValue('billing_number') || safeValue('billing_postal') || safeValue('billing_city') || getBillingCountryValue()) {
+        html += tr('labels.address') + ' : ' + safeValue('billing_street') + ' ' + safeValue('billing_number') + ', ' + safeValue('billing_postal') + ' ' + safeValue('billing_city') + ', ' + getBillingCountryValue() + '<br>';
+      }
+      if (safeValue('billing_phone')) html += tr('labels.phone') + ' : ' + safeValue('billing_phone') + '<br>';
+
+      const totals = calculateTotals();
+      html += tr('labels.vatShort') + ' : ' + formatPrice(totals.vatAmount) + '<br>';
+      target.innerHTML = html;
+    }
+
+    function updateFinalReview() {
+      const totals = calculateTotals();
+      let html = '';
+
+      html += '<strong>' + tr('labels.vehicle') + ' :</strong> ' + vehicleName + '<br>';
+      html += '<strong>' + tr('labels.pickup') + ' :</strong> ' + pickupPostal + ' (' + pickupCountry + ')<br>';
+      html += '<strong>' + tr('labels.delivery') + ' :</strong> ' + deliveryPostal + ' (' + deliveryCountry + ')<br>';
+      html += '<strong>' + tr('labels.basePrice') + ' :</strong> ' + formatPrice(basePrice) + '<br>';
+      html += '<strong>' + tr('labels.optionsPrice') + ' :</strong> ' + formatPrice(totals.optionsTotal) + '<br>';
+      html += '<strong>' + tr('labels.vatShort') + ' :</strong> ' + formatPrice(totals.vatAmount) + '<br>';
+      html += '<strong>' + tr('labels.total') + ' :</strong> ' + formatPrice(totals.totalTvac) + '<br><br>';
+
+      html += '<strong>' + tr('headings.options') + '</strong><br>';
+      const opts = getSelectedOptions();
+      if (opts.length === 0) {
+        html += tr('labels.noneSelected') + '<br><br>';
+      } else {
+        for (let i = 0; i < opts.length; i++) {
+          html += '• ' + opts[i].label + ' (+' + formatPrice(opts[i].price) + ')<br>';
+        }
+        html += '<br>';
+      }
+
+      html += '<strong>' + tr('headings.billing') + '</strong><br>';
+      html += tr('labels.email') + ' : ' + safeValue('billing_email') + '<br>';
+      html += tr('labels.company') + ' : ' + safeValue('billing_company') + '<br>';
+      html += tr('labels.fullname') + ' : ' + safeValue('billing_name') + '<br>';
+      html += tr('labels.phone') + ' : ' + safeValue('billing_phone') + '<br>';
+
+      document.getElementById('finalReviewBox').innerHTML = html;
+    }
+
+    function updateSummary() {
+      toggleOtherCountryField();
+      updatePrices();
+      updateSummaryOptions();
+      updateSummaryProducts();
+      updateSummaryCollect();
+      updateSummaryDelivery();
+      updateSummaryBilling();
+      updateFinalReview();
+    }
+
+    function buildSummary() {
+      const totals = calculateTotals();
+      const reservationNumber = document.getElementById('reservationNumberField').value;
+      const opts = getSelectedOptions();
+      const products = document.querySelectorAll('.product-box');
+
+      let summary = '';
+
+      summary += '=== RESERVATION ===\n';
+      summary += 'N°: ' + reservationNumber + '\n\n';
+
+      summary += '=== TARIFS ===\n';
+      summary += 'Véhicule: ' + vehicleName + '\n';
+      summary += 'Collecte calculateur: ' + pickupPostal + ' (' + pickupCountry + ')\n';
+      summary += 'Livraison calculateur: ' + deliveryPostal + ' (' + deliveryCountry + ')\n';
+      summary += 'Base HTVA: ' + formatPrice(basePrice) + '\n';
+      summary += 'Options HTVA: ' + formatPrice(totals.optionsTotal) + '\n';
+      summary += 'TVA: ' + formatPrice(totals.vatAmount) + '\n';
+      summary += 'Total TVAC: ' + formatPrice(totals.totalTvac) + '\n\n';
+
+      summary += '=== OPTIONS ===\n';
+      if (opts.length === 0) {
+        summary += 'Aucune option sélectionnée\n\n';
+      } else {
+        for (let i = 0; i < opts.length; i++) {
+          summary += '- ' + opts[i].label + ' (+' + formatPrice(opts[i].price) + ')\n';
+        }
+        summary += '\n';
+      }
+
+      summary += '=== MARCHANDISES ===\n';
+      if (products.length === 0) {
+        summary += 'Aucun produit ajouté\n\n';
+      } else {
+        for (let i = 0; i < products.length; i++) {
+          const type = products[i].querySelector('.product-type').value || '-';
+          const desc = products[i].querySelector('.product-description').value.trim() || '-';
+          const stack = products[i].querySelector('.product-stackable').value || '-';
+          const qty = products[i].querySelector('.product-qty').value.trim() || '-';
+          const weight = products[i].querySelector('.product-weight').value.trim() || '-';
+          const length = products[i].querySelector('.product-length').value.trim() || '-';
+          const width = products[i].querySelector('.product-width').value.trim() || '-';
+          const height = products[i].querySelector('.product-height').value.trim() || '-';
+
+          summary += 'Produit ' + (i + 1) + '\n';
+          summary += 'Type: ' + type + '\n';
+          summary += 'Description: ' + desc + '\n';
+          summary += 'Empilable: ' + stack + '\n';
+          summary += 'Quantité: ' + qty + '\n';
+          summary += 'Poids par unité: ' + weight + ' kg\n';
+          summary += 'Dimensions: ' + length + ' x ' + width + ' x ' + height + ' cm\n\n';
+        }
+      }
+
+      if (safeValue('goods_extra_info')) {
+        summary += 'Informations complémentaires marchandises: ' + safeValue('goods_extra_info') + '\n\n';
+      }
+
+      summary += '=== COLLECTE ===\n';
+      summary += 'Société: ' + safeValue('collect_company') + '\n';
+      summary += 'Date: ' + safeValue('collect_date') + '\n';
+      summary += 'Adresse: ' + safeValue('collect_street') + ' ' + safeValue('collect_number') + ', ' + safeValue('collect_postal') + ' ' + safeValue('collect_city') + ', ' + safeValue('collect_country') + '\n';
+      summary += 'Heure: ' + safeValue('collect_time') + '\n';
+      summary += 'Contact: ' + safeValue('collect_contact') + '\n';
+      summary += 'Téléphone: ' + safeValue('collect_phone') + '\n';
+      summary += 'Réf.: ' + safeValue('collect_ref') + '\n';
+      summary += 'Instructions: ' + safeValue('collect_instructions') + '\n\n';
+
+      summary += '=== LIVRAISON ===\n';
+      summary += 'Société: ' + safeValue('delivery_company') + '\n';
+      summary += 'Date: ' + safeValue('delivery_date') + '\n';
+      summary += 'Adresse: ' + safeValue('delivery_street') + ' ' + safeValue('delivery_number') + ', ' + safeValue('delivery_postal') + ' ' + safeValue('delivery_city') + ', ' + safeValue('delivery_country') + '\n';
+      summary += 'Heure: ' + safeValue('delivery_time') + '\n';
+      summary += 'Contact: ' + safeValue('delivery_contact') + '\n';
+      summary += 'Téléphone: ' + safeValue('delivery_phone') + '\n';
+      summary += 'Réf.: ' + safeValue('delivery_ref') + '\n';
+      summary += 'Instructions: ' + safeValue('delivery_instructions') + '\n\n';
+
+      summary += '=== FACTURATION ===\n';
+      summary += 'Email: ' + safeValue('billing_email') + '\n';
+      summary += 'Société: ' + safeValue('billing_company') + '\n';
+      summary += 'Nom: ' + safeValue('billing_name') + '\n';
+      summary += 'N° de TVA: ' + safeValue('billing_vat') + '\n';
+      summary += 'Adresse: ' + safeValue('billing_street') + ' ' + safeValue('billing_number') + ', ' + safeValue('billing_postal') + ' ' + safeValue('billing_city') + ', ' + getBillingCountryValue() + '\n';
+      summary += 'Téléphone: ' + safeValue('billing_phone') + '\n';
+
+      document.getElementById('summaryField').value = summary;
+    }
+
+    function bindDynamicInputs() {
+      const productInputs = document.querySelectorAll('.summary-watch-product');
+      for (let i = 0; i < productInputs.length; i++) {
+        productInputs[i].removeEventListener('input', updateSummary);
+        productInputs[i].removeEventListener('change', updateSummary);
+        productInputs[i].addEventListener('input', updateSummary);
+        productInputs[i].addEventListener('change', updateSummary);
+      }
+    }
+
+    async function startMolliePayment() {
+      if (!validateStep(currentStep)) return;
+
+      const statusBox = document.getElementById('paymentStatus');
+      const submitBtn = document.getElementById('submitBtn');
+
+      const reservationNumber = generateReservationNumber();
+      document.getElementById('reservationNumberField').value = reservationNumber;
+
+      updateSummary();
+      buildSummary();
+
+      const totals = calculateTotals();
+      const summaryValue = document.getElementById('summaryField').value;
+
+
+      const payload = {
+        price: Number(totals.totalTvac.toFixed(2)),
+        reservationNumber: reservationNumber,
+        vehicle: vehicleName,
+        pickupPostal: pickupPostal,
+        pickupCountry: pickupCountry,
+        deliveryPostal: deliveryPostal,
+        deliveryCountry: deliveryCountry,
+        billingEmail: safeValue('billing_email'),
+        billingName: safeValue('billing_name'),
+        billingCompany: safeValue('billing_company'),
+        billingPhone: safeValue('billing_phone'),
+        summary: summaryValue
+      };
+
+      try {
+        submitBtn.disabled = true;
+        statusBox.style.display = 'block';
+        statusBox.innerText = 'Création du paiement sécurisé en cours...';
+
+        const response = await fetch(PAYMENT_WORKER_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(payload)
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+          console.error(result);
+          statusBox.innerText = 'Erreur paiement : ' + JSON.stringify(result);
+          submitBtn.disabled = false;
+          return;
+        }
+
+        if (result.checkout) {
+          window.location.href = result.checkout;
+          return;
+        }
+
+        statusBox.innerText = 'Lien de paiement introuvable.';
+        submitBtn.disabled = false;
+      } catch (error) {
+        console.error(error);
+        statusBox.innerText = 'Erreur technique : ' + error.message;
+        submitBtn.disabled = false;
+      }
+    }
+
+    const successMode = showSuccessMessageIfNeeded();
+
+    if (successMode) {
+      setLangButtons();
+
+      const successLangBtns = document.querySelectorAll('.lang-btn');
+      for (let s = 0; s < successLangBtns.length; s++) {
+        successLangBtns[s].addEventListener('click', function () {
+          currentLang = this.getAttribute('data-lang');
+          localStorage.setItem('ig_booking_lang', currentLang);
+          setLangButtons();
+          const res = getUrlParam('res');
+          document.getElementById('successContainer').innerHTML = getSuccessHtml(res);
+          document.getElementById('successContainer').style.display = 'block';
+        });
+      }
     } else {
-      document.getElementById("paymentStatus").innerText =
-        "Erreur paiement : " + JSON.stringify(result);
+      const rawData = getUrlParam('data');
+      const decodedData = rawData ? decodePayload(rawData, PRICE_SECRET_KEY) : null;
+
+      var basePrice = 0;
+      var vehicleName = '-';
+      var pickupPostal = '-';
+      var deliveryPostal = '-';
+      var pickupCountry = '-';
+      var deliveryCountry = '-';
+
+      if (decodedData && decodedData.prix && decodedData.vehicule) {
+        basePrice = parseFloat(decodedData.prix);
+        if (isNaN(basePrice)) basePrice = 0;
+        vehicleName = decodedData.vehicule || '-';
+        pickupPostal = decodedData.collecte || '-';
+        deliveryPostal = decodedData.livraison || '-';
+        pickupCountry = decodedData.paysCollecte || '-';
+        deliveryCountry = decodedData.paysLivraison || '-';
+      } else {
+        document.getElementById('decodeWarning').style.display = 'block';
+      }
+
+      document.getElementById('addProductBtn').addEventListener('click', addProduct);
+
+      document.getElementById('prevBtn').addEventListener('click', function () {
+        if (currentStep > 1) showStep(currentStep - 1);
+      });
+
+      document.getElementById('nextBtn').addEventListener('click', function () {
+        if (!validateStep(currentStep)) return;
+        if (currentStep < totalSteps) showStep(currentStep + 1);
+      });
+
+      document.getElementById('billing_country').addEventListener('change', function() {
+        toggleOtherCountryField();
+        updateSummary();
+      });
+
+      document.getElementById('bookingForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+      });
+
+      document.getElementById('submitBtn').addEventListener('click', function () {
+        startMolliePayment();
+      });
+
+      const optionChecks = document.querySelectorAll('.option-check');
+      for (let i = 0; i < optionChecks.length; i++) {
+        optionChecks[i].addEventListener('change', updateSummary);
+      }
+
+      const watchedFields = document.querySelectorAll('.summary-watch');
+      for (let j = 0; j < watchedFields.length; j++) {
+        watchedFields[j].addEventListener('input', updateSummary);
+        watchedFields[j].addEventListener('change', updateSummary);
+      }
+
+      const langBtns = document.querySelectorAll('.lang-btn');
+      for (let n = 0; n < langBtns.length; n++) {
+        langBtns[n].addEventListener('click', function () {
+          currentLang = this.getAttribute('data-lang');
+          localStorage.setItem('ig_booking_lang', currentLang);
+          applyStaticTranslations();
+        });
+      }
+
+      setupVehicleDependentOptions();
+      updatePrices();
+      addProduct();
+      showStep(1);
+      applyStaticTranslations();
     }
-  } catch (e) {
-    console.error(e);
-    document.getElementById("paymentStatus").innerText = "Erreur technique";
-  }
-}
-
-document.getElementById("submitBtn").addEventListener("click", startMolliePayment);
-
-document.querySelectorAll("input,select").forEach(el => {
-  el.addEventListener("change", updateSummary);
-  el.addEventListener("input", updateSummary);
-});
-
-loadQuote();
-</script>
-
+  </script>
 </body>
 </html>
