@@ -44,6 +44,7 @@ padding:10px;
 margin-bottom:12px;
 border:1px solid #ddd;
 border-radius:6px;
+box-sizing:border-box;
 }
 
 button{
@@ -172,165 +173,202 @@ Total : <span id="totalPrice">0 €</span>
 </div>
 
 <script>
+const PAYMENT_WORKER_URL = "https://long-cake-e1c6.interglobe1932.workers.dev/create-payment";
+const QUOTE_READ_URL = "https://long-cake-e1c6.interglobe1932.workers.dev/quote";
 
-const PAYMENT_WORKER_URL="https://long-cake-e1c6.interglobe1932.workers.dev/create-payment";
-const QUOTE_READ_URL="https://long-cake-e1c6.interglobe1932.workers.dev/quote";
+let currentQuoteId = "";
+let basePrice = 0;
+let vehicleName = "";
+let pickupPostal = "";
+let deliveryPostal = "";
+let pickupCountry = "";
+let deliveryCountry = "";
 
-let currentQuoteId="";
-let basePrice=0;
-let vehicleName="";
-let pickupPostal="";
-let deliveryPostal="";
-let pickupCountry="";
-let deliveryCountry="";
-
-function getUrlParam(name){
-const params=new URLSearchParams(window.location.search);
-return params.get(name);
+function getUrlParam(name) {
+  const params = new URLSearchParams(window.location.search);
+  return params.get(name);
 }
 
-function formatPrice(v){
-return Number(v).toFixed(2)+" €";
+function formatPrice(v) {
+  return Number(v || 0).toFixed(2) + " €";
 }
 
-function calculateOptions(){
-
-let total=0;
-
-if(document.getElementById("opt_loading_help").checked) total+=25;
-if(document.getElementById("opt_unloading_help").checked) total+=25;
-if(document.getElementById("opt_tail_lift").checked) total+=30;
-if(document.getElementById("opt_paper_invoice").checked) total+=10;
-
-return total;
-
+function safeValue(id) {
+  return document.getElementById(id)?.value || "";
 }
 
-function calculateTotals(){
-
-const optionsTotal=calculateOptions();
-const totalHtva=basePrice+optionsTotal;
-
-let vat=0;
-
-const country=document.getElementById("billing_country").value;
-const vatNumber=document.getElementById("billing_vat").value;
-
-if(country==="Belgique" || (country!=="" && vatNumber==="")){
-vat=totalHtva*0.21;
+function generateReservationNumber() {
+  return Date.now().toString();
 }
 
-const total=totalHtva+vat;
+function calculateOptions() {
+  let total = 0;
 
-return{
-optionsTotal,
-vat,
-total
+  if (document.getElementById("opt_loading_help").checked) total += 25;
+  if (document.getElementById("opt_unloading_help").checked) total += 25;
+  if (document.getElementById("opt_tail_lift").checked) total += 30;
+  if (document.getElementById("opt_paper_invoice").checked) total += 10;
+
+  return total;
 }
 
+function calculateTotals() {
+  const optionsTotal = calculateOptions();
+  const totalHtva = basePrice + optionsTotal;
+
+  let vat = 0;
+
+  const country = document.getElementById("billing_country").value;
+  const vatNumber = document.getElementById("billing_vat").value.trim();
+
+  if (country === "Belgique" || (country !== "" && vatNumber === "")) {
+    vat = totalHtva * 0.21;
+  }
+
+  const total = totalHtva + vat;
+
+  return {
+    optionsTotal,
+    vat,
+    total
+  };
 }
 
-function updateSummary(){
+function updateSummary() {
+  const totals = calculateTotals();
 
-const totals=calculateTotals();
+  document.getElementById("basePrice").innerText = formatPrice(basePrice);
+  document.getElementById("optionsPrice").innerText = formatPrice(totals.optionsTotal);
+  document.getElementById("vatPrice").innerText = formatPrice(totals.vat);
+  document.getElementById("totalPrice").innerText = formatPrice(totals.total);
 
-document.getElementById("basePrice").innerText=formatPrice(basePrice);
-document.getElementById("optionsPrice").innerText=formatPrice(totals.optionsTotal);
-document.getElementById("vatPrice").innerText=formatPrice(totals.vat);
-document.getElementById("totalPrice").innerText=formatPrice(totals.total);
+  const summaryText = [
+    `Véhicule : ${vehicleName}`,
+    `Collecte : ${pickupPostal} (${pickupCountry})`,
+    `Livraison : ${deliveryPostal} (${deliveryCountry})`,
+    `Prix base HTVA : ${formatPrice(basePrice)}`,
+    `Options : ${formatPrice(totals.optionsTotal)}`,
+    `TVA : ${formatPrice(totals.vat)}`,
+    `Total : ${formatPrice(totals.total)}`,
+    `Nom : ${safeValue("billing_name")}`,
+    `Société : ${safeValue("billing_company")}`,
+    `Email : ${safeValue("billing_email")}`,
+    `Téléphone : ${safeValue("billing_phone")}`,
+    `Pays : ${safeValue("billing_country")}`,
+    `TVA client : ${safeValue("billing_vat")}`,
+    `Aide chargement : ${document.getElementById("opt_loading_help").checked ? "Oui" : "Non"}`,
+    `Aide déchargement : ${document.getElementById("opt_unloading_help").checked ? "Oui" : "Non"}`,
+    `Hayon : ${document.getElementById("opt_tail_lift").checked ? "Oui" : "Non"}`,
+    `Facture papier : ${document.getElementById("opt_paper_invoice").checked ? "Oui" : "Non"}`
+  ].join("\n");
 
+  document.getElementById("summaryField").value = summaryText;
 }
 
-async function loadQuote(){
+async function loadQuote() {
+  const quoteId = getUrlParam("quoteId");
 
-const quoteId=getUrlParam("quoteId");
+  if (!quoteId) {
+    document.getElementById("decodeWarning").style.display = "block";
+    return;
+  }
 
-if(!quoteId){
-document.getElementById("decodeWarning").style.display="block";
-return;
+  try {
+    const res = await fetch(`${QUOTE_READ_URL}?quoteId=${encodeURIComponent(quoteId)}`);
+    const quote = await res.json();
+
+    if (!res.ok) {
+      document.getElementById("decodeWarning").style.display = "block";
+      console.error("Erreur quote:", quote);
+      return;
+    }
+
+    currentQuoteId = quote.quoteId || "";
+    basePrice = parseFloat(quote.basePriceHtva || 0);
+    vehicleName = quote.vehicleName || "";
+    pickupPostal = quote.pickupPostal || "";
+    pickupCountry = quote.pickupCountry || "";
+    deliveryPostal = quote.deliveryPostal || "";
+    deliveryCountry = quote.deliveryCountry || "";
+
+    document.getElementById("vehicleName").innerText = vehicleName;
+    document.getElementById("pickupPostal").innerText = pickupPostal;
+    document.getElementById("pickupCountry").innerText = pickupCountry;
+    document.getElementById("deliveryPostal").innerText = deliveryPostal;
+    document.getElementById("deliveryCountry").innerText = deliveryCountry;
+
+    updateSummary();
+  } catch (e) {
+    console.error(e);
+    document.getElementById("decodeWarning").style.display = "block";
+  }
 }
 
-const res=await fetch(`${QUOTE_READ_URL}?quoteId=${quoteId}`);
-const quote=await res.json();
+async function startMolliePayment() {
+  if (!currentQuoteId || basePrice <= 0) {
+    document.getElementById("paymentStatus").innerText = "Devis non chargé.";
+    return;
+  }
 
-currentQuoteId=quote.quoteId;
+  updateSummary();
 
-basePrice=parseFloat(quote.basePriceHtva||0);
-vehicleName=quote.vehicleName;
-pickupPostal=quote.pickupPostal;
-pickupCountry=quote.pickupCountry;
-deliveryPostal=quote.deliveryPostal;
-deliveryCountry=quote.deliveryCountry;
+  const reservationNumber = generateReservationNumber();
+  document.getElementById("reservationNumberField").value = reservationNumber;
 
-document.getElementById("vehicleName").innerText=vehicleName;
-document.getElementById("pickupPostal").innerText=pickupPostal;
-document.getElementById("pickupCountry").innerText=pickupCountry;
-document.getElementById("deliveryPostal").innerText=deliveryPostal;
-document.getElementById("deliveryCountry").innerText=deliveryCountry;
+  const payload = {
+    quoteId: currentQuoteId,
+    reservationNumber: reservationNumber,
 
-updateSummary();
+    billingEmail: safeValue("billing_email"),
+    billingName: safeValue("billing_name"),
+    billingCompany: safeValue("billing_company"),
+    billingPhone: safeValue("billing_phone"),
 
+    billingCountry: safeValue("billing_country"),
+    billingVat: safeValue("billing_vat"),
+
+    options: {
+      loadingHelp: document.getElementById("opt_loading_help").checked,
+      unloadingHelp: document.getElementById("opt_unloading_help").checked,
+      paperInvoice: document.getElementById("opt_paper_invoice").checked,
+      tailLift: document.getElementById("opt_tail_lift").checked
+    },
+
+    summary: document.getElementById("summaryField").value
+  };
+
+  try {
+    document.getElementById("paymentStatus").innerText = "Création du paiement...";
+
+    const response = await fetch(PAYMENT_WORKER_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+
+    const result = await response.json();
+    console.log("create-payment result:", result);
+
+    if (result.checkout) {
+      window.location.href = result.checkout;
+    } else {
+      document.getElementById("paymentStatus").innerText =
+        "Erreur paiement : " + JSON.stringify(result);
+    }
+  } catch (e) {
+    console.error(e);
+    document.getElementById("paymentStatus").innerText = "Erreur technique";
+  }
 }
 
-function generateReservationNumber(){
-return Date.now().toString();
-}
+document.getElementById("submitBtn").addEventListener("click", startMolliePayment);
 
-function safeValue(id){
-return document.getElementById(id)?.value||"";
-}
-
-async function startMolliePayment(){
-
-updateSummary();
-
-const reservationNumber=generateReservationNumber();
-
-const payload={
-quoteId:currentQuoteId,
-reservationNumber:reservationNumber,
-
-billingEmail:safeValue("billing_email"),
-billingName:safeValue("billing_name"),
-billingCompany:safeValue("billing_company"),
-billingPhone:safeValue("billing_phone"),
-
-billingCountry:safeValue("billing_country"),
-billingVat:safeValue("billing_vat"),
-
-options:{
-loadingHelp:document.getElementById("opt_loading_help").checked,
-unloadingHelp:document.getElementById("opt_unloading_help").checked,
-paperInvoice:document.getElementById("opt_paper_invoice").checked,
-tailLift:document.getElementById("opt_tail_lift").checked
-}
-
-};
-
-const response=await fetch(PAYMENT_WORKER_URL,{
-method:"POST",
-headers:{"Content-Type":"application/json"},
-body:JSON.stringify(payload)
-});
-
-const result=await response.json();
-
-if(result.checkout){
-window.location.href=result.checkout;
-}else{
-document.getElementById("paymentStatus").innerText="Erreur paiement";
-}
-
-}
-
-document.getElementById("submitBtn").addEventListener("click",startMolliePayment);
-
-document.querySelectorAll("input,select").forEach(el=>{
-el.addEventListener("change",updateSummary);
+document.querySelectorAll("input,select").forEach(el => {
+  el.addEventListener("change", updateSummary);
+  el.addEventListener("input", updateSummary);
 });
 
 loadQuote();
-
 </script>
 
 </body>
