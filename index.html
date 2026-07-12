@@ -10,6 +10,18 @@ gtag('js', new Date());
 
 gtag('config', 'AW-18217117533');
 </script>
+    <script>
+  const params = new URLSearchParams(window.location.search);
+
+  if (params.get('success') === '1') {
+    const reservationNumber = params.get('res') || '';
+
+    gtag('event', 'conversion', {
+      'send_to': 'AW-18217117533/96izCP7Qqs8cEN3Ozo5D',
+      'transaction_id': reservationNumber
+    });
+  }
+</script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Réserver la course - InterGlobe</title>
