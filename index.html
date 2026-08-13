@@ -1,508 +1,3015 @@
-export default {
-  async fetch(request, env) {
-    const url = new URL(request.url);
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+  <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=AW-18217117533"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
 
-    const corsHeaders = {
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Methods": "GET,POST,OPTIONS",
-      "Access-Control-Allow-Headers": "Content-Type"
+gtag('config', 'AW-18217117533');
+</script>
+    <script>
+  const params = new URLSearchParams(window.location.search);
+
+  if (params.get('success') === '1') {
+    const reservationNumber = params.get('res') || '';
+
+    gtag('event', 'conversion', {
+      'send_to': 'AW-18217117533/96izCP7Qqs8cEN3Ozo5D',
+      'transaction_id': reservationNumber
+    });
+  }
+</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Réserver la course - InterGlobe</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background: #f7f9fc;
+      color: #003366;
+    }
+
+    .wrapper {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 18px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 12px;
+    }
+
+    .lang-switcher {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .lang-btn {
+      border: 1px solid #cbd5e1;
+      background: white;
+      color: #003366;
+      border-radius: 10px;
+      padding: 8px 12px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    .lang-btn.active {
+      background: #003366;
+      color: white;
+      border-color: #003366;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 360px;
+      gap: 18px;
+      align-items: start;
+    }
+
+    .card,
+    .sidebar-card {
+      background: #fff;
+      border-radius: 14px;
+      box-shadow: 0 4px 18px rgba(0,0,0,0.08);
+      padding: 20px;
+    }
+
+    .sidebar-card {
+      position: sticky;
+      top: 18px;
+    }
+
+    h2, h3, h4 {
+      margin-top: 0;
+      color: #003366;
+    }
+
+    .progress-top {
+      margin-bottom: 20px;
+    }
+
+    .progress-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 15px;
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+
+    .progress-bar-wrap {
+      width: 100%;
+      height: 12px;
+      background: #e5e7eb;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 20%;
+      background: #16a34a;
+      transition: width 0.25s ease;
+    }
+
+    .step {
+      display: none;
+    }
+
+    .step.active {
+      display: block;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .grid-4 {
+      display: grid;
+      grid-template-columns: 2fr 0.7fr 1fr 1fr;
+      gap: 14px;
+    }
+
+    .field {
+      margin-bottom: 12px;
+    }
+
+    .field label {
+      display: block;
+      font-weight: bold;
+      font-size: 14px;
+      margin-bottom: 6px;
+      color: #003366;
+    }
+
+    .required-star {
+      color: #dc2626;
+    }
+
+    .input,
+    .select,
+    .textarea {
+      width: 100%;
+      padding: 11px 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
+      box-sizing: border-box;
+      font-size: 15px;
+      background: #fff;
+    }
+
+    .textarea {
+      min-height: 90px;
+      resize: vertical;
+    }
+
+    .option-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+      border: 1px solid #dbe4ee;
+      border-radius: 12px;
+      background: #f8fafc;
+      cursor: pointer;
+      margin-bottom: 12px;
+    }
+
+    .option-row input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      min-width: 18px;
+      accent-color: #003366;
+      margin: 0;
+    }
+
+    .option-row span {
+      font-size: 17px;
+      color: #003366;
+      line-height: 1.4;
+      font-weight: 500;
+    }
+
+    .product-box {
+      border: 1px solid #dbe4ee;
+      border-radius: 14px;
+      background: #f8fafc;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+
+    .product-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .product-title {
+      color: #003366;
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .btn {
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 15px;
+      padding: 12px 18px;
+    }
+
+    .btn-primary {
+      background: #003366;
+      color: #fff;
+    }
+
+    .btn-secondary {
+      background: #e5e7eb;
+      color: #111827;
+    }
+
+    .btn-success {
+      background: #16a34a;
+      color: #fff;
+    }
+
+    .btn-danger {
+      background: #dc2626;
+      color: #fff;
+      padding: 10px 12px;
+      border-radius: 8px;
+      font-size: 14px;
+    }
+
+    .footer-bar {
+      margin-top: 24px;
+      border-top: 1px solid #e5e7eb;
+      padding-top: 16px;
+      display: flex;
+      justify-content: flex-end;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .nav-buttons {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .small-note {
+      font-size: 13px;
+      color: #475569;
+      margin-top: 8px;
+    }
+
+    .summary-section {
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      background: #f8fafc;
+      padding: 12px;
+      margin-bottom: 12px;
+    }
+
+    .summary-section h4 {
+      margin: 0 0 8px 0;
+      font-size: 15px;
+    }
+
+    .summary-lines {
+      font-size: 14px;
+      line-height: 1.6;
+      color: #334155;
+      white-space: pre-line;
+    }
+
+    .price-box {
+      border: 1px solid #dbe4ee;
+      padding: 14px;
+      border-radius: 12px;
+      background: #eef4fb;
+      margin-bottom: 12px;
+      line-height: 1.8;
+      font-size: 15px;
+    }
+
+    .price-box .total-line {
+      font-size: 22px;
+      font-weight: bold;
+    }
+
+    .muted {
+      color: #64748b;
+    }
+
+    .warning-box {
+      border: 1px solid #fecaca;
+      background: #fff1f2;
+      color: #9f1239;
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 16px;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .success-box {
+      border: 1px solid #86efac;
+      background: #f0fdf4;
+      color: #166534;
+      border-radius: 16px;
+      padding: 22px;
+      font-size: 17px;
+      line-height: 1.7;
+      text-align: center;
+      margin-bottom: 18px;
+    }
+
+    .success-icon {
+      font-size: 48px;
+      line-height: 1;
+      margin-bottom: 10px;
+    }
+
+    .success-reservation {
+      font-size: 24px;
+      font-weight: bold;
+      margin: 10px 0;
+      color: #166534;
+      word-break: break-word;
+    }
+
+    .success-actions {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 16px;
+    }
+
+    .success-box .btn {
+      min-width: 180px;
+    }
+
+    .schedule-box {
+      border: 1px solid #dbe4ee;
+      background: #f8fafc;
+      border-radius: 14px;
+      padding: 16px;
+      margin: 4px 0 16px 0;
+    }
+
+    .schedule-warning {
+      border-left: 4px solid #003366;
+      background: #eef4fb;
+      color: #003366;
+      border-radius: 8px;
+      padding: 12px 14px;
+      margin-bottom: 14px;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .opening-row {
+      display: grid;
+      grid-template-columns: auto 1fr auto 1fr auto;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .opening-label {
+      font-size: 13px;
+      font-weight: bold;
+      color: #475569;
+    }
+
+    .opening-remove {
+      border: none;
+      background: #fee2e2;
+      color: #991b1b;
+      border-radius: 8px;
+      padding: 9px 10px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .opening-details {
+      border: 1px solid #dbe4ee;
+      border-radius: 10px;
+      background: #fff;
+      margin-bottom: 14px;
+    }
+
+    .opening-details summary {
+      cursor: pointer;
+      padding: 11px 12px;
+      font-size: 14px;
+      font-weight: bold;
+      color: #003366;
+    }
+
+    .opening-details-body {
+      padding: 0 12px 4px 12px;
+    }
+
+    .schedule-note {
+      margin-top: 10px;
+      font-size: 13px;
+      color: #475569;
+      line-height: 1.45;
+    }
+
+    .schedule-fee {
+      margin-top: 8px;
+      font-size: 14px;
+      font-weight: bold;
+      color: #9a3412;
+    }
+
+    @media (max-width: 1024px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar-card {
+        position: static;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .grid-2,
+      .grid-4 {
+        grid-template-columns: 1fr;
+      }
+
+      .product-head {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .option-row span {
+        font-size: 15px;
+      }
+
+      .opening-row {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .opening-row .opening-label {
+        display: none;
+      }
+
+      .opening-row .opening-remove {
+        grid-column: 1 / -1;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="topbar">
+      <div class="lang-switcher">
+        <button type="button" class="lang-btn active" data-lang="fr">🇫🇷 FR</button>
+        <button type="button" class="lang-btn" data-lang="nl">🇳🇱 NL</button>
+        <button type="button" class="lang-btn" data-lang="en">🇬🇧 EN</button>
+      </div>
+    </div>
+
+    <div id="successContainer" style="display:none;"></div>
+
+    <div class="layout" id="mainLayout">
+      <div class="card">
+        <div id="decodeWarning" class="warning-box" style="display:none;">
+          Impossible de récupérer correctement les données du calculateur. Veuillez revenir au calculateur et recommencer.
+        </div>
+
+        <div class="progress-top">
+          <div class="progress-head">
+            <span id="stepCounter">Étape 1 / 5</span>
+            <span id="stepTitle">Options</span>
+          </div>
+          <div class="progress-bar-wrap">
+            <div class="progress-bar" id="progressBar"></div>
+          </div>
+        </div>
+
+        <form id="bookingForm">
+          <input type="hidden" id="reservationNumberField">
+          <input type="hidden" id="vehicleField">
+          <input type="hidden" id="basePriceField">
+          <input type="hidden" id="optionsPriceField">
+          <input type="hidden" id="totalHtvaField">
+          <input type="hidden" id="vatAmountField">
+          <input type="hidden" id="totalTvaIncludedField">
+          <input type="hidden" id="pickupPostalField">
+          <input type="hidden" id="deliveryPostalField">
+          <input type="hidden" id="pickupCountryField">
+          <input type="hidden" id="deliveryCountryField">
+          <textarea id="summaryField" style="display:none;"></textarea>
+
+          <div class="step active" data-step="1">
+            <h2 id="step1Heading">Choisissez vos options</h2>
+
+            <label class="option-row">
+              <input type="checkbox" class="option-check" id="opt_loading_help">
+              <span id="label_loading_help">Aide au chargement par le conducteur (+25 €)</span>
+            </label>
+
+            <label class="option-row">
+              <input type="checkbox" class="option-check" id="opt_unloading_help">
+              <span id="label_unloading_help">Aide au déchargement par le conducteur (+25 €)</span>
+            </label>
+
+            <label class="option-row">
+              <input type="checkbox" class="option-check" id="opt_paper_invoice" data-price="10">
+              <span id="label_paper_invoice">Facture papier (+10 €)</span>
+            </label>
+
+            <label class="option-row" id="tailLiftRow" style="display:none;">
+              <input type="checkbox" class="option-check" id="opt_tail_lift" data-price="30">
+              <span id="label_tail_lift">Hayon élévateur (+30 €)</span>
+            </label>
+          </div>
+
+          <div class="step" data-step="2">
+            <h2 id="step2Heading">Décrivez vos marchandises</h2>
+            <div id="productsContainer"></div>
+
+            <div class="field">
+              <label for="goods_extra_info" id="label_goods_extra_info">Informations complémentaires</label>
+              <textarea class="textarea summary-watch" id="goods_extra_info" placeholder="Ex : ADR, moins de 1000 points..."></textarea>
+            </div>
+
+            <button type="button" class="btn btn-primary" id="addProductBtn">+ Ajouter un produit</button>
+            <div class="small-note" id="step2Note">Ajoutez autant de lignes que d’articles différents.</div>
+          </div>
+
+          <div class="step" data-step="3">
+            <h2 id="step3Heading">Collecte</h2>
+
+            <div class="grid-2">
+              <div class="field">
+                <label for="collect_company" id="label_collect_company">Nom de la société de collecte <span class="required-star">*</span></label>
+                <input class="input summary-watch" type="text" id="collect_company">
+              </div>
+
+              <div class="field">
+                <label for="collect_date" id="label_collect_date">Date de collecte <span class="required-star">*</span></label>
+                <input class="input summary-watch" type="date" id="collect_date">
+              </div>
+            </div>
+
+            <div class="grid-4">
+              <div class="field">
+                <label for="collect_street" id="label_collect_street">Rue <span class="required-star">*</span></label>
+                <input class="input summary-watch" type="text" id="collect_street">
+              </div>
+
+              <div class="field">
+                <label for="collect_number" id="label_collect_number">N° <span class="required-star">*</span></label>
+                <input class="input summary-watch" type="text" id="collect_number">
+              </div>
+
+              <div class="field">
+                <label for="collect_postal" id="label_collect_postal">Code postal <span class="required-star">*</span></label>
+                <input class="input summary-watch" type="text" id="collect_postal">
+              </div>
+
+              <div class="field">
+                <label for="collect_city" id="label_collect_city">Ville <span class="required-star">*</span></label>
+                <input class="input summary-watch" type="text" id="collect_city">
+              </div>
+            </div>
+
+            <div class="grid-2">
+              <div class="field">
+                <label for="collect_country" id="label_collect_country">Pays <span class="required-star">*</span></label>
+                <input class="input summary-watch" type="text" id="collect_country">
+              </div>
+            </div>
+
+            <div class="schedule-box" id="collectScheduleBox">
+              <details class="opening-details">
+                <summary id="collectOpeningSummary">Horaires du site (facultatif)</summary>
+                <div class="opening-details-body">
+              <div class="field">
+                <label for="collect_open_until_day" id="label_collect_open_until_day">Ouvert du lundi au (facultatif)</label>
+                <select class="select" id="collect_open_until_day">
+                  <option value="">Non renseigné</option>
+                  <option value="1">Lundi uniquement</option>
+                  <option value="2">Mardi</option>
+                  <option value="3">Mercredi</option>
+                  <option value="4">Jeudi</option>
+                  <option value="5">Vendredi</option>
+                  <option value="6">Samedi</option>
+                  <option value="7">Dimanche</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label id="label_collect_opening_hours">Heures d’ouverture (facultatif)</label>
+                <div class="grid-2">
+                  <input class="input" type="time" id="collect_opening_start" aria-label="Ouverture">
+                  <input class="input" type="time" id="collect_opening_end" aria-label="Fermeture">
+                </div>
+              </div>
+
+              <div class="field">
+                <label id="label_collect_pause">Pause (facultatif)</label>
+                <div class="grid-2">
+                  <input class="input" type="time" id="collect_pause_start" aria-label="Début pause">
+                  <input class="input" type="time" id="collect_pause_end" aria-label="Fin pause">
+                </div>
+              </div>
+
+                </div>
+              </details>
+
+              <div class="field">
+                <label for="collect_appointment_type" id="label_collect_appointment_type">Horaire souhaité d’enlèvement <span class="required-star">*</span></label>
+                <select class="select" id="collect_appointment_type">
+                  <option value="flexible">Créneau flexible</option>
+                  <option value="fixed">Heure fixe</option>
+                </select>
+              </div>
+
+              <div id="collectFlexibleWrap" class="grid-2">
+                <div class="field">
+                  <label for="collect_flexible_start" id="label_collect_flexible_start">De <span class="required-star">*</span></label>
+                  <input class="input" type="time" id="collect_flexible_start">
+                </div>
+                <div class="field">
+                  <label for="collect_flexible_end" id="label_collect_flexible_end">À <span class="required-star">*</span></label>
+                  <input class="input" type="time" id="collect_flexible_end">
+                </div>
+              </div>
+
+              <div id="collectFixedWrap" style="display:none;">
+                <div class="field">
+                  <label for="collect_fixed_time" id="label_collect_fixed_time">Heure <span class="required-star">*</span></label>
+                  <input class="input" type="time" id="collect_fixed_time">
+                </div>
+              </div>
+
+              <div class="schedule-note" id="collectMinSlotNote"></div>
+              <input type="hidden" id="collect_time">
+            </div>
+
+            <div class="grid-2">
+              <div class="field">
+                <label for="collect_contact" id="label_collect_contact">Nom et prénom de la personne de contact</label>
+                <input class="input summary-watch" type="text" id="collect_contact">
+              </div>
+
+              <div class="field">
+                <label for="collect_phone" id="label_collect_phone">N° de téléphone du contact</label>
+                <input class="input summary-watch" type="text" id="collect_phone">
+              </div>
+
+              <div class="field">
+                <label for="collect_ref" id="label_collect_ref">Réf. de collecte</label>
+                <input class="input summary-watch" type="text" id="collect_ref">
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="collect_instructions" id="label_collect_instructions">Instructions spéciales</label>
+              <textarea class="textarea summary-watch" id="collect_instructions"></textarea>
+            </div>
+          </div>
+
+          <div class="step" data-step="4">
+            <h2 id="step4Heading">Livraison</h2>
+
+            <div class="grid-2">
+              <div class="field">
+                <label for="delivery_company" id="label_delivery_company">Nom de la société de livraison <span class="required-star">*</span></label>
+                <input class="input summary-watch" type="text" id="delivery_company">
+              </div>
+
+              <div class="field">
+                <label for="delivery_date" id="label_delivery_date">Date de livraison <span class="required-star">*</span></label>
+                <input class="input summary-watch" type="date" id="delivery_date">
+              </div>
+            </div>
+
+            <div class="grid-4">
+              <div class="field">
+                <label for="delivery_street" id="label_delivery_street">Rue <span class="required-star">*</span></label>
+                <input class="input summary-watch" type="text" id="delivery_street">
+              </div>
+
+              <div class="field">
+                <label for="delivery_number" id="label_delivery_number">N° <span class="required-star">*</span></label>
+                <input class="input summary-watch" type="text" id="delivery_number">
+              </div>
+
+              <div class="field">
+                <label for="delivery_postal" id="label_delivery_postal">Code postal <span class="required-star">*</span></label>
+                <input class="input summary-watch" type="text" id="delivery_postal">
+              </div>
+
+              <div class="field">
+                <label for="delivery_city" id="label_delivery_city">Ville <span class="required-star">*</span></label>
+                <input class="input summary-watch" type="text" id="delivery_city">
+              </div>
+            </div>
+
+            <div class="grid-2">
+              <div class="field">
+                <label for="delivery_country" id="label_delivery_country">Pays <span class="required-star">*</span></label>
+                <input class="input summary-watch" type="text" id="delivery_country">
+              </div>
+            </div>
+
+            <div class="schedule-box" id="deliveryScheduleBox">
+              <details class="opening-details">
+                <summary id="deliveryOpeningSummary">Horaires du site (facultatif)</summary>
+                <div class="opening-details-body">
+              <div class="field">
+                <label for="delivery_open_until_day" id="label_delivery_open_until_day">Ouvert du lundi au (facultatif)</label>
+                <select class="select" id="delivery_open_until_day">
+                  <option value="">Non renseigné</option>
+                  <option value="1">Lundi uniquement</option>
+                  <option value="2">Mardi</option>
+                  <option value="3">Mercredi</option>
+                  <option value="4">Jeudi</option>
+                  <option value="5">Vendredi</option>
+                  <option value="6">Samedi</option>
+                  <option value="7">Dimanche</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label id="label_delivery_opening_hours">Heures d’ouverture (facultatif)</label>
+                <div class="grid-2">
+                  <input class="input" type="time" id="delivery_opening_start" aria-label="Ouverture">
+                  <input class="input" type="time" id="delivery_opening_end" aria-label="Fermeture">
+                </div>
+              </div>
+
+              <div class="field">
+                <label id="label_delivery_pause">Pause (facultatif)</label>
+                <div class="grid-2">
+                  <input class="input" type="time" id="delivery_pause_start" aria-label="Début pause">
+                  <input class="input" type="time" id="delivery_pause_end" aria-label="Fin pause">
+                </div>
+              </div>
+
+                </div>
+              </details>
+
+              <div class="field">
+                <label for="delivery_appointment_type" id="label_delivery_appointment_type">Horaire souhaité de livraison <span class="required-star">*</span></label>
+                <select class="select" id="delivery_appointment_type">
+                  <option value="flexible">Créneau flexible</option>
+                  <option value="fixed">Heure fixe</option>
+                </select>
+              </div>
+
+              <div id="deliveryFlexibleWrap" class="grid-2">
+                <div class="field">
+                  <label for="delivery_flexible_start" id="label_delivery_flexible_start">De <span class="required-star">*</span></label>
+                  <input class="input" type="time" id="delivery_flexible_start">
+                </div>
+                <div class="field">
+                  <label for="delivery_flexible_end" id="label_delivery_flexible_end">À <span class="required-star">*</span></label>
+                  <input class="input" type="time" id="delivery_flexible_end">
+                </div>
+              </div>
+
+              <div id="deliveryFixedWrap" style="display:none;">
+                <div class="field">
+                  <label for="delivery_fixed_time" id="label_delivery_fixed_time">Heure <span class="required-star">*</span></label>
+                  <input class="input" type="time" id="delivery_fixed_time">
+                </div>
+              </div>
+
+              <div class="schedule-note" id="deliveryMinSlotNote"></div>
+              <input type="hidden" id="delivery_time">
+            </div>
+
+            <div class="grid-2">
+              <div class="field">
+                <label for="delivery_contact" id="label_delivery_contact">Nom et prénom de la personne de contact</label>
+                <input class="input summary-watch" type="text" id="delivery_contact">
+              </div>
+
+              <div class="field">
+                <label for="delivery_phone" id="label_delivery_phone">N° de téléphone du contact</label>
+                <input class="input summary-watch" type="text" id="delivery_phone">
+              </div>
+
+              <div class="field">
+                <label for="delivery_ref" id="label_delivery_ref">Réf. de livraison</label>
+                <input class="input summary-watch" type="text" id="delivery_ref">
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="delivery_instructions" id="label_delivery_instructions">Instructions spéciales</label>
+              <textarea class="textarea summary-watch" id="delivery_instructions"></textarea>
+            </div>
+          </div>
+
+          <div class="step" data-step="5">
+            <h2 id="step5Heading">Facturation</h2>
+
+            <div class="grid-2">
+              <div class="field">
+                <label for="billing_email" id="label_billing_email">Email <span class="required-star">*</span></label>
+                <input class="input summary-watch" type="email" id="billing_email">
+              </div>
+
+              <div class="field">
+                <label for="billing_company" id="label_billing_company">Nom société</label>
+                <input class="input summary-watch" type="text" id="billing_company">
+              </div>
+
+              <div class="field">
+                <label for="billing_name" id="label_billing_name">Nom et prénom <span class="required-star">*</span></label>
+                <input class="input summary-watch" type="text" id="billing_name">
+              </div>
+
+              <div class="field">
+                <label for="billing_vat" id="label_billing_vat">N° de TVA</label>
+                <input class="input summary-watch" type="text" id="billing_vat">
+              </div>
+            </div>
+
+            <div class="grid-4">
+              <div class="field">
+                <label for="billing_street" id="label_billing_street">Rue <span class="required-star">*</span></label>
+                <input class="input summary-watch" type="text" id="billing_street">
+              </div>
+
+              <div class="field">
+                <label for="billing_number" id="label_billing_number">N° <span class="required-star">*</span></label>
+                <input class="input summary-watch" type="text" id="billing_number">
+              </div>
+
+              <div class="field">
+                <label for="billing_postal" id="label_billing_postal">Code postal <span class="required-star">*</span></label>
+                <input class="input summary-watch" type="text" id="billing_postal">
+              </div>
+
+              <div class="field">
+                <label for="billing_city" id="label_billing_city">Ville <span class="required-star">*</span></label>
+                <input class="input summary-watch" type="text" id="billing_city">
+              </div>
+            </div>
+
+            <div class="grid-2">
+              <div class="field">
+                <label for="billing_country" id="label_billing_country">Pays <span class="required-star">*</span></label>
+                <select class="select summary-watch" id="billing_country">
+                  <option value="">Choisir</option>
+                  <option value="Belgique">Belgique</option>
+                  <option value="France">France</option>
+                  <option value="Pays-Bas">Pays-Bas</option>
+                  <option value="Luxembourg">Luxembourg</option>
+                  <option value="Allemagne">Allemagne</option>
+                  <option value="Autre">Autre</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="billing_phone" id="label_billing_phone">N° de téléphone <span class="required-star">*</span></label>
+                <input class="input summary-watch" type="text" id="billing_phone">
+              </div>
+            </div>
+
+            <div class="field" id="billingCountryOtherWrap" style="display:none;">
+              <label for="billing_country_other" id="label_billing_country_other">Veuillez indiquer votre pays <span class="required-star">*</span></label>
+              <input class="input summary-watch" type="text" id="billing_country_other">
+            </div>
+
+            <div class="summary-section" style="margin-top:16px;">
+              <h4 id="finalReviewHeading">Vérification finale de la commande</h4>
+              <div class="summary-lines" id="finalReviewBox"></div>
+            </div>
+          </div>
+
+          <div class="footer-bar">
+            <div class="nav-buttons">
+              <button type="button" class="btn btn-secondary" id="prevBtn" style="display:none;">Retour</button>
+              <button type="button" class="btn btn-primary" id="nextBtn">Suivant</button>
+              <button type="button" class="btn btn-success" id="submitBtn" style="display:none;">Finaliser et payer</button>
+            </div>
+          </div>
+
+          <div id="paymentStatus" class="small-note" style="display:none; margin-top:12px;"></div>
+        </form>
+      </div>
+
+      <div class="sidebar-card">
+        <h3 style="margin-bottom:12px;" id="summaryHeading">Récapitulatif</h3>
+
+        <div class="price-box">
+          <div><strong id="priceLabelVehicle">Véhicule :</strong> <span id="vehicleDisplay">-</span></div>
+          <div><strong id="priceLabelPickup">Collecte :</strong> <span id="pickupDisplay">-</span></div>
+          <div><strong id="priceLabelDelivery">Livraison :</strong> <span id="deliveryDisplay">-</span></div>
+          <div><strong id="priceLabelBase">Tarif de base HTVA :</strong> <span id="basePriceDisplay">0.00 €</span></div>
+          <div><strong id="priceLabelOptions">Options HTVA :</strong> <span id="optionsPriceDisplay">0.00 €</span></div>
+          <div><strong id="priceLabelVat">TVA :</strong> <span id="vatDisplay">0.00 €</span></div>
+          <div class="total-line"><strong id="priceLabelTotal">Total TVAC :</strong> <span id="totalPriceDisplay">0.00 €</span></div>
+        </div>
+
+        <div class="summary-section">
+          <h4 id="summaryOptionsHeading">Options</h4>
+          <div class="summary-lines" id="summaryOptions"><span class="muted">Aucune option sélectionnée</span></div>
+        </div>
+
+        <div class="summary-section">
+          <h4 id="summaryProductsHeading">Marchandises</h4>
+          <div class="summary-lines" id="summaryProducts"><span class="muted">Aucun produit ajouté</span></div>
+        </div>
+
+        <div class="summary-section">
+          <h4 id="summaryCollectHeading">Collecte</h4>
+          <div class="summary-lines" id="summaryCollect"><span class="muted">Informations non remplies</span></div>
+        </div>
+
+        <div class="summary-section">
+          <h4 id="summaryDeliveryHeading">Livraison</h4>
+          <div class="summary-lines" id="summaryDelivery"><span class="muted">Informations non remplies</span></div>
+        </div>
+
+        <div class="summary-section">
+          <h4 id="summaryBillingHeading">Facturation</h4>
+          <div class="summary-lines" id="summaryBilling"><span class="muted">Informations non remplies</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    var currentStep = 1;
+    var totalSteps = 5;
+    var productCount = 0;
+    var currentLang = localStorage.getItem('ig_booking_lang') || 'fr';
+
+    const PRICE_SECRET_KEY = "InterGlobe_2026_Key";
+    const PAYMENT_WORKER_URL = "https://long-cake-e1c6.interglobe1932.workers.dev/create-payment";
+    const FIXED_TIME_SURCHARGE_LIGHT = 35;
+    const FIXED_TIME_SURCHARGE_HEAVY = 99;
+
+    // Hauteur maximale utilisée pour convertir les palettes empilables
+    // en places au sol. Ex.: 30 palettes de 10 cm = 300 cm = 1 place au sol.
+    const MAX_STACK_HEIGHT_CM = 300;
+
+    const VEHICLE_CAPACITY_RULES = {
+      "Compact": { maxWeight: 400, maxPallets: 1, maxLength: 125, maxWidth: 100 },
+      "Van": { maxWeight: 1000, maxPallets: 3, maxLength: 320, maxWidth: 180 },
+      "Fourgon": { maxWeight: 800, maxPallets: 6, maxLength: 320, maxWidth: 180, maxItemWeight: 500 },
+      "Camion": { maxPallets: 18 },
+      "Semi-remorque": { maxPallets: 33 }
     };
 
-    if (request.method === "OPTIONS") {
-      return new Response("", {
-        status: 200,
-        headers: corsHeaders
+    const TEXTS = {
+      fr: {
+        step_word: "Étape",
+        steps: {1:"Options",2:"Marchandises",3:"Collecte",4:"Livraison",5:"Facturation"},
+        headings: {
+          step1:"Choisissez vos options",
+          step2:"Décrivez vos marchandises",
+          step3:"Collecte",
+          step4:"Livraison",
+          step5:"Facturation",
+          summary:"Récapitulatif",
+          finalReview:"Vérification finale de la commande",
+          options:"Options",
+          goods:"Marchandises",
+          pickup:"Collecte",
+          delivery:"Livraison",
+          billing:"Facturation"
+        },
+        labels: {
+          loadingHelp:"Aide au chargement par le conducteur",
+          unloadingHelp:"Aide au déchargement par le conducteur",
+          paperInvoice:"Facture papier (+10 €)",
+          tailLift:"Hayon élévateur (+30 €)",
+          extraInfo:"Informations complémentaires",
+          addProduct:"+ Ajouter un produit",
+          step2Note:"Ajoutez autant de lignes que d’articles différents.",
+          collectCompany:"Nom de la société de collecte",
+          collectDate:"Date de collecte",
+          deliveryCompany:"Nom de la société de livraison",
+          deliveryDate:"Date de livraison",
+          street:"Rue",
+          number:"N°",
+          postal:"Code postal",
+          city:"Ville",
+          country:"Pays",
+          collectTime:"Horaire souhaité d’enlèvement",
+          deliveryTime:"Horaire souhaité de livraison",
+          openingHoursPickup:"Heures d’ouverture du lieu de collecte",
+          openingHoursDelivery:"Heures d’ouverture du lieu de livraison",
+          openingWarning:"Si vous connaissez les heures d’ouverture du site, vous pouvez les indiquer (pauses comprises). Cela permet de vérifier automatiquement que l’horaire souhaité est compatible.",
+          addOpening:"+ Ajouter une plage d’ouverture",
+          openingNote:"Ajoutez une deuxième plage si le site ferme pendant une pause.",
+          appointmentType:"Type d’horaire",
+          flexibleSlot:"Créneau flexible",
+          fixedTime:"Heure fixe",
+          slotStart:"Début du créneau",
+          slotEnd:"Fin du créneau",
+          exactTime:"Heure fixe",
+          fixedFee:"Supplément heure fixe",
+          minSlotLight:"Créneau flexible minimum : 3 heures pour Compact, Van et Fourgon.",
+          minSlotHeavy:"Créneau flexible minimum : 6 heures pour Camion et Semi-remorque.",
+          openingHours:"Heures d’ouverture",
+          openingDays:"Jours d’ouverture",
+          openMondayTo:"Ouvert du lundi au",
+          notSpecified:"Non renseigné",
+          mondayOnly:"Lundi uniquement",
+          openingDaysNotePickup:"Si vous renseignez les jours d’ouverture, la date de collecte sera contrôlée automatiquement.",
+          openingDaysNoteDelivery:"Si vous renseignez les jours d’ouverture, la date de livraison sera contrôlée automatiquement.",
+          openingOptionalNote:"Ajoutez une deuxième plage si le site ferme pendant une pause. Si aucune heure n’est indiquée, aucun contrôle d’ouverture ne sera appliqué.",
+          fixedPickupOption:"Heure fixe collecte",
+          fixedDeliveryOption:"Heure fixe livraison",
+          from:"De",
+          to:"à",
+          remove:"Supprimer",
+          contactName:"Nom et prénom de la personne de contact",
+          contactPhone:"N° de téléphone du contact",
+          collectRef:"Réf. de collecte",
+          deliveryRef:"Réf. de livraison",
+          instructions:"Instructions spéciales",
+          email:"Email",
+          company:"Nom société",
+          fullname:"Nom et prénom",
+          vat:"N° de TVA",
+          phone:"N° de téléphone",
+          countryOther:"Veuillez indiquer votre pays",
+          prev:"Retour",
+          next:"Suivant",
+          submit:"Finaliser et payer",
+          vehicle:"Véhicule",
+          pickup:"Collecte",
+          delivery:"Livraison",
+          basePrice:"Tarif de base HTVA",
+          optionsPrice:"Options HTVA",
+          vatShort:"TVA",
+          total:"Total TVAC",
+          noneSelected:"Aucune option sélectionnée",
+          noProduct:"Aucun produit ajouté",
+          notFilled:"Informations non remplies",
+          choose:"Choisir",
+          otherCountry:"Autre",
+          address:"Adresse",
+          dateWord:"Date",
+          timeWord:"Heure",
+          contactWord:"Contact",
+          refWord:"Réf."
+        },
+        product: {
+          title:"Produit",
+          type:"Type",
+          description:"Description du produit",
+          stackable:"Empilable",
+          qty:"Quantité",
+          weight:"Poids par unité (kg)",
+          totalWeight:"Poids total",
+          goodsTotalWeight:"Poids total marchandises",
+          length:"Longueur (cm)",
+          width:"Largeur (cm)",
+          height:"Hauteur (cm)",
+          delete:"Supprimer",
+          choose:"Choisir",
+          palette:"Palette",
+          carton:"Carton",
+          envelope:"Enveloppe",
+          other:"Autre",
+          yes:"Oui",
+          no:"Non",
+          placeholder:"Ex : boisson, fenêtre, document"
+        },
+        placeholders: {
+          extraInfo:"Ex : ADR, moins de 1000 points...",
+          collectTime:"Ex : 09:00 - 11:00",
+          deliveryTime:"Ex : 14:00 - 16:00"
+        },
+        success: {
+          line1:"Votre demande est enregistrée sous la réservation n°",
+          line2:"Le dispatch confirmera sous peu votre demande, vérifiez vos mails et spams.",
+          copy:"Copier le numéro",
+          cgv:"Voir les CGV",
+          copied:"Numéro copié dans le presse-papiers.",
+          copyAutoFail:"Copie automatique impossible. Veuillez utiliser le bouton Copier le numéro.",
+          copyManualFail:"Impossible de copier automatiquement ce numéro."
+        },
+        validation: {
+          addOneProduct:"Veuillez ajouter au moins un produit.",
+          productPrefix:"Veuillez compléter les informations du produit",
+          required:"Veuillez compléter ce champ obligatoire.",
+          specifyCountry:"Veuillez indiquer votre pays.",
+          openingRequired:"Une plage d’ouverture est incomplète. Complétez les deux heures ou supprimez cette plage.",
+          closedDay:"La date choisie correspond à un jour où le site est indiqué comme fermé.",
+          openingInvalid:"Une plage d’ouverture est invalide : l’heure de fin doit être après l’heure de début.",
+          openingOverlap:"Les plages d’ouverture ne peuvent pas se chevaucher.",
+          flexibleRequired:"Veuillez indiquer le début et la fin du créneau souhaité.",
+          flexibleInvalid:"Le créneau souhaité est invalide : l’heure de fin doit être après l’heure de début.",
+          flexibleOutside:"Le créneau souhaité doit commencer et se terminer pendant les heures d’ouverture indiquées.",
+          flexibleTooShort:"Le temps réellement disponible dans ce créneau est insuffisant. Minimum requis : {hours} heures, pauses déduites.",
+          fixedRequired:"Veuillez indiquer l’heure fixe souhaitée.",
+          fixedOutside:"L’heure fixe doit se situer pendant une plage d’ouverture du site.",
+          capacityWeight:"Le poids total déclaré ({actual} kg) dépasse la capacité du véhicule sélectionné ({max} kg).",
+          capacityPallets:"Les {pallets} palettes déclarées nécessitent {actual} places au sol selon leur hauteur. La capacité du véhicule est de {max} places.",
+          capacityItemWeight:"Le produit {product} dépasse le poids maximal autorisé par article ({max} kg).",
+          capacityDimensions:"Le produit {product} dépasse les dimensions au sol prévues pour ce véhicule ({length} × {width} cm)."
+        }
+      },
+      nl: {
+        step_word: "Stap",
+        steps: {1:"Opties",2:"Goederen",3:"Ophaling",4:"Levering",5:"Facturatie"},
+        headings: {
+          step1:"Kies uw opties",
+          step2:"Beschrijf uw goederen",
+          step3:"Ophaling",
+          step4:"Levering",
+          step5:"Facturatie",
+          summary:"Samenvatting",
+          finalReview:"Laatste controle van de bestelling",
+          options:"Opties",
+          goods:"Goederen",
+          pickup:"Ophaling",
+          delivery:"Levering",
+          billing:"Facturatie"
+        },
+        labels: {
+          loadingHelp:"Hulp bij laden door de chauffeur",
+          unloadingHelp:"Hulp bij lossen door de chauffeur",
+          paperInvoice:"Papieren factuur (+10 €)",
+          tailLift:"Laadklep (+30 €)",
+          extraInfo:"Aanvullende informatie",
+          addProduct:"+ Product toevoegen",
+          step2Note:"Voeg zoveel regels toe als er verschillende artikelen zijn.",
+          collectCompany:"Naam van het afhaalbedrijf",
+          collectDate:"Afhaaldatum",
+          deliveryCompany:"Naam van het leveringsbedrijf",
+          deliveryDate:"Leveringsdatum",
+          street:"Straat",
+          number:"Nr.",
+          postal:"Postcode",
+          city:"Stad",
+          country:"Land",
+          collectTime:"Gewenst afhaalmoment",
+          deliveryTime:"Gewenst leveringsmoment",
+          openingHoursPickup:"Openingsuren van de afhaallocatie",
+          openingHoursDelivery:"Openingsuren van de leveringslocatie",
+          openingWarning:"Als u de openingsuren van de locatie kent, kunt u ze invullen (inclusief pauzes). Zo kan automatisch worden gecontroleerd of het gewenste tijdstip binnen de openingsuren valt.",
+          addOpening:"+ Openingsperiode toevoegen",
+          openingNote:"Voeg een tweede periode toe als de locatie tijdens een pauze sluit.",
+          appointmentType:"Type tijdstip",
+          flexibleSlot:"Flexibel tijdsvenster",
+          fixedTime:"Vast uur",
+          slotStart:"Begin tijdsvenster",
+          slotEnd:"Einde tijdsvenster",
+          exactTime:"Vast uur",
+          fixedFee:"Toeslag vast uur",
+          minSlotLight:"Minimaal flexibel tijdsvenster: 3 uur voor Compact, Van en Bestelwagen.",
+          minSlotHeavy:"Minimaal flexibel tijdsvenster: 6 uur voor Vrachtwagen en Oplegger.",
+          openingHours:"Openingsuren",
+          openingDays:"Openingsdagen",
+          openMondayTo:"Open van maandag tot",
+          notSpecified:"Niet ingevuld",
+          mondayOnly:"Alleen maandag",
+          openingDaysNotePickup:"Als u de openingsdagen invult, wordt de afhaaldatum automatisch gecontroleerd.",
+          openingDaysNoteDelivery:"Als u de openingsdagen invult, wordt de leveringsdatum automatisch gecontroleerd.",
+          openingOptionalNote:"Voeg een tweede periode toe als de locatie tijdens een pauze sluit. Als u geen uren invult, wordt er geen controle op openingsuren uitgevoerd.",
+          fixedPickupOption:"Vast afhaaluur",
+          fixedDeliveryOption:"Vast leveringsuur",
+          from:"Van",
+          to:"tot",
+          remove:"Verwijderen",
+          contactName:"Naam van de contactpersoon",
+          contactPhone:"Telefoonnummer contactpersoon",
+          collectRef:"Afhaalreferentie",
+          deliveryRef:"Leveringsreferentie",
+          instructions:"Bijzondere instructies",
+          email:"E-mail",
+          company:"Bedrijfsnaam",
+          fullname:"Naam en voornaam",
+          vat:"Btw-nummer",
+          phone:"Telefoonnummer",
+          countryOther:"Gelieve uw land in te vullen",
+          prev:"Terug",
+          next:"Volgende",
+          submit:"Afronden en betalen",
+          vehicle:"Voertuig",
+          pickup:"Ophaling",
+          delivery:"Levering",
+          basePrice:"Basistarief excl. btw",
+          optionsPrice:"Opties excl. btw",
+          vatShort:"Btw",
+          total:"Totaal incl. btw",
+          noneSelected:"Geen optie geselecteerd",
+          noProduct:"Geen product toegevoegd",
+          notFilled:"Informatie niet ingevuld",
+          choose:"Kiezen",
+          otherCountry:"Ander",
+          address:"Adres",
+          dateWord:"Datum",
+          timeWord:"Tijd",
+          contactWord:"Contact",
+          refWord:"Ref."
+        },
+        product: {
+          title:"Product",
+          type:"Type",
+          description:"Productbeschrijving",
+          stackable:"Stapelbaar",
+          qty:"Aantal",
+          weight:"Gewicht per eenheid (kg)",
+          totalWeight:"Totaalgewicht",
+          goodsTotalWeight:"Totaalgewicht goederen",
+          length:"Lengte (cm)",
+          width:"Breedte (cm)",
+          height:"Hoogte (cm)",
+          delete:"Verwijderen",
+          choose:"Kiezen",
+          palette:"Pallet",
+          carton:"Doos",
+          envelope:"Envelop",
+          other:"Ander",
+          yes:"Ja",
+          no:"Nee",
+          placeholder:"Bijv.: drank, raam, document"
+        },
+        placeholders: {
+          extraInfo:"Bijv.: ADR, minder dan 1000 punten...",
+          collectTime:"Bijv.: 09:00 - 11:00",
+          deliveryTime:"Bijv.: 14:00 - 16:00"
+        },
+        success: {
+          line1:"Uw aanvraag is geregistreerd onder reserveringsnummer",
+          line2:"De dispatch bevestigt uw aanvraag spoedig. Controleer uw e-mails en spam.",
+          copy:"Nummer kopiëren",
+          cgv:"Algemene voorwaarden",
+          copied:"Nummer gekopieerd naar het klembord.",
+          copyAutoFail:"Automatisch kopiëren niet mogelijk. Gebruik de knop Nummer kopiëren.",
+          copyManualFail:"Dit nummer kon niet automatisch worden gekopieerd."
+        },
+        validation: {
+          addOneProduct:"Gelieve minstens één product toe te voegen.",
+          productPrefix:"Gelieve de gegevens van product in te vullen",
+          required:"Gelieve dit verplichte veld in te vullen.",
+          specifyCountry:"Gelieve uw land in te vullen.",
+          openingRequired:"Een openingsperiode is onvolledig. Vul beide uren in of verwijder deze periode.",
+          closedDay:"De gekozen datum valt op een dag waarop de locatie volgens de opgegeven openingsdagen gesloten is.",
+          openingInvalid:"Een openingsperiode is ongeldig: de eindtijd moet na de begintijd liggen.",
+          openingOverlap:"Openingsperiodes mogen elkaar niet overlappen.",
+          flexibleRequired:"Vul het begin en einde van het gewenste tijdsvenster in.",
+          flexibleInvalid:"Het gewenste tijdsvenster is ongeldig: de eindtijd moet na de begintijd liggen.",
+          flexibleOutside:"Het gewenste tijdsvenster moet beginnen en eindigen binnen de opgegeven openingsuren.",
+          flexibleTooShort:"De werkelijk beschikbare tijd in dit tijdsvenster is onvoldoende. Vereist minimum: {hours} uur, pauzes afgetrokken.",
+          fixedRequired:"Vul het gewenste vaste uur in.",
+          fixedOutside:"Het vaste uur moet binnen een openingsperiode van de locatie vallen.",
+          capacityWeight:"Het aangegeven totale gewicht ({actual} kg) overschrijdt de capaciteit van het gekozen voertuig ({max} kg).",
+          capacityPallets:"De {pallets} aangegeven pallets vereisen {actual} vloerplaatsen op basis van hun hoogte. De capaciteit van het voertuig is {max} plaatsen.",
+          capacityItemWeight:"Product {product} overschrijdt het maximale gewicht per artikel ({max} kg).",
+          capacityDimensions:"Product {product} overschrijdt de voorziene vloerafmetingen voor dit voertuig ({length} × {width} cm)."
+        }
+      },
+      en: {
+        step_word: "Step",
+        steps: {1:"Options",2:"Goods",3:"Pickup",4:"Delivery",5:"Billing"},
+        headings: {
+          step1:"Choose your options",
+          step2:"Describe your goods",
+          step3:"Pickup",
+          step4:"Delivery",
+          step5:"Billing",
+          summary:"Summary",
+          finalReview:"Final order review",
+          options:"Options",
+          goods:"Goods",
+          pickup:"Pickup",
+          delivery:"Delivery",
+          billing:"Billing"
+        },
+        labels: {
+          loadingHelp:"Loading assistance by driver",
+          unloadingHelp:"Unloading assistance by driver",
+          paperInvoice:"Paper invoice (+10 €)",
+          tailLift:"Tail lift (+30 €)",
+          extraInfo:"Additional information",
+          addProduct:"+ Add a product",
+          step2Note:"Add as many lines as there are different items.",
+          collectCompany:"Pickup company name",
+          collectDate:"Pickup date",
+          deliveryCompany:"Delivery company name",
+          deliveryDate:"Delivery date",
+          street:"Street",
+          number:"No.",
+          postal:"Postal code",
+          city:"City",
+          country:"Country",
+          collectTime:"Preferred pickup schedule",
+          deliveryTime:"Preferred delivery schedule",
+          openingHoursPickup:"Pickup location opening hours",
+          openingHoursDelivery:"Delivery location opening hours",
+          openingWarning:"If you know the location’s opening hours, you can enter them (including breaks). This allows the requested time to be checked automatically against those hours.",
+          addOpening:"+ Add opening period",
+          openingNote:"Add a second period if the location closes during a break.",
+          appointmentType:"Schedule type",
+          flexibleSlot:"Flexible time window",
+          fixedTime:"Fixed time",
+          slotStart:"Window start",
+          slotEnd:"Window end",
+          exactTime:"Fixed time",
+          fixedFee:"Fixed-time surcharge",
+          minSlotLight:"Minimum flexible window: 3 hours for Compact, Van and Box van.",
+          minSlotHeavy:"Minimum flexible window: 6 hours for Truck and Semi-trailer.",
+          openingHours:"Opening hours",
+          openingDays:"Opening days",
+          openMondayTo:"Open Monday through",
+          notSpecified:"Not specified",
+          mondayOnly:"Monday only",
+          openingDaysNotePickup:"If you enter opening days, the pickup date will be checked automatically.",
+          openingDaysNoteDelivery:"If you enter opening days, the delivery date will be checked automatically.",
+          openingOptionalNote:"Add a second period if the location closes during a break. If no hours are entered, no opening-hours check will be applied.",
+          fixedPickupOption:"Fixed pickup time",
+          fixedDeliveryOption:"Fixed delivery time",
+          from:"From",
+          to:"to",
+          remove:"Remove",
+          contactName:"Contact person name",
+          contactPhone:"Contact phone number",
+          collectRef:"Pickup reference",
+          deliveryRef:"Delivery reference",
+          instructions:"Special instructions",
+          email:"Email",
+          company:"Company name",
+          fullname:"Full name",
+          vat:"VAT number",
+          phone:"Phone number",
+          countryOther:"Please specify your country",
+          prev:"Back",
+          next:"Next",
+          submit:"Finalize and pay",
+          vehicle:"Vehicle",
+          pickup:"Pickup",
+          delivery:"Delivery",
+          basePrice:"Base price excl. VAT",
+          optionsPrice:"Options excl. VAT",
+          vatShort:"VAT",
+          total:"Total incl. VAT",
+          noneSelected:"No option selected",
+          noProduct:"No product added",
+          notFilled:"Information not filled in",
+          choose:"Choose",
+          otherCountry:"Other",
+          address:"Address",
+          dateWord:"Date",
+          timeWord:"Time",
+          contactWord:"Contact",
+          refWord:"Ref."
+        },
+        product: {
+          title:"Product",
+          type:"Type",
+          description:"Product description",
+          stackable:"Stackable",
+          qty:"Quantity",
+          weight:"Weight per unit (kg)",
+          totalWeight:"Total weight",
+          goodsTotalWeight:"Total goods weight",
+          length:"Length (cm)",
+          width:"Width (cm)",
+          height:"Height (cm)",
+          delete:"Delete",
+          choose:"Choose",
+          palette:"Pallet",
+          carton:"Carton",
+          envelope:"Envelope",
+          other:"Other",
+          yes:"Yes",
+          no:"No",
+          placeholder:"E.g.: drinks, window, document"
+        },
+        placeholders: {
+          extraInfo:"E.g.: ADR, under 1000 points...",
+          collectTime:"E.g.: 09:00 - 11:00",
+          deliveryTime:"E.g.: 14:00 - 16:00"
+        },
+        success: {
+          line1:"Your request has been registered under reservation number",
+          line2:"Dispatch will confirm your request shortly. Please check your emails and spam folder.",
+          copy:"Copy number",
+          cgv:"View terms",
+          copied:"Number copied to clipboard.",
+          copyAutoFail:"Automatic copy unavailable. Please use the Copy number button.",
+          copyManualFail:"Unable to copy this number automatically."
+        },
+        validation: {
+          addOneProduct:"Please add at least one product.",
+          productPrefix:"Please complete the information for product",
+          required:"Please complete this required field.",
+          specifyCountry:"Please specify your country.",
+          openingRequired:"An opening period is incomplete. Complete both times or remove that period.",
+          closedDay:"The selected date falls on a day when the location is marked as closed.",
+          openingInvalid:"An opening period is invalid: the end time must be after the start time.",
+          openingOverlap:"Opening periods cannot overlap.",
+          flexibleRequired:"Please enter the start and end of the requested time window.",
+          flexibleInvalid:"The requested time window is invalid: the end time must be after the start time.",
+          flexibleOutside:"The requested time window must start and end within the stated opening hours.",
+          flexibleTooShort:"The actual available time in this window is insufficient. Required minimum: {hours} hours, excluding breaks.",
+          fixedRequired:"Please enter the requested fixed time.",
+          fixedOutside:"The fixed time must fall within one of the location’s opening periods.",
+          capacityWeight:"The declared total weight ({actual} kg) exceeds the selected vehicle capacity ({max} kg).",
+          capacityPallets:"The {pallets} declared pallets require {actual} floor positions based on their height. The vehicle capacity is {max} positions.",
+          capacityItemWeight:"Product {product} exceeds the maximum permitted weight per item ({max} kg).",
+          capacityDimensions:"Product {product} exceeds the floor dimensions provided for this vehicle ({length} × {width} cm)."
+        }
+      }
+    };
+
+    const WEEK_DAYS = {
+      fr: {1:"lundi",2:"mardi",3:"mercredi",4:"jeudi",5:"vendredi",6:"samedi",7:"dimanche"},
+      nl: {1:"maandag",2:"dinsdag",3:"woensdag",4:"donderdag",5:"vrijdag",6:"zaterdag",7:"zondag"},
+      en: {1:"Monday",2:"Tuesday",3:"Wednesday",4:"Thursday",5:"Friday",6:"Saturday",7:"Sunday"}
+    };
+
+    function getWeekDayName(dayNumber) {
+      const langDays = WEEK_DAYS[currentLang] || WEEK_DAYS.fr;
+      return langDays[dayNumber] || '';
+    }
+
+    function tr(path) {
+      const parts = path.split('.');
+      let obj = TEXTS[currentLang] || TEXTS.fr;
+      for (let i = 0; i < parts.length; i++) obj = obj && obj[parts[i]];
+      if (obj == null) {
+        let fallback = TEXTS.fr;
+        for (let j = 0; j < parts.length; j++) fallback = fallback && fallback[parts[j]];
+        return fallback != null ? fallback : path;
+      }
+      return obj;
+    }
+
+    function formatTemplate(text, values) {
+      return String(text).replace(/\{(\w+)\}/g, function(_, key) {
+        return values && values[key] != null ? values[key] : '';
       });
     }
 
-    if (request.method === "GET" && url.pathname === "/") {
-      return new Response("worker actif", {
-        status: 200,
-        headers: corsHeaders
-      });
+    function setLangButtons() {
+      const buttons = document.querySelectorAll('.lang-btn');
+      for (let i = 0; i < buttons.length; i++) {
+        buttons[i].classList.remove('active');
+        if (buttons[i].getAttribute('data-lang') === currentLang) {
+          buttons[i].classList.add('active');
+        }
+      }
     }
 
-    if (request.method === "GET" && url.pathname === "/success") {
-      const reservationNumber = url.searchParams.get("reservationNumber") || "";
-      const redirectUrl = reservationNumber
-        ? `https://booking.interglobe.be/?success=1&res=${encodeURIComponent(reservationNumber)}`
-        : `https://booking.interglobe.be/`;
-
-      return Response.redirect(redirectUrl, 302);
+    function xorDecrypt(text, key) {
+      let result = '';
+      for (let i = 0; i < text.length; i++) {
+        result += String.fromCharCode(text.charCodeAt(i) ^ key.charCodeAt(i % key.length));
+      }
+      return result;
     }
 
-    if (request.method === "POST" && url.pathname === "/create-payment") {
+    function decodePayload(encoded, key) {
       try {
-        const data = await request.json();
+        let base64 = encoded.replace(/-/g, '+').replace(/_/g, '/');
+        while (base64.length % 4) base64 += '=';
+        const encrypted = atob(base64);
+        const json = xorDecrypt(encrypted, key);
+        return JSON.parse(json);
+      } catch (e) {
+        return null;
+      }
+    }
 
-        const price = Number(data.price);
-        const reservationNumber = String(data.reservationNumber || "").trim();
+    function getUrlParam(name) {
+      const params = new URLSearchParams(window.location.search);
+      return params.get(name);
+    }
 
-        if (!price || price <= 0) {
-          return json({ error: "Prix invalide" }, 400, corsHeaders);
+    function formatPrice(value) {
+      return Number(value).toFixed(2) + ' €';
+    }
+
+    function safeValue(id) {
+      const el = document.getElementById(id);
+      return el ? el.value.trim() : '';
+    }
+
+    function getVehicleCode(vehicle) {
+      if (vehicle === 'Compact') return '1';
+      if (vehicle === 'Van') return '2';
+      if (vehicle === 'Fourgon') return '3';
+      if (vehicle === 'Camion') return '4';
+      if (vehicle === 'Semi-remorque') return '5';
+      return '0';
+    }
+
+    function getOptionFlag(id) {
+      const el = document.getElementById(id);
+      return el && el.checked ? '1' : '0';
+    }
+
+    function generateReservationNumber() {
+      const now = new Date();
+      const y = now.getFullYear().toString();
+      const m = String(now.getMonth() + 1).padStart(2, '0');
+      const d = String(now.getDate()).padStart(2, '0');
+      const hh = String(now.getHours()).padStart(2, '0');
+      const mm = String(now.getMinutes()).padStart(2, '0');
+      const ss = String(now.getSeconds()).padStart(2, '0');
+
+      const datePart = y + m + d;
+      const timePart = hh + mm + ss;
+
+      const vehicleCode = getVehicleCode(vehicleName);
+      const tailLiftFlag = getOptionFlag('opt_tail_lift');
+      const loadingFlag = getOptionFlag('opt_loading_help');
+      const unloadingFlag = getOptionFlag('opt_unloading_help');
+      const paperInvoiceFlag = getOptionFlag('opt_paper_invoice');
+
+      return datePart + vehicleCode + tailLiftFlag + loadingFlag + unloadingFlag + paperInvoiceFlag + timePart;
+    }
+
+    function copyReservationNumber(reservationNumber) {
+      const statusEl = document.getElementById('copyStatus');
+
+      function showStatus(message) {
+        if (statusEl) statusEl.innerText = message;
+      }
+
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(reservationNumber)
+          .then(function () { showStatus(tr('success.copied')); })
+          .catch(function () { showStatus(tr('success.copyAutoFail')); });
+        return;
+      }
+
+      showStatus(tr('success.copyAutoFail'));
+    }
+
+    function manualCopyReservationNumber() {
+      const reservationEl = document.getElementById('successReservationNumber');
+      const statusEl = document.getElementById('copyStatus');
+      if (!reservationEl) return;
+
+      const text = reservationEl.innerText || reservationEl.textContent || '';
+
+      function showStatus(message) {
+        if (statusEl) statusEl.innerText = message;
+      }
+
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text)
+          .then(function () { showStatus(tr('success.copied')); })
+          .catch(function () { showStatus(tr('success.copyManualFail')); });
+        return;
+      }
+
+      try {
+        const tempInput = document.createElement('input');
+        tempInput.value = text;
+        document.body.appendChild(tempInput);
+        tempInput.select();
+        tempInput.setSelectionRange(0, 99999);
+        document.execCommand('copy');
+        document.body.removeChild(tempInput);
+        showStatus(tr('success.copied'));
+      } catch (e) {
+        showStatus(tr('success.copyManualFail'));
+      }
+    }
+
+    window.manualCopyReservationNumber = manualCopyReservationNumber;
+
+    function getSuccessHtml(res) {
+      return ''
+        + '<div class="success-box">'
+        +   '<div class="success-icon">✅</div>'
+        +   '<div>' + tr('success.line1') + '</div>'
+        +   '<div class="success-reservation" id="successReservationNumber">' + res + '</div>'
+        +   '<div style="margin-top:12px;">' + tr('success.line2') + '</div>'
+        +   '<div class="success-actions">'
+        +     '<button type="button" class="btn btn-success" onclick="manualCopyReservationNumber()">' + tr('success.copy') + '</button>'
+        +     '<button type="button" class="btn btn-primary" onclick="window.location.href=\'https://www.interglobe.be/CGV\'">' + tr('success.cgv') + '</button>'
+        +   '</div>'
+        +   '<div id="copyStatus" style="margin-top:12px;font-size:14px;color:#166534;"></div>'
+        + '</div>';
+    }
+
+    function showSuccessMessageIfNeeded() {
+      const success = getUrlParam('success');
+      const res = getUrlParam('res');
+
+      if (success === '1' && res) {
+        document.getElementById('mainLayout').style.display = 'none';
+        document.getElementById('successContainer').innerHTML = getSuccessHtml(res);
+        document.getElementById('successContainer').style.display = 'block';
+        setTimeout(function () { copyReservationNumber(res); }, 150);
+        return true;
+      }
+      return false;
+    }
+
+    function setLabelText(id, text) {
+      const label = document.querySelector('label[for="' + id + '"]');
+      if (!label) return;
+      const star = label.querySelector('.required-star');
+      if (star) {
+        label.innerHTML = text + ' <span class="required-star">*</span>';
+      } else {
+        label.textContent = text;
+      }
+    }
+
+    function applyStaticTranslations() {
+      setLangButtons();
+
+      document.getElementById('step1Heading').innerText = tr('headings.step1');
+      document.getElementById('step2Heading').innerText = tr('headings.step2');
+      document.getElementById('step3Heading').innerText = tr('headings.step3');
+      document.getElementById('step4Heading').innerText = tr('headings.step4');
+      document.getElementById('step5Heading').innerText = tr('headings.step5');
+
+      document.getElementById('summaryHeading').innerText = tr('headings.summary');
+      document.getElementById('summaryOptionsHeading').innerText = tr('headings.options');
+      document.getElementById('summaryProductsHeading').innerText = tr('headings.goods');
+      document.getElementById('summaryCollectHeading').innerText = tr('headings.pickup');
+      document.getElementById('summaryDeliveryHeading').innerText = tr('headings.delivery');
+      document.getElementById('summaryBillingHeading').innerText = tr('headings.billing');
+      document.getElementById('finalReviewHeading').innerText = tr('headings.finalReview');
+
+      document.getElementById('addProductBtn').innerText = tr('labels.addProduct');
+      document.getElementById('step2Note').innerText = tr('labels.step2Note');
+
+      document.getElementById('goods_extra_info').placeholder = tr('placeholders.extraInfo');
+
+      document.getElementById('prevBtn').innerText = tr('labels.prev');
+      document.getElementById('nextBtn').innerText = tr('labels.next');
+      document.getElementById('submitBtn').innerText = tr('labels.submit');
+
+      setLabelText('goods_extra_info', tr('labels.extraInfo'));
+      setLabelText('collect_company', tr('labels.collectCompany'));
+      setLabelText('collect_date', tr('labels.collectDate'));
+      setLabelText('collect_street', tr('labels.street'));
+      setLabelText('collect_number', tr('labels.number'));
+      setLabelText('collect_postal', tr('labels.postal'));
+      setLabelText('collect_city', tr('labels.city'));
+      setLabelText('collect_country', tr('labels.country'));
+      setLabelText('collect_contact', tr('labels.contactName'));
+      setLabelText('collect_phone', tr('labels.contactPhone'));
+      setLabelText('collect_ref', tr('labels.collectRef'));
+      setLabelText('collect_instructions', tr('labels.instructions'));
+
+      setLabelText('delivery_company', tr('labels.deliveryCompany'));
+      setLabelText('delivery_date', tr('labels.deliveryDate'));
+      setLabelText('delivery_street', tr('labels.street'));
+      setLabelText('delivery_number', tr('labels.number'));
+      setLabelText('delivery_postal', tr('labels.postal'));
+      setLabelText('delivery_city', tr('labels.city'));
+      setLabelText('delivery_country', tr('labels.country'));
+      setLabelText('delivery_contact', tr('labels.contactName'));
+      setLabelText('delivery_phone', tr('labels.contactPhone'));
+      setLabelText('delivery_ref', tr('labels.deliveryRef'));
+      setLabelText('delivery_instructions', tr('labels.instructions'));
+
+      setLabelText('billing_email', tr('labels.email'));
+      setLabelText('billing_company', tr('labels.company'));
+      setLabelText('billing_name', tr('labels.fullname'));
+      setLabelText('billing_vat', tr('labels.vat'));
+      setLabelText('billing_street', tr('labels.street'));
+      setLabelText('billing_number', tr('labels.number'));
+      setLabelText('billing_postal', tr('labels.postal'));
+      setLabelText('billing_city', tr('labels.city'));
+      setLabelText('billing_country', tr('labels.country'));
+      setLabelText('billing_phone', tr('labels.phone'));
+      setLabelText('billing_country_other', tr('labels.countryOther'));
+
+      const billingCountry = document.getElementById('billing_country');
+      billingCountry.options[0].text = tr('labels.choose');
+      billingCountry.options[6].text = tr('labels.otherCountry');
+
+      updateVehicleDependentLabels();
+      refreshProductTranslations();
+      applyScheduleTranslations();
+      updateScheduleUi('collect');
+      updateScheduleUi('delivery');
+      updateProgressHeader();
+      updateSummary();
+    }
+
+    function updateProgressHeader() {
+      document.getElementById('stepCounter').innerText = tr('step_word') + ' ' + currentStep + ' / 5';
+      document.getElementById('stepTitle').innerText = tr('steps.' + currentStep);
+    }
+
+    function getBillingCountryValue() {
+      const country = safeValue('billing_country');
+      if (country === 'Autre') return safeValue('billing_country_other');
+      return country;
+    }
+
+    function isTruckOrSemi(vehicle) {
+      return vehicle === 'Camion' || vehicle === 'Semi-remorque';
+    }
+
+    function allowsTailLift(vehicle) {
+      return vehicle === 'Fourgon' || vehicle === 'Camion';
+    }
+
+    function getDriverHelpPrice(vehicle) {
+      return isTruckOrSemi(vehicle) ? 50 : 25;
+    }
+
+    function getFixedTimeSurcharge(vehicle) {
+      return isTruckOrSemi(vehicle)
+        ? FIXED_TIME_SURCHARGE_HEAVY
+        : FIXED_TIME_SURCHARGE_LIGHT;
+    }
+
+    function getFixedTimePriceText() {
+      const price = getFixedTimeSurcharge(vehicleName);
+      if (currentLang === 'nl') return '+' + price + ' € excl. btw';
+      if (currentLang === 'en') return '+€' + price + ' excl. VAT';
+      return '+' + price + ' € HTVA';
+    }
+
+    function normalizeCountryValue(value) {
+      return (value || '').trim().toLowerCase();
+    }
+
+    function shouldApplyVat() {
+      const country = normalizeCountryValue(getBillingCountryValue());
+      const vatNumber = safeValue('billing_vat');
+      if (country === 'belgique') return true;
+      if (country !== '' && country !== 'belgique' && vatNumber === '') return true;
+      return false;
+    }
+
+    function updateVehicleDependentLabels() {
+      const helpPrice = getDriverHelpPrice(vehicleName);
+
+      document.getElementById('opt_loading_help').setAttribute('data-price', helpPrice);
+      document.getElementById('opt_unloading_help').setAttribute('data-price', helpPrice);
+
+      document.getElementById('label_loading_help').innerText =
+        tr('labels.loadingHelp') + ' (+' + helpPrice + ' €)';
+      document.getElementById('label_unloading_help').innerText =
+        tr('labels.unloadingHelp') + ' (+' + helpPrice + ' €)';
+
+      document.getElementById('label_paper_invoice').innerText = tr('labels.paperInvoice');
+      document.getElementById('label_tail_lift').innerText = tr('labels.tailLift');
+    }
+
+    function setupVehicleDependentOptions() {
+      updateVehicleDependentLabels();
+
+      const tailLiftRow = document.getElementById('tailLiftRow');
+      const tailLiftCheckbox = document.getElementById('opt_tail_lift');
+
+      if (allowsTailLift(vehicleName)) {
+        tailLiftRow.style.display = 'flex';
+      } else {
+        tailLiftRow.style.display = 'none';
+        tailLiftCheckbox.checked = false;
+      }
+    }
+
+    function toggleOtherCountryField() {
+      const wrap = document.getElementById('billingCountryOtherWrap');
+      if (safeValue('billing_country') === 'Autre') {
+        wrap.style.display = 'block';
+      } else {
+        wrap.style.display = 'none';
+        document.getElementById('billing_country_other').value = '';
+      }
+    }
+
+    function timeToMinutes(value) {
+      if (!/^\d{2}:\d{2}$/.test(value || '')) return null;
+      const parts = value.split(':');
+      return Number(parts[0]) * 60 + Number(parts[1]);
+    }
+
+    function getMinimumFlexibleHours() {
+      return isTruckOrSemi(vehicleName) ? 6 : 3;
+    }
+
+    function getOpeningPeriods(prefix) {
+      const openStartEl = document.getElementById(prefix + '_opening_start');
+      const openEndEl = document.getElementById(prefix + '_opening_end');
+      const pauseStartEl = document.getElementById(prefix + '_pause_start');
+      const pauseEndEl = document.getElementById(prefix + '_pause_end');
+
+      const openStart = openStartEl ? openStartEl.value : '';
+      const openEnd = openEndEl ? openEndEl.value : '';
+      const pauseStart = pauseStartEl ? pauseStartEl.value : '';
+      const pauseEnd = pauseEndEl ? pauseEndEl.value : '';
+
+      if (!openStart && !openEnd) return [];
+
+      return [{
+        start: openStart,
+        end: openEnd,
+        startMin: timeToMinutes(openStart),
+        endMin: timeToMinutes(openEnd),
+        startEl: openStartEl,
+        endEl: openEndEl,
+        pauseStart: pauseStart,
+        pauseEnd: pauseEnd,
+        pauseStartMin: timeToMinutes(pauseStart),
+        pauseEndMin: timeToMinutes(pauseEnd),
+        pauseStartEl: pauseStartEl,
+        pauseEndEl: pauseEndEl
+      }];
+    }
+
+    function getOpeningHoursDisplay(prefix) {
+      const periods = getOpeningPeriods(prefix);
+      if (!periods.length || !periods[0].start || !periods[0].end) return '';
+      const p = periods[0];
+      let value = p.start + ' - ' + p.end;
+      if (p.pauseStart && p.pauseEnd) {
+        const pauseWord = currentLang === 'nl' ? 'Pauze' : currentLang === 'en' ? 'Break' : 'Pause';
+        value += ' | ' + pauseWord + ' ' + p.pauseStart + ' - ' + p.pauseEnd;
+      }
+      return value;
+    }
+
+    function validateOpeningPeriods(prefix) {
+      const periods = getOpeningPeriods(prefix);
+      const openStartEl = document.getElementById(prefix + '_opening_start');
+      const openEndEl = document.getElementById(prefix + '_opening_end');
+      const pauseStartEl = document.getElementById(prefix + '_pause_start');
+      const pauseEndEl = document.getElementById(prefix + '_pause_end');
+
+      const openStart = openStartEl ? openStartEl.value : '';
+      const openEnd = openEndEl ? openEndEl.value : '';
+      const pauseStart = pauseStartEl ? pauseStartEl.value : '';
+      const pauseEnd = pauseEndEl ? pauseEndEl.value : '';
+
+      // Heures d'ouverture facultatives.
+      if (!openStart && !openEnd) {
+        if (pauseStart || pauseEnd) {
+          return showValidationMessage(
+            currentLang === 'nl' ? 'Vul eerst de openingsuren in.' : currentLang === 'en' ? 'Enter the opening hours first.' : 'Indiquez d’abord les heures d’ouverture.',
+            openStartEl
+          );
         }
+        return [];
+      }
 
-        if (!reservationNumber) {
-          return json({ error: "Numéro de réservation manquant" }, 400, corsHeaders);
-        }
+      if (!openStart || !openEnd) {
+        return showValidationMessage(tr('validation.openingRequired'), !openStart ? openStartEl : openEndEl);
+      }
 
-        const bookingRecord = {
-          reservationNumber,
-          createdAt: new Date().toISOString(),
-          price: price.toFixed(2),
-          vehicle: data.vehicle || "",
-          pickupPostal: data.pickupPostal || "",
-          pickupCountry: data.pickupCountry || "",
-          deliveryPostal: data.deliveryPostal || "",
-          deliveryCountry: data.deliveryCountry || "",
-          billingEmail: data.billingEmail || "",
-          billingName: data.billingName || "",
-          billingCompany: data.billingCompany || "",
-          billingPhone: data.billingPhone || "",
-          summary: data.summary || ""
-        };
+      const openStartMin = timeToMinutes(openStart);
+      const openEndMin = timeToMinutes(openEnd);
+      if (openStartMin == null || openEndMin == null || openEndMin <= openStartMin) {
+        return showValidationMessage(tr('validation.openingInvalid'), openEndEl);
+      }
 
-        await env.BOOKING_STORE.put(
-          `booking:${reservationNumber}`,
-          JSON.stringify(bookingRecord),
-          { expirationTtl: 60 * 60 * 24 * 7 }
+      const effective = [];
+
+      if (!pauseStart && !pauseEnd) {
+        effective.push({ start: openStart, end: openEnd, startMin: openStartMin, endMin: openEndMin, startEl: openStartEl, endEl: openEndEl });
+        return effective;
+      }
+
+      if (!pauseStart || !pauseEnd) {
+        return showValidationMessage(
+          currentLang === 'nl' ? 'Vul het begin en einde van de pauze in.' : currentLang === 'en' ? 'Enter both the start and end of the break.' : 'Indiquez le début et la fin de la pause.',
+          !pauseStart ? pauseStartEl : pauseEndEl
         );
+      }
 
-        const baseUrl = `${url.protocol}//${url.host}`;
+      const pauseStartMin = timeToMinutes(pauseStart);
+      const pauseEndMin = timeToMinutes(pauseEnd);
+      if (pauseStartMin == null || pauseEndMin == null || pauseEndMin <= pauseStartMin || pauseStartMin <= openStartMin || pauseEndMin >= openEndMin) {
+        return showValidationMessage(
+          currentLang === 'nl' ? 'De pauze moet binnen de openingsuren vallen.' : currentLang === 'en' ? 'The break must fall within the opening hours.' : 'La pause doit se situer dans les heures d’ouverture.',
+          pauseStartEl
+        );
+      }
 
-        const mollieResponse = await fetch("https://api.mollie.com/v2/payments", {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${env.MOLLIE_API_KEY}`,
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            amount: {
-              currency: "EUR",
-              value: price.toFixed(2)
-            },
-            description: `Commande transport ${reservationNumber}`,
-            redirectUrl: `${baseUrl}/success?reservationNumber=${encodeURIComponent(reservationNumber)}`,
-            webhookUrl: `${baseUrl}/webhook`,
-            metadata: {
-              reservationNumber,
-              billingEmail: data.billingEmail || "",
-              vehicle: data.vehicle || ""
-            }
-          })
-        });
+      effective.push({ start: openStart, end: pauseStart, startMin: openStartMin, endMin: pauseStartMin, startEl: openStartEl, endEl: pauseStartEl });
+      effective.push({ start: pauseEnd, end: openEnd, startMin: pauseEndMin, endMin: openEndMin, startEl: pauseEndEl, endEl: openEndEl });
+      return effective;
+    }
 
-        const payment = await mollieResponse.json();
+    function getOpeningDaysDisplay(prefix) {
+      const value = safeValue(prefix + '_open_until_day');
+      if (!value) return '';
+      const lastDay = Number(value);
+      if (lastDay === 1) return tr('labels.mondayOnly');
+      return tr('labels.openMondayTo') + ' ' + getWeekDayName(lastDay);
+    }
 
-        console.log("Create payment status:", mollieResponse.status);
-        console.log("Create payment response:", JSON.stringify(payment));
+    function updateOpeningDayOptions(prefix) {
+      const select = document.getElementById(prefix + '_open_until_day');
+      if (!select) return;
 
-        if (!mollieResponse.ok) {
-          return json(
-            { error: "Erreur Mollie", details: payment },
-            mollieResponse.status,
-            corsHeaders
+      const currentValue = select.value;
+      select.options[0].text = tr('labels.notSpecified');
+      select.options[1].text = tr('labels.mondayOnly');
+      for (let day = 2; day <= 7; day++) {
+        select.options[day].text = getWeekDayName(day);
+      }
+      select.value = currentValue;
+    }
+
+    function validateOpeningDay(prefix) {
+      const openUntilValue = safeValue(prefix + '_open_until_day');
+      if (!openUntilValue) return true;
+
+      const dateEl = document.getElementById(prefix === 'collect' ? 'collect_date' : 'delivery_date');
+      if (!dateEl || !dateEl.value) return true;
+
+      const selectedDate = new Date(dateEl.value + 'T12:00:00');
+      let day = selectedDate.getDay();
+      if (day === 0) day = 7; // dimanche = 7
+
+      const lastOpenDay = Number(openUntilValue);
+      if (day < 1 || day > lastOpenDay) {
+        return showValidationMessage(tr('validation.closedDay'), dateEl);
+      }
+      return true;
+    }
+
+    function isTimeInsideOpening(periods, minute, allowEnd) {
+      for (let i = 0; i < periods.length; i++) {
+        if (minute >= periods[i].startMin && (allowEnd ? minute <= periods[i].endMin : minute < periods[i].endMin)) {
+          return true;
+        }
+      }
+      return false;
+    }
+
+    function getAvailableMinutes(periods, startMin, endMin) {
+      let total = 0;
+      for (let i = 0; i < periods.length; i++) {
+        const overlapStart = Math.max(startMin, periods[i].startMin);
+        const overlapEnd = Math.min(endMin, periods[i].endMin);
+        if (overlapEnd > overlapStart) total += overlapEnd - overlapStart;
+      }
+      return total;
+    }
+
+    function validateSchedule(prefix) {
+      if (!validateOpeningDay(prefix)) return false;
+
+      const periods = validateOpeningPeriods(prefix);
+      if (!Array.isArray(periods)) return false;
+
+      const hasOpeningHours = periods.length > 0;
+      const type = safeValue(prefix + '_appointment_type') || 'flexible';
+
+      if (type === 'fixed') {
+        const fixedEl = document.getElementById(prefix + '_fixed_time');
+        const fixed = fixedEl.value;
+        if (!fixed) return showValidationMessage(tr('validation.fixedRequired'), fixedEl);
+        const fixedMin = timeToMinutes(fixed);
+
+        // Si les heures d’ouverture sont renseignées, l’heure fixe doit correspondre.
+        if (hasOpeningHours && !isTimeInsideOpening(periods, fixedMin, false)) {
+          return showValidationMessage(tr('validation.fixedOutside'), fixedEl);
+        }
+        return true;
+      }
+
+      const startEl = document.getElementById(prefix + '_flexible_start');
+      const endEl = document.getElementById(prefix + '_flexible_end');
+      const start = startEl.value;
+      const end = endEl.value;
+      if (!start || !end) return showValidationMessage(tr('validation.flexibleRequired'), !start ? startEl : endEl);
+
+      const startMin = timeToMinutes(start);
+      const endMin = timeToMinutes(end);
+      if (startMin == null || endMin == null || endMin <= startMin) {
+        return showValidationMessage(tr('validation.flexibleInvalid'), endEl);
+      }
+
+      // Si les heures d’ouverture sont renseignées, le créneau doit y correspondre.
+      if (hasOpeningHours) {
+        if (!isTimeInsideOpening(periods, startMin, false) || !isTimeInsideOpening(periods, endMin, true)) {
+          return showValidationMessage(tr('validation.flexibleOutside'), startEl);
+        }
+      }
+
+      // Avec des heures d’ouverture : on déduit les pauses. Sans heures : durée brute du créneau.
+      const availableMinutes = hasOpeningHours
+        ? getAvailableMinutes(periods, startMin, endMin)
+        : (endMin - startMin);
+
+      const minimumHours = getMinimumFlexibleHours();
+      if (availableMinutes < minimumHours * 60) {
+        return showValidationMessage(
+          formatTemplate(tr('validation.flexibleTooShort'), { hours: minimumHours }),
+          endEl
+        );
+      }
+      return true;
+    }
+
+    function formatScheduleValue(prefix) {
+      const type = safeValue(prefix + '_appointment_type') || 'flexible';
+      if (type === 'fixed') {
+        const fixed = safeValue(prefix + '_fixed_time');
+        return fixed ? tr('labels.exactTime') + ' ' + fixed + ' (' + getFixedTimePriceText() + ')' : '';
+      }
+      const start = safeValue(prefix + '_flexible_start');
+      const end = safeValue(prefix + '_flexible_end');
+      return start && end ? tr('labels.flexibleSlot') + ' ' + start + ' - ' + end : '';
+    }
+
+    function syncScheduleDerivedFields() {
+      const collectField = document.getElementById('collect_time');
+      const deliveryField = document.getElementById('delivery_time');
+      if (collectField) collectField.value = formatScheduleValue('collect');
+      if (deliveryField) deliveryField.value = formatScheduleValue('delivery');
+    }
+
+    function updateScheduleUi(prefix) {
+      const typeSelect = document.getElementById(prefix + '_appointment_type');
+      if (!typeSelect) return;
+
+      typeSelect.options[0].text = tr('labels.flexibleSlot');
+      typeSelect.options[1].text = tr('labels.fixedTime') + ' (' + getFixedTimePriceText() + ')';
+
+      const isFixed = typeSelect.value === 'fixed';
+      document.getElementById(prefix + 'FlexibleWrap').style.display = isFixed ? 'none' : 'grid';
+      document.getElementById(prefix + 'FixedWrap').style.display = isFixed ? 'block' : 'none';
+
+      const note = document.getElementById(prefix + 'MinSlotNote');
+      if (isFixed) {
+        note.innerText = getFixedTimePriceText();
+      } else {
+        const hours = getMinimumFlexibleHours();
+        note.innerText = currentLang === 'nl' ? 'Min. ' + hours + ' u' : currentLang === 'en' ? 'Min. ' + hours + ' h' : 'Min. ' + hours + ' h';
+      }
+
+      syncScheduleDerivedFields();
+    }
+
+    function applyScheduleTranslations() {
+      const optionalWord = currentLang === 'nl' ? 'optioneel' : currentLang === 'en' ? 'optional' : 'facultatif';
+      const openingText = currentLang === 'nl' ? 'Openingsuren' : currentLang === 'en' ? 'Opening hours' : 'Heures d’ouverture';
+      const pauseText = currentLang === 'nl' ? 'Pauze' : currentLang === 'en' ? 'Break' : 'Pause';
+      const siteHoursText = currentLang === 'nl' ? 'Openingsuren locatie (optioneel)' : currentLang === 'en' ? 'Site opening hours (optional)' : 'Horaires du site (facultatif)';
+
+      document.getElementById('collectOpeningSummary').innerText = siteHoursText;
+      document.getElementById('deliveryOpeningSummary').innerText = siteHoursText;
+
+      document.getElementById('label_collect_open_until_day').innerText = tr('labels.openMondayTo');
+      document.getElementById('label_delivery_open_until_day').innerText = tr('labels.openMondayTo');
+      updateOpeningDayOptions('collect');
+      updateOpeningDayOptions('delivery');
+
+      document.getElementById('label_collect_opening_hours').innerText = openingText;
+      document.getElementById('label_delivery_opening_hours').innerText = openingText;
+      document.getElementById('label_collect_pause').innerText = pauseText + ' (' + optionalWord + ')';
+      document.getElementById('label_delivery_pause').innerText = pauseText + ' (' + optionalWord + ')';
+
+      document.getElementById('label_collect_appointment_type').innerHTML = tr('labels.collectTime') + ' <span class="required-star">*</span>';
+      document.getElementById('label_delivery_appointment_type').innerHTML = tr('labels.deliveryTime') + ' <span class="required-star">*</span>';
+      document.getElementById('label_collect_flexible_start').innerHTML = tr('labels.from') + ' <span class="required-star">*</span>';
+      document.getElementById('label_collect_flexible_end').innerHTML = tr('labels.to') + ' <span class="required-star">*</span>';
+      document.getElementById('label_delivery_flexible_start').innerHTML = tr('labels.from') + ' <span class="required-star">*</span>';
+      document.getElementById('label_delivery_flexible_end').innerHTML = tr('labels.to') + ' <span class="required-star">*</span>';
+      document.getElementById('label_collect_fixed_time').innerHTML = tr('labels.exactTime') + ' <span class="required-star">*</span>';
+      document.getElementById('label_delivery_fixed_time').innerHTML = tr('labels.exactTime') + ' <span class="required-star">*</span>';
+    }
+
+    function getFixedTimeSurchargeTotal() {
+      let total = 0;
+      const surcharge = getFixedTimeSurcharge(vehicleName);
+      if (safeValue('collect_appointment_type') === 'fixed') total += surcharge;
+      if (safeValue('delivery_appointment_type') === 'fixed') total += surcharge;
+      return total;
+    }
+
+    function getOptionsTotal() {
+      let total = getFixedTimeSurchargeTotal();
+      const checks = document.querySelectorAll('.option-check');
+      for (let i = 0; i < checks.length; i++) {
+        if (checks[i].checked) {
+          total += parseFloat(checks[i].getAttribute('data-price') || '0');
+        }
+      }
+      return total;
+    }
+
+    function getSelectedOptions() {
+      const selected = [];
+      const checks = document.querySelectorAll('.option-check');
+      for (let i = 0; i < checks.length; i++) {
+        if (checks[i].checked) {
+          selected.push({
+            label: checks[i].parentNode.querySelector('span').innerText,
+            price: parseFloat(checks[i].getAttribute('data-price') || '0')
+          });
+        }
+      }
+
+      if (safeValue('collect_appointment_type') === 'fixed') {
+        selected.push({ label: tr('labels.fixedPickupOption'), price: getFixedTimeSurcharge(vehicleName) });
+      }
+      if (safeValue('delivery_appointment_type') === 'fixed') {
+        selected.push({ label: tr('labels.fixedDeliveryOption'), price: getFixedTimeSurcharge(vehicleName) });
+      }
+      return selected;
+    }
+
+    function calculateTotals() {
+      const optionsTotal = getOptionsTotal();
+      const totalHtva = basePrice + optionsTotal;
+      const vatAmount = shouldApplyVat() ? (totalHtva * 0.21) : 0;
+      const totalTvac = totalHtva + vatAmount;
+
+      return {
+        optionsTotal: optionsTotal,
+        totalHtva: totalHtva,
+        vatAmount: vatAmount,
+        totalTvac: totalTvac
+      };
+    }
+
+    function updatePrices() {
+      const totals = calculateTotals();
+
+      document.getElementById('vehicleDisplay').innerText = vehicleName;
+      document.getElementById('pickupDisplay').innerText = pickupPostal + ' (' + pickupCountry + ')';
+      document.getElementById('deliveryDisplay').innerText = deliveryPostal + ' (' + deliveryCountry + ')';
+      document.getElementById('basePriceDisplay').innerText = formatPrice(basePrice);
+      document.getElementById('optionsPriceDisplay').innerText = formatPrice(totals.optionsTotal);
+      document.getElementById('vatDisplay').innerText = formatPrice(totals.vatAmount);
+      document.getElementById('totalPriceDisplay').innerText = formatPrice(totals.totalTvac);
+
+      document.getElementById('priceLabelVehicle').innerText = tr('labels.vehicle') + ' :';
+      document.getElementById('priceLabelPickup').innerText = tr('labels.pickup') + ' :';
+      document.getElementById('priceLabelDelivery').innerText = tr('labels.delivery') + ' :';
+      document.getElementById('priceLabelBase').innerText = tr('labels.basePrice') + ' :';
+      document.getElementById('priceLabelOptions').innerText = tr('labels.optionsPrice') + ' :';
+      document.getElementById('priceLabelVat').innerText = tr('labels.vatShort') + ' :';
+      document.getElementById('priceLabelTotal').innerText = tr('labels.total') + ' :';
+
+      document.getElementById('vehicleField').value = vehicleName;
+      document.getElementById('basePriceField').value = formatPrice(basePrice);
+      document.getElementById('optionsPriceField').value = formatPrice(totals.optionsTotal);
+      document.getElementById('totalHtvaField').value = formatPrice(totals.totalHtva);
+      document.getElementById('vatAmountField').value = formatPrice(totals.vatAmount);
+      document.getElementById('totalTvaIncludedField').value = formatPrice(totals.totalTvac);
+      document.getElementById('pickupPostalField').value = pickupPostal;
+      document.getElementById('deliveryPostalField').value = deliveryPostal;
+      document.getElementById('pickupCountryField').value = pickupCountry;
+      document.getElementById('deliveryCountryField').value = deliveryCountry;
+    }
+
+    function showStep(step) {
+      currentStep = step;
+
+      const steps = document.querySelectorAll('.step');
+      for (let i = 0; i < steps.length; i++) {
+        steps[i].classList.remove('active');
+      }
+      document.querySelector('.step[data-step="' + step + '"]').classList.add('active');
+
+      updateProgressHeader();
+      document.getElementById('progressBar').style.width = (step * 20) + '%';
+
+      document.getElementById('prevBtn').style.display = step === 1 ? 'none' : 'inline-block';
+      document.getElementById('nextBtn').style.display = step === 5 ? 'none' : 'inline-block';
+      document.getElementById('submitBtn').style.display = step === 5 ? 'inline-block' : 'none';
+    }
+
+    function refreshProductTitles() {
+      const blocks = document.querySelectorAll('.product-box');
+      for (let i = 0; i < blocks.length; i++) {
+        const title = blocks[i].querySelector('.product-title');
+        if (title) title.innerText = tr('product.title') + ' ' + (i + 1);
+      }
+    }
+
+    function refreshProductTranslations() {
+      const blocks = document.querySelectorAll('.product-box');
+      for (let i = 0; i < blocks.length; i++) {
+        const box = blocks[i];
+        const labels = box.querySelectorAll('.field label');
+        if (labels[0]) labels[0].innerText = tr('product.type');
+        if (labels[1]) labels[1].innerText = tr('product.description');
+        if (labels[2]) labels[2].innerText = tr('product.stackable');
+        if (labels[3]) labels[3].innerText = tr('product.qty');
+        if (labels[4]) labels[4].innerText = tr('product.weight');
+        if (labels[5]) labels[5].innerText = tr('product.length');
+        if (labels[6]) labels[6].innerText = tr('product.width');
+        if (labels[7]) labels[7].innerText = tr('product.height');
+
+        const delBtn = box.querySelector('.btn-danger');
+        if (delBtn) delBtn.innerText = tr('product.delete');
+
+        const desc = box.querySelector('.product-description');
+        if (desc) desc.placeholder = tr('product.placeholder');
+
+        const typeSel = box.querySelector('.product-type');
+        if (typeSel) {
+          typeSel.options[0].text = tr('product.choose');
+          typeSel.options[1].text = tr('product.palette');
+          typeSel.options[2].text = tr('product.carton');
+          typeSel.options[3].text = tr('product.envelope');
+          typeSel.options[4].text = tr('product.other');
+        }
+
+        const stackSel = box.querySelector('.product-stackable');
+        if (stackSel) {
+          stackSel.options[0].text = tr('product.choose');
+          stackSel.options[1].text = tr('product.yes');
+          stackSel.options[2].text = tr('product.no');
+        }
+      }
+
+      refreshProductTitles();
+    }
+
+    window.removeProduct = function(btn) {
+      const block = btn.closest('.product-box');
+      if (block) {
+        block.remove();
+        refreshProductTitles();
+        updateSummary();
+      }
+    };
+
+    function addProduct() {
+      productCount++;
+
+      const html = ''
+        + '<div class="product-box">'
+        +   '<div class="product-head">'
+        +     '<div class="product-title">' + tr('product.title') + ' ' + productCount + '</div>'
+        +     '<button type="button" class="btn-danger" onclick="removeProduct(this)">' + tr('product.delete') + '</button>'
+        +   '</div>'
+        +   '<div class="grid-2">'
+        +     '<div class="field">'
+        +       '<label>' + tr('product.type') + '</label>'
+        +       '<select class="select product-type summary-watch-product">'
+        +         '<option value="">' + tr('product.choose') + '</option>'
+        +         '<option value="Palette">' + tr('product.palette') + '</option>'
+        +         '<option value="Carton">' + tr('product.carton') + '</option>'
+        +         '<option value="Enveloppe">' + tr('product.envelope') + '</option>'
+        +         '<option value="Autre">' + tr('product.other') + '</option>'
+        +       '</select>'
+        +     '</div>'
+        +     '<div class="field">'
+        +       '<label>' + tr('product.description') + '</label>'
+        +       '<input type="text" class="input product-description summary-watch-product" placeholder="' + tr('product.placeholder') + '">'
+        +     '</div>'
+        +     '<div class="field">'
+        +       '<label>' + tr('product.stackable') + '</label>'
+        +       '<select class="select product-stackable summary-watch-product">'
+        +         '<option value="">' + tr('product.choose') + '</option>'
+        +         '<option value="Oui">' + tr('product.yes') + '</option>'
+        +         '<option value="Non">' + tr('product.no') + '</option>'
+        +       '</select>'
+        +     '</div>'
+        +     '<div class="field">'
+        +       '<label>' + tr('product.qty') + '</label>'
+        +       '<input type="number" min="1" class="input product-qty summary-watch-product">'
+        +     '</div>'
+        +     '<div class="field">'
+        +       '<label>' + tr('product.weight') + '</label>'
+        +       '<input type="number" min="0" step="0.01" class="input product-weight summary-watch-product">'
+        +     '</div>'
+        +     '<div class="field">'
+        +       '<label>' + tr('product.length') + '</label>'
+        +       '<input type="number" min="0" step="0.01" class="input product-length summary-watch-product">'
+        +     '</div>'
+        +     '<div class="field">'
+        +       '<label>' + tr('product.width') + '</label>'
+        +       '<input type="number" min="0" step="0.01" class="input product-width summary-watch-product">'
+        +     '</div>'
+        +     '<div class="field">'
+        +       '<label>' + tr('product.height') + '</label>'
+        +       '<input type="number" min="0" step="0.01" class="input product-height summary-watch-product">'
+        +     '</div>'
+        +   '</div>'
+        + '</div>';
+
+      document.getElementById('productsContainer').insertAdjacentHTML('beforeend', html);
+      refreshProductTranslations();
+      bindDynamicInputs();
+      updateSummary();
+    }
+
+    function validateVehicleCapacity() {
+      const rules = VEHICLE_CAPACITY_RULES[vehicleName];
+      if (!rules) return true;
+
+      const products = document.querySelectorAll('.product-box');
+      let totalWeight = 0;
+      let palletCount = 0;
+      let palletFloorPositions = 0;
+
+      for (let i = 0; i < products.length; i++) {
+        const typeEl = products[i].querySelector('.product-type');
+        const stackableEl = products[i].querySelector('.product-stackable');
+        const qtyEl = products[i].querySelector('.product-qty');
+        const weightEl = products[i].querySelector('.product-weight');
+        const lengthEl = products[i].querySelector('.product-length');
+        const widthEl = products[i].querySelector('.product-width');
+        const heightEl = products[i].querySelector('.product-height');
+
+        const type = typeEl.value;
+        const stackable = stackableEl ? stackableEl.value : '';
+        const qty = Number(qtyEl.value || 0);
+        const unitWeight = Number(weightEl.value || 0);
+        const length = Number(lengthEl.value || 0);
+        const width = Number(widthEl.value || 0);
+        const height = Number(heightEl.value || 0);
+
+        totalWeight += qty * unitWeight;
+
+        if (type === 'Palette') {
+          palletCount += qty;
+
+          if (stackable === 'Oui' && height > 0) {
+            // Calcul par hauteur cumulée.
+            // Exemple : 30 palettes x 10 cm = 300 cm => 1 place au sol.
+            // 31 palettes x 10 cm = 310 cm => 2 places au sol.
+            const totalStackHeight = qty * height;
+            palletFloorPositions += Math.ceil(totalStackHeight / MAX_STACK_HEIGHT_CM);
+          } else {
+            // Non empilable : chaque palette occupe une place au sol.
+            palletFloorPositions += qty;
+          }
+        }
+
+        if (rules.maxItemWeight && unitWeight > rules.maxItemWeight) {
+          return showValidationMessage(
+            formatTemplate(tr('validation.capacityItemWeight'), {
+              product: i + 1,
+              max: rules.maxItemWeight
+            }),
+            weightEl
           );
         }
 
-        return json(
-          {
-            checkout: payment?._links?.checkout?.href || "",
-            paymentId: payment?.id || ""
-          },
-          200,
-          corsHeaders
+        if (rules.maxLength && rules.maxWidth && length > 0 && width > 0) {
+          const fitsNormal = length <= rules.maxLength && width <= rules.maxWidth;
+          const fitsRotated = width <= rules.maxLength && length <= rules.maxWidth;
+          if (!fitsNormal && !fitsRotated) {
+            return showValidationMessage(
+              formatTemplate(tr('validation.capacityDimensions'), {
+                product: i + 1,
+                length: rules.maxLength,
+                width: rules.maxWidth
+              }),
+              lengthEl
+            );
+          }
+        }
+      }
+
+      if (rules.maxWeight && totalWeight > rules.maxWeight) {
+        return showValidationMessage(
+          formatTemplate(tr('validation.capacityWeight'), {
+            actual: totalWeight.toFixed(2),
+            max: rules.maxWeight
+          }),
+          products.length ? products[0].querySelector('.product-weight') : null
         );
-      } catch (error) {
-        console.log("Create payment error:", error.message);
-        return json(
-          {
-            error: "Erreur create-payment",
-            message: error.message || "Erreur inconnue"
-          },
-          500,
-          corsHeaders
+      }
+
+      if (rules.maxPallets && palletFloorPositions > rules.maxPallets) {
+        return showValidationMessage(
+          formatTemplate(tr('validation.capacityPallets'), {
+            pallets: palletCount,
+            actual: palletFloorPositions,
+            max: rules.maxPallets
+          }),
+          products.length ? products[0].querySelector('.product-qty') : null
         );
+      }
+
+      return true;
+    }
+
+    function showValidationMessage(message, fieldEl) {
+      alert(message);
+      if (fieldEl) fieldEl.focus();
+      return false;
+    }
+
+    function validateStep(step) {
+      if (step === 2) {
+        const products = document.querySelectorAll('.product-box');
+        if (products.length === 0) {
+          return showValidationMessage(tr('validation.addOneProduct'));
+        }
+
+        for (let i = 0; i < products.length; i++) {
+          const fields = [
+            products[i].querySelector('.product-type'),
+            products[i].querySelector('.product-description'),
+            products[i].querySelector('.product-stackable'),
+            products[i].querySelector('.product-qty'),
+            products[i].querySelector('.product-weight'),
+            products[i].querySelector('.product-length'),
+            products[i].querySelector('.product-width'),
+            products[i].querySelector('.product-height')
+          ];
+
+          for (let j = 0; j < fields.length; j++) {
+            if (!fields[j].value.trim()) {
+              return showValidationMessage(tr('validation.productPrefix') + ' ' + (i + 1) + '.', fields[j]);
+            }
+          }
+        }
+
+        if (!validateVehicleCapacity()) return false;
+      }
+
+      if (step === 3) {
+        const fields3 = ['collect_company','collect_date','collect_street','collect_number','collect_postal','collect_city','collect_country'];
+        for (let k = 0; k < fields3.length; k++) {
+          const el3 = document.getElementById(fields3[k]);
+          if (!el3.value.trim()) return showValidationMessage(tr('validation.required'), el3);
+        }
+        if (!validateSchedule('collect')) return false;
+      }
+
+      if (step === 4) {
+        const fields4 = ['delivery_company','delivery_date','delivery_street','delivery_number','delivery_postal','delivery_city','delivery_country'];
+        for (let m = 0; m < fields4.length; m++) {
+          const el4 = document.getElementById(fields4[m]);
+          if (!el4.value.trim()) return showValidationMessage(tr('validation.required'), el4);
+        }
+        if (!validateSchedule('delivery')) return false;
+      }
+
+      if (step === 5) {
+        const fields5 = ['billing_email','billing_name','billing_street','billing_number','billing_postal','billing_city','billing_country','billing_phone'];
+        for (let n = 0; n < fields5.length; n++) {
+          const el5 = document.getElementById(fields5[n]);
+          if (!el5.value.trim()) return showValidationMessage(tr('validation.required'), el5);
+        }
+
+        if (safeValue('billing_country') === 'Autre' && !safeValue('billing_country_other')) {
+          return showValidationMessage(tr('validation.specifyCountry'), document.getElementById('billing_country_other'));
+        }
+      }
+
+      return true;
+    }
+
+    function updateSummaryOptions() {
+      const target = document.getElementById('summaryOptions');
+      const opts = getSelectedOptions();
+
+      if (opts.length === 0) {
+        target.innerHTML = '<span class="muted">' + tr('labels.noneSelected') + '</span>';
+        return;
+      }
+
+      let html = '';
+      for (let i = 0; i < opts.length; i++) {
+        html += '• ' + opts[i].label + ' (+' + formatPrice(opts[i].price) + ')<br>';
+      }
+      target.innerHTML = html;
+    }
+
+    function updateSummaryProducts() {
+      const target = document.getElementById('summaryProducts');
+      const products = document.querySelectorAll('.product-box');
+
+      if (products.length === 0) {
+        target.innerHTML = '<span class="muted">' + tr('labels.noProduct') + '</span>';
+        return;
+      }
+
+      let html = '';
+      let grandTotalWeight = 0;
+
+      for (let i = 0; i < products.length; i++) {
+        const type = products[i].querySelector('.product-type').value || '-';
+        const desc = products[i].querySelector('.product-description').value.trim() || '-';
+        const stack = products[i].querySelector('.product-stackable').value || '-';
+        const qtyRaw = products[i].querySelector('.product-qty').value.trim();
+        const weightRaw = products[i].querySelector('.product-weight').value.trim();
+        const qty = qtyRaw || '-';
+        const weight = weightRaw || '-';
+        const length = products[i].querySelector('.product-length').value.trim() || '-';
+        const width = products[i].querySelector('.product-width').value.trim() || '-';
+        const height = products[i].querySelector('.product-height').value.trim() || '-';
+
+        const qtyNumber = Number(qtyRaw || 0);
+        const unitWeightNumber = Number(weightRaw || 0);
+        const productTotalWeight = qtyNumber * unitWeightNumber;
+        grandTotalWeight += productTotalWeight;
+
+        html += '<strong>' + tr('product.title') + ' ' + (i + 1) + '</strong><br>';
+        html += tr('product.type') + ' : ' + type + '<br>';
+        html += tr('product.description') + ' : ' + desc + '<br>';
+        html += tr('product.stackable') + ' : ' + stack + '<br>';
+        html += tr('product.qty') + ' : ' + qty + ' | ' + tr('product.weight') + ' : ' + weight + '<br>';
+        if (qtyRaw && weightRaw) {
+          html += '<strong>' + tr('product.totalWeight') + ' : ' + productTotalWeight.toFixed(2) + ' kg</strong><br>';
+        }
+        html += tr('product.length') + ' / ' + tr('product.width') + ' / ' + tr('product.height') + ' : ' + length + ' x ' + width + ' x ' + height + ' cm<br><br>';
+      }
+
+      html += '<strong>' + tr('product.goodsTotalWeight') + ' : ' + grandTotalWeight.toFixed(2) + ' kg</strong><br>';
+
+      if (safeValue('goods_extra_info')) {
+        html += '<br><strong>' + tr('labels.extraInfo') + '</strong><br>' + safeValue('goods_extra_info');
+      }
+
+      target.innerHTML = html;
+    }
+
+    function updateSummaryCollect() {
+      const target = document.getElementById('summaryCollect');
+      const values = [
+        safeValue('collect_company'),
+        safeValue('collect_date'),
+        safeValue('collect_street'),
+        safeValue('collect_number'),
+        safeValue('collect_postal'),
+        safeValue('collect_city'),
+        safeValue('collect_country'),
+        safeValue('collect_time'),
+        safeValue('collect_contact'),
+        safeValue('collect_phone'),
+        safeValue('collect_ref'),
+        safeValue('collect_instructions')
+      ];
+
+      const hasData = values.some(function(v) { return v !== ''; });
+      if (!hasData) {
+        target.innerHTML = '<span class="muted">' + tr('labels.notFilled') + '</span>';
+        return;
+      }
+
+      let html = '';
+      if (safeValue('collect_company')) html += tr('labels.company') + ' : ' + safeValue('collect_company') + '<br>';
+      if (safeValue('collect_date')) html += tr('labels.dateWord') + ' : ' + safeValue('collect_date') + '<br>';
+      if (safeValue('collect_street') || safeValue('collect_number') || safeValue('collect_postal') || safeValue('collect_city') || safeValue('collect_country')) {
+        html += tr('labels.address') + ' : ' + safeValue('collect_street') + ' ' + safeValue('collect_number') + ', ' + safeValue('collect_postal') + ' ' + safeValue('collect_city') + ', ' + safeValue('collect_country') + '<br>';
+      }
+      if (getOpeningDaysDisplay('collect')) html += tr('labels.openingDays') + ' : ' + getOpeningDaysDisplay('collect') + '<br>';
+      if (getOpeningHoursDisplay('collect')) html += tr('labels.openingHours') + ' : ' + getOpeningHoursDisplay('collect') + '<br>';
+      if (safeValue('collect_time')) html += tr('labels.timeWord') + ' : ' + safeValue('collect_time') + '<br>';
+      if (safeValue('collect_contact')) html += tr('labels.contactWord') + ' : ' + safeValue('collect_contact') + '<br>';
+      if (safeValue('collect_phone')) html += tr('labels.phone') + ' : ' + safeValue('collect_phone') + '<br>';
+      if (safeValue('collect_ref')) html += tr('labels.refWord') + ' : ' + safeValue('collect_ref') + '<br>';
+      if (safeValue('collect_instructions')) html += tr('labels.instructions') + ' : ' + safeValue('collect_instructions') + '<br>';
+      target.innerHTML = html;
+    }
+
+    function updateSummaryDelivery() {
+      const target = document.getElementById('summaryDelivery');
+      const values = [
+        safeValue('delivery_company'),
+        safeValue('delivery_date'),
+        safeValue('delivery_street'),
+        safeValue('delivery_number'),
+        safeValue('delivery_postal'),
+        safeValue('delivery_city'),
+        safeValue('delivery_country'),
+        safeValue('delivery_time'),
+        safeValue('delivery_contact'),
+        safeValue('delivery_phone'),
+        safeValue('delivery_ref'),
+        safeValue('delivery_instructions')
+      ];
+
+      const hasData = values.some(function(v) { return v !== ''; });
+      if (!hasData) {
+        target.innerHTML = '<span class="muted">' + tr('labels.notFilled') + '</span>';
+        return;
+      }
+
+      let html = '';
+      if (safeValue('delivery_company')) html += tr('labels.company') + ' : ' + safeValue('delivery_company') + '<br>';
+      if (safeValue('delivery_date')) html += tr('labels.dateWord') + ' : ' + safeValue('delivery_date') + '<br>';
+      if (safeValue('delivery_street') || safeValue('delivery_number') || safeValue('delivery_postal') || safeValue('delivery_city') || safeValue('delivery_country')) {
+        html += tr('labels.address') + ' : ' + safeValue('delivery_street') + ' ' + safeValue('delivery_number') + ', ' + safeValue('delivery_postal') + ' ' + safeValue('delivery_city') + ', ' + safeValue('delivery_country') + '<br>';
+      }
+      if (getOpeningDaysDisplay('delivery')) html += tr('labels.openingDays') + ' : ' + getOpeningDaysDisplay('delivery') + '<br>';
+      if (getOpeningHoursDisplay('delivery')) html += tr('labels.openingHours') + ' : ' + getOpeningHoursDisplay('delivery') + '<br>';
+      if (safeValue('delivery_time')) html += tr('labels.timeWord') + ' : ' + safeValue('delivery_time') + '<br>';
+      if (safeValue('delivery_contact')) html += tr('labels.contactWord') + ' : ' + safeValue('delivery_contact') + '<br>';
+      if (safeValue('delivery_phone')) html += tr('labels.phone') + ' : ' + safeValue('delivery_phone') + '<br>';
+      if (safeValue('delivery_ref')) html += tr('labels.refWord') + ' : ' + safeValue('delivery_ref') + '<br>';
+      if (safeValue('delivery_instructions')) html += tr('labels.instructions') + ' : ' + safeValue('delivery_instructions') + '<br>';
+      target.innerHTML = html;
+    }
+
+    function updateSummaryBilling() {
+      const target = document.getElementById('summaryBilling');
+      const values = [
+        safeValue('billing_email'),
+        safeValue('billing_company'),
+        safeValue('billing_name'),
+        safeValue('billing_vat'),
+        safeValue('billing_street'),
+        safeValue('billing_number'),
+        safeValue('billing_postal'),
+        safeValue('billing_city'),
+        getBillingCountryValue(),
+        safeValue('billing_phone')
+      ];
+
+      const hasData = values.some(function(v) { return v !== ''; });
+      if (!hasData) {
+        target.innerHTML = '<span class="muted">' + tr('labels.notFilled') + '</span>';
+        return;
+      }
+
+      let html = '';
+      if (safeValue('billing_email')) html += tr('labels.email') + ' : ' + safeValue('billing_email') + '<br>';
+      if (safeValue('billing_company')) html += tr('labels.company') + ' : ' + safeValue('billing_company') + '<br>';
+      if (safeValue('billing_name')) html += tr('labels.fullname') + ' : ' + safeValue('billing_name') + '<br>';
+      if (safeValue('billing_vat')) html += tr('labels.vat') + ' : ' + safeValue('billing_vat') + '<br>';
+      if (safeValue('billing_street') || safeValue('billing_number') || safeValue('billing_postal') || safeValue('billing_city') || getBillingCountryValue()) {
+        html += tr('labels.address') + ' : ' + safeValue('billing_street') + ' ' + safeValue('billing_number') + ', ' + safeValue('billing_postal') + ' ' + safeValue('billing_city') + ', ' + getBillingCountryValue() + '<br>';
+      }
+      if (safeValue('billing_phone')) html += tr('labels.phone') + ' : ' + safeValue('billing_phone') + '<br>';
+
+      const totals = calculateTotals();
+      html += tr('labels.vatShort') + ' : ' + formatPrice(totals.vatAmount) + '<br>';
+      target.innerHTML = html;
+    }
+
+    function updateFinalReview() {
+      const totals = calculateTotals();
+      let html = '';
+
+      html += '<strong>' + tr('labels.vehicle') + ' :</strong> ' + vehicleName + '<br>';
+      html += '<strong>' + tr('labels.pickup') + ' :</strong> ' + pickupPostal + ' (' + pickupCountry + ')<br>';
+      html += '<strong>' + tr('labels.delivery') + ' :</strong> ' + deliveryPostal + ' (' + deliveryCountry + ')<br>';
+      if (getOpeningDaysDisplay('collect')) html += '<strong>' + tr('labels.openingDays') + ' :</strong> ' + getOpeningDaysDisplay('collect') + '<br>';
+      if (getOpeningHoursDisplay('collect')) html += '<strong>' + tr('labels.openingHoursPickup') + ' :</strong> ' + getOpeningHoursDisplay('collect') + '<br>';
+      if (safeValue('collect_time')) html += '<strong>' + tr('labels.collectTime') + ' :</strong> ' + safeValue('collect_time') + '<br>';
+      if (getOpeningDaysDisplay('delivery')) html += '<strong>' + tr('labels.openingDays') + ' :</strong> ' + getOpeningDaysDisplay('delivery') + '<br>';
+      if (getOpeningHoursDisplay('delivery')) html += '<strong>' + tr('labels.openingHoursDelivery') + ' :</strong> ' + getOpeningHoursDisplay('delivery') + '<br>';
+      if (safeValue('delivery_time')) html += '<strong>' + tr('labels.deliveryTime') + ' :</strong> ' + safeValue('delivery_time') + '<br>';
+      html += '<strong>' + tr('labels.basePrice') + ' :</strong> ' + formatPrice(basePrice) + '<br>';
+      html += '<strong>' + tr('labels.optionsPrice') + ' :</strong> ' + formatPrice(totals.optionsTotal) + '<br>';
+      html += '<strong>' + tr('labels.vatShort') + ' :</strong> ' + formatPrice(totals.vatAmount) + '<br>';
+      html += '<strong>' + tr('labels.total') + ' :</strong> ' + formatPrice(totals.totalTvac) + '<br><br>';
+
+      html += '<strong>' + tr('headings.options') + '</strong><br>';
+      const opts = getSelectedOptions();
+      if (opts.length === 0) {
+        html += tr('labels.noneSelected') + '<br><br>';
+      } else {
+        for (let i = 0; i < opts.length; i++) {
+          html += '• ' + opts[i].label + ' (+' + formatPrice(opts[i].price) + ')<br>';
+        }
+        html += '<br>';
+      }
+
+      html += '<strong>' + tr('headings.billing') + '</strong><br>';
+      html += tr('labels.email') + ' : ' + safeValue('billing_email') + '<br>';
+      html += tr('labels.company') + ' : ' + safeValue('billing_company') + '<br>';
+      html += tr('labels.fullname') + ' : ' + safeValue('billing_name') + '<br>';
+      html += tr('labels.phone') + ' : ' + safeValue('billing_phone') + '<br>';
+
+      document.getElementById('finalReviewBox').innerHTML = html;
+    }
+
+    function updateSummary() {
+      syncScheduleDerivedFields();
+      toggleOtherCountryField();
+      updatePrices();
+      updateSummaryOptions();
+      updateSummaryProducts();
+      updateSummaryCollect();
+      updateSummaryDelivery();
+      updateSummaryBilling();
+      updateFinalReview();
+    }
+
+    function buildSummary() {
+      const totals = calculateTotals();
+      const reservationNumber = document.getElementById('reservationNumberField').value;
+      const opts = getSelectedOptions();
+      const products = document.querySelectorAll('.product-box');
+
+      let summary = '';
+
+      summary += '=== RESERVATION ===\n';
+      summary += 'N°: ' + reservationNumber + '\n\n';
+
+      summary += '=== TARIFS ===\n';
+      summary += 'Véhicule: ' + vehicleName + '\n';
+      summary += 'Collecte calculateur: ' + pickupPostal + ' (' + pickupCountry + ')\n';
+      summary += 'Livraison calculateur: ' + deliveryPostal + ' (' + deliveryCountry + ')\n';
+      summary += 'Base HTVA: ' + formatPrice(basePrice) + '\n';
+      summary += 'Options HTVA: ' + formatPrice(totals.optionsTotal) + '\n';
+      summary += 'TVA: ' + formatPrice(totals.vatAmount) + '\n';
+      summary += 'Total TVAC: ' + formatPrice(totals.totalTvac) + '\n\n';
+
+      summary += '=== OPTIONS ===\n';
+      if (opts.length === 0) {
+        summary += 'Aucune option sélectionnée\n\n';
+      } else {
+        for (let i = 0; i < opts.length; i++) {
+          summary += '- ' + opts[i].label + ' (+' + formatPrice(opts[i].price) + ')\n';
+        }
+        summary += '\n';
+      }
+
+      summary += '=== MARCHANDISES ===\n';
+      let grandTotalWeight = 0;
+      if (products.length === 0) {
+        summary += 'Aucun produit ajouté\n\n';
+      } else {
+        for (let i = 0; i < products.length; i++) {
+          const type = products[i].querySelector('.product-type').value || '-';
+          const desc = products[i].querySelector('.product-description').value.trim() || '-';
+          const stack = products[i].querySelector('.product-stackable').value || '-';
+          const qty = products[i].querySelector('.product-qty').value.trim() || '-';
+          const weight = products[i].querySelector('.product-weight').value.trim() || '-';
+          const length = products[i].querySelector('.product-length').value.trim() || '-';
+          const width = products[i].querySelector('.product-width').value.trim() || '-';
+          const height = products[i].querySelector('.product-height').value.trim() || '-';
+          const qtyNumber = Number(products[i].querySelector('.product-qty').value || 0);
+          const unitWeightNumber = Number(products[i].querySelector('.product-weight').value || 0);
+          const productTotalWeight = qtyNumber * unitWeightNumber;
+          grandTotalWeight += productTotalWeight;
+
+          summary += 'Produit ' + (i + 1) + '\n';
+          summary += 'Type: ' + type + '\n';
+          summary += 'Description: ' + desc + '\n';
+          summary += 'Empilable: ' + stack + '\n';
+          summary += 'Quantité: ' + qty + '\n';
+          summary += 'Poids par unité: ' + weight + ' kg\n';
+          summary += 'Poids total produit: ' + productTotalWeight.toFixed(2) + ' kg\n';
+          summary += 'Dimensions: ' + length + ' x ' + width + ' x ' + height + ' cm\n\n';
+        }
+        summary += 'Poids total marchandises: ' + grandTotalWeight.toFixed(2) + ' kg\n\n';
+      }
+
+      if (safeValue('goods_extra_info')) {
+        summary += 'Informations complémentaires marchandises: ' + safeValue('goods_extra_info') + '\n\n';
+      }
+
+      summary += '=== COLLECTE ===\n';
+      summary += 'Société: ' + safeValue('collect_company') + '\n';
+      summary += 'Date: ' + safeValue('collect_date') + '\n';
+      summary += 'Adresse: ' + safeValue('collect_street') + ' ' + safeValue('collect_number') + ', ' + safeValue('collect_postal') + ' ' + safeValue('collect_city') + ', ' + safeValue('collect_country') + '\n';
+      summary += 'Jours d’ouverture: ' + (getOpeningDaysDisplay('collect') || 'Non renseignés') + '\n';
+      summary += 'Heures d’ouverture: ' + (getOpeningHoursDisplay('collect') || 'Non renseignées') + '\n';
+      summary += 'Horaire souhaité: ' + safeValue('collect_time') + '\n';
+      summary += 'Contact: ' + safeValue('collect_contact') + '\n';
+      summary += 'Téléphone: ' + safeValue('collect_phone') + '\n';
+      summary += 'Réf.: ' + safeValue('collect_ref') + '\n';
+      summary += 'Instructions: ' + safeValue('collect_instructions') + '\n\n';
+
+      summary += '=== LIVRAISON ===\n';
+      summary += 'Société: ' + safeValue('delivery_company') + '\n';
+      summary += 'Date: ' + safeValue('delivery_date') + '\n';
+      summary += 'Adresse: ' + safeValue('delivery_street') + ' ' + safeValue('delivery_number') + ', ' + safeValue('delivery_postal') + ' ' + safeValue('delivery_city') + ', ' + safeValue('delivery_country') + '\n';
+      summary += 'Jours d’ouverture: ' + (getOpeningDaysDisplay('delivery') || 'Non renseignés') + '\n';
+      summary += 'Heures d’ouverture: ' + (getOpeningHoursDisplay('delivery') || 'Non renseignées') + '\n';
+      summary += 'Horaire souhaité: ' + safeValue('delivery_time') + '\n';
+      summary += 'Contact: ' + safeValue('delivery_contact') + '\n';
+      summary += 'Téléphone: ' + safeValue('delivery_phone') + '\n';
+      summary += 'Réf.: ' + safeValue('delivery_ref') + '\n';
+      summary += 'Instructions: ' + safeValue('delivery_instructions') + '\n\n';
+
+      summary += '=== FACTURATION ===\n';
+      summary += 'Email: ' + safeValue('billing_email') + '\n';
+      summary += 'Société: ' + safeValue('billing_company') + '\n';
+      summary += 'Nom: ' + safeValue('billing_name') + '\n';
+      summary += 'N° de TVA: ' + safeValue('billing_vat') + '\n';
+      summary += 'Adresse: ' + safeValue('billing_street') + ' ' + safeValue('billing_number') + ', ' + safeValue('billing_postal') + ' ' + safeValue('billing_city') + ', ' + getBillingCountryValue() + '\n';
+      summary += 'Téléphone: ' + safeValue('billing_phone') + '\n';
+
+      document.getElementById('summaryField').value = summary;
+    }
+
+    function bindDynamicInputs() {
+      const productInputs = document.querySelectorAll('.summary-watch-product');
+      for (let i = 0; i < productInputs.length; i++) {
+        productInputs[i].removeEventListener('input', updateSummary);
+        productInputs[i].removeEventListener('change', updateSummary);
+        productInputs[i].addEventListener('input', updateSummary);
+        productInputs[i].addEventListener('change', updateSummary);
       }
     }
 
-    if (request.method === "POST" && url.pathname === "/webhook") {
+    async function startMolliePayment() {
+      if (!validateStep(currentStep)) return;
+
+      const statusBox = document.getElementById('paymentStatus');
+      const submitBtn = document.getElementById('submitBtn');
+
+      const reservationNumber = generateReservationNumber();
+      document.getElementById('reservationNumberField').value = reservationNumber;
+
+      updateSummary();
+      buildSummary();
+
+      const totals = calculateTotals();
+      const summaryValue = document.getElementById('summaryField').value;
+
+
+      const payload = {
+        price: Number(totals.totalTvac.toFixed(2)),
+        reservationNumber: reservationNumber,
+        vehicle: vehicleName,
+        pickupPostal: pickupPostal,
+        pickupCountry: pickupCountry,
+        deliveryPostal: deliveryPostal,
+        deliveryCountry: deliveryCountry,
+        pickupOpeningDays: getOpeningDaysDisplay('collect'),
+        pickupOpeningHours: getOpeningHoursDisplay('collect'),
+        pickupSchedule: safeValue('collect_time'),
+        deliveryOpeningDays: getOpeningDaysDisplay('delivery'),
+        deliveryOpeningHours: getOpeningHoursDisplay('delivery'),
+        deliverySchedule: safeValue('delivery_time'),
+        billingEmail: safeValue('billing_email'),
+        billingName: safeValue('billing_name'),
+        billingCompany: safeValue('billing_company'),
+        billingPhone: safeValue('billing_phone'),
+        summary: summaryValue
+      };
+
       try {
-        const contentType = request.headers.get("content-type") || "";
-        let paymentId = "";
+        submitBtn.disabled = true;
+        statusBox.style.display = 'block';
+        statusBox.innerText = 'Création du paiement sécurisé en cours...';
 
-        if (contentType.includes("application/x-www-form-urlencoded")) {
-          const formData = await request.formData();
-          paymentId = String(formData.get("id") || "");
-        } else if (contentType.includes("application/json")) {
-          const body = await request.json();
-          paymentId = String(body.id || "");
-        } else {
-          const text = await request.text();
-          const params = new URLSearchParams(text);
-          paymentId = String(params.get("id") || "");
-        }
-
-        console.log("Webhook paymentId:", paymentId);
-
-        if (!paymentId) {
-          return new Response("Missing payment id", { status: 400 });
-        }
-
-        const alreadySent = await env.BOOKING_STORE.get(`emailsent:${paymentId}`);
-        if (alreadySent) {
-          console.log("Webhook already processed:", paymentId);
-          return new Response("Already processed", { status: 200 });
-        }
-
-        const paymentRes = await fetch(`https://api.mollie.com/v2/payments/${paymentId}`, {
+        const response = await fetch(PAYMENT_WORKER_URL, {
+          method: 'POST',
           headers: {
-            Authorization: `Bearer ${env.MOLLIE_API_KEY}`
-          }
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(payload)
         });
 
-        const payment = await paymentRes.json();
+        const result = await response.json();
 
-        console.log("Mollie webhook status:", paymentRes.status);
-        console.log("Mollie webhook response:", JSON.stringify(payment));
-
-        if (!paymentRes.ok) {
-          return new Response("Impossible de lire le paiement Mollie", { status: 500 });
+        if (!response.ok) {
+          console.error(result);
+          statusBox.innerText = 'Erreur paiement : ' + JSON.stringify(result);
+          submitBtn.disabled = false;
+          return;
         }
 
-        if (payment.status !== "paid") {
-          console.log("Payment not paid, current status:", payment.status);
-          return new Response("Payment not paid", { status: 200 });
+        if (result.checkout) {
+          window.location.href = result.checkout;
+          return;
         }
 
-        const reservationNumber = payment.metadata?.reservationNumber || "";
-        if (!reservationNumber) {
-          return new Response("Missing reservation number", { status: 400 });
-        }
-
-        const bookingRaw = await env.BOOKING_STORE.get(`booking:${reservationNumber}`);
-        const booking = bookingRaw ? JSON.parse(bookingRaw) : null;
-
-        console.log("Booking found in KV:", !!booking);
-
-        const amount = payment.amount?.value || "";
-        const currency = payment.amount?.currency || "EUR";
-        const fromEmail = env.FROM_EMAIL || "InterGlobe <noreply@mail.interglobe.be>";
-        const adminEmail = env.ADMIN_EMAIL || "info@interglobe.be";
-        const signatureEmail = env.SIGNATURE_EMAIL || "info@interglobe.be";
-        const customerEmail = booking?.billingEmail || payment.metadata?.billingEmail || "";
-
-        let adminOk = false;
-        let clientOk = false;
-
-        try {
-          const adminEmailResponse = await fetch("https://api.resend.com/emails", {
-            method: "POST",
-            headers: {
-              Authorization: `Bearer ${env.RESEND_API_KEY}`,
-              "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-              from: fromEmail,
-              to: [adminEmail],
-              subject: `Nouvelle réservation payée - ${reservationNumber}`,
-              html: getAdminEmailHtml({
-                reservationNumber,
-                amount,
-                currency,
-                booking,
-                payment
-              }),
-              text: getAdminEmailText({
-                reservationNumber,
-                amount,
-                currency,
-                booking,
-                payment
-              })
-            })
-          });
-
-          const adminResult = await adminEmailResponse.text();
-          console.log("Admin email status:", adminEmailResponse.status);
-          console.log("Admin email response:", adminResult);
-          adminOk = adminEmailResponse.ok;
-        } catch (e) {
-          console.log("Admin email error:", e.message);
-        }
-
-        if (customerEmail) {
-          try {
-            const clientEmailResponse = await fetch("https://api.resend.com/emails", {
-              method: "POST",
-              headers: {
-                Authorization: `Bearer ${env.RESEND_API_KEY}`,
-                "Content-Type": "application/json"
-              },
-              body: JSON.stringify({
-                from: fromEmail,
-                to: [customerEmail],
-                subject: `Confirmation de votre réservation - ${reservationNumber}`,
-                html: getCustomerEmailHtml({
-                  reservationNumber,
-                  amount,
-                  currency,
-                  booking,
-                  payment,
-                  signatureEmail
-                }),
-                text: getCustomerEmailText({
-                  reservationNumber,
-                  amount,
-                  currency,
-                  booking,
-                  payment,
-                  signatureEmail
-                })
-              })
-            });
-
-            const clientResult = await clientEmailResponse.text();
-            console.log("Client email status:", clientEmailResponse.status);
-            console.log("Client email response:", clientResult);
-            clientOk = clientEmailResponse.ok;
-          } catch (e) {
-            console.log("Client email error:", e.message);
-          }
-        } else {
-          console.log("Aucun email client trouvé.");
-        }
-
-        if (adminOk || clientOk) {
-          await env.BOOKING_STORE.put(`emailsent:${paymentId}`, "1", {
-            expirationTtl: 60 * 60 * 24 * 30
-          });
-        }
-
-        if (!adminOk && !clientOk) {
-          return new Response("Aucun email envoyé", { status: 500 });
-        }
-
-        return new Response("OK", { status: 200 });
+        statusBox.innerText = 'Lien de paiement introuvable.';
+        submitBtn.disabled = false;
       } catch (error) {
-        console.log("Webhook error:", error.message);
-        return new Response("Webhook error: " + error.message, { status: 500 });
+        console.error(error);
+        statusBox.innerText = 'Erreur technique : ' + error.message;
+        submitBtn.disabled = false;
       }
     }
 
-    return new Response("Route introuvable", {
-      status: 404,
-      headers: corsHeaders
-    });
-  }
-};
+    const successMode = showSuccessMessageIfNeeded();
 
-function getCustomerEmailHtml({ reservationNumber, amount, currency, booking, payment, signatureEmail }) {
-  const vehicle = booking?.vehicle || payment?.metadata?.vehicle || "";
+    if (successMode) {
+      setLangButtons();
 
-  return `
-  <!DOCTYPE html>
-  <html lang="fr">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Confirmation de réservation - InterGlobe</title>
-  </head>
-  <body style="margin:0; padding:0; background-color:#f4f6f8; font-family:Arial, Helvetica, sans-serif; color:#1f2937;">
-    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#f4f6f8; margin:0; padding:30px 15px;">
-      <tr>
-        <td align="center">
-          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:620px; background-color:#ffffff; border-radius:14px; overflow:hidden;">
-            <tr>
-              <td style="background-color:#17365d; padding:24px 30px; text-align:center;">
-                <div style="font-size:28px; font-weight:bold; color:#ffffff; letter-spacing:0.5px;">
-                  InterGlobe
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td style="padding:36px 34px 10px 34px; text-align:center;">
-                <h1 style="margin:0; font-size:28px; line-height:34px; color:#17365d;">
-                  Paiement confirmé
-                </h1>
-              </td>
-            </tr>
-            <tr>
-              <td style="padding:8px 34px 10px 34px; text-align:center; font-size:16px; line-height:25px; color:#4b5563;">
-                Merci pour votre réservation.<br />
-                Votre paiement a bien été reçu et votre transport est enregistré.
-              </td>
-            </tr>
-            <tr>
-              <td style="padding:22px 34px 10px 34px;">
-                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #e5e7eb; border-radius:10px; overflow:hidden;">
-                  <tr>
-                    <td colspan="2" style="background:#f8fafc; padding:14px 18px; font-size:16px; font-weight:bold; color:#17365d;">
-                      Détails de votre réservation
-                    </td>
-                  </tr>
-                  <tr>
-                    <td style="padding:14px 18px; border-top:1px solid #e5e7eb; font-weight:bold; width:48%;">Numéro de réservation</td>
-                    <td style="padding:14px 18px; border-top:1px solid #e5e7eb;">${escapeHtml(reservationNumber)}</td>
-                  </tr>
-                  <tr>
-                    <td style="padding:14px 18px; border-top:1px solid #e5e7eb; font-weight:bold;">Montant payé</td>
-                    <td style="padding:14px 18px; border-top:1px solid #e5e7eb;">${escapeHtml(amount)} ${escapeHtml(currency)}</td>
-                  </tr>
-                  <tr>
-                    <td style="padding:14px 18px; border-top:1px solid #e5e7eb; font-weight:bold;">Véhicule</td>
-                    <td style="padding:14px 18px; border-top:1px solid #e5e7eb;">${escapeHtml(vehicle)}</td>
-                  </tr>
-                </table>
-              </td>
-            </tr>
-            <tr>
-              <td style="padding:20px 34px 10px 34px; font-size:15px; line-height:25px; color:#374151;">
-                Notre équipe reviendra vers vous prochainement afin de finaliser l’organisation du transport.
-              </td>
-            </tr>
-            <tr>
-              <td style="padding:14px 34px 34px 34px; font-size:15px; line-height:25px; color:#374151;">
-                Merci pour votre confiance.<br /><br />
-                <strong>L’équipe InterGlobe</strong>
-              </td>
-            </tr>
-            <tr>
-              <td style="background:#f8fafc; border-top:1px solid #e5e7eb; padding:28px 24px; text-align:center; font-size:14px; line-height:22px; color:#6b7280;">
-                <strong style="color:#17365d;">InterGlobe</strong><br />
-                Driving your success forward<br /><br />
-                Leuvensesteenweg 270 - 1932 Zaventem - Belgique<br />
-                ${escapeHtml(signatureEmail)} - 0032/472.31.73.11<br />
-                <a href="https://www.interglobe.be" style="color:#17365d; text-decoration:none; font-weight:bold;">www.interglobe.be</a>
-              </td>
-            </tr>
-          </table>
-        </td>
-      </tr>
-    </table>
-  </body>
-  </html>
-  `;
-}
+      const successLangBtns = document.querySelectorAll('.lang-btn');
+      for (let s = 0; s < successLangBtns.length; s++) {
+        successLangBtns[s].addEventListener('click', function () {
+          currentLang = this.getAttribute('data-lang');
+          localStorage.setItem('ig_booking_lang', currentLang);
+          setLangButtons();
+          const res = getUrlParam('res');
+          document.getElementById('successContainer').innerHTML = getSuccessHtml(res);
+          document.getElementById('successContainer').style.display = 'block';
+        });
+      }
+    } else {
+      const rawData = getUrlParam('data');
+      const decodedData = rawData ? decodePayload(rawData, PRICE_SECRET_KEY) : null;
 
-function getCustomerEmailText({ reservationNumber, amount, currency, booking, payment, signatureEmail }) {
-  const vehicle = booking?.vehicle || payment?.metadata?.vehicle || "";
+      var basePrice = 0;
+      var vehicleName = '-';
+      var pickupPostal = '-';
+      var deliveryPostal = '-';
+      var pickupCountry = '-';
+      var deliveryCountry = '-';
 
-  return `Confirmation de votre réservation
+      if (decodedData && decodedData.prix && decodedData.vehicule) {
+        basePrice = parseFloat(decodedData.prix);
+        if (isNaN(basePrice)) basePrice = 0;
+        vehicleName = decodedData.vehicule || '-';
+        pickupPostal = decodedData.collecte || '-';
+        deliveryPostal = decodedData.livraison || '-';
+        pickupCountry = decodedData.paysCollecte || '-';
+        deliveryCountry = decodedData.paysLivraison || '-';
+      } else {
+        document.getElementById('decodeWarning').style.display = 'block';
+      }
 
-Bonjour,
+      document.getElementById('addProductBtn').addEventListener('click', addProduct);
 
-Nous vous confirmons que votre paiement a bien été reçu et que votre réservation est enregistrée.
+      document.getElementById('prevBtn').addEventListener('click', function () {
+        if (currentStep > 1) showStep(currentStep - 1);
+      });
 
-Numéro de réservation : ${reservationNumber}
-Montant payé : ${amount} ${currency}
-Véhicule : ${vehicle}
+      document.getElementById('nextBtn').addEventListener('click', function () {
+        if (!validateStep(currentStep)) return;
+        if (currentStep < totalSteps) showStep(currentStep + 1);
+      });
 
-Notre équipe reviendra vers vous prochainement afin de finaliser l’organisation du transport.
+      document.getElementById('billing_country').addEventListener('change', function() {
+        toggleOtherCountryField();
+        updateSummary();
+      });
 
-Merci pour votre confiance.
 
-L’équipe InterGlobe
 
-InterGlobe
-Driving your success forward
-Leuvensesteenweg 270 - 1932 Zaventem - Belgique
-${signatureEmail}
-0032/472.31.73.11
-www.interglobe.be`;
-}
+      document.getElementById('collect_appointment_type').addEventListener('change', function() {
+        updateScheduleUi('collect');
+        updateSummary();
+      });
 
-function getAdminEmailHtml({ reservationNumber, amount, currency, booking, payment }) {
-  const vehicle = booking?.vehicle || payment?.metadata?.vehicle || "";
-  const customerEmail = booking?.billingEmail || payment?.metadata?.billingEmail || "";
+      document.getElementById('delivery_appointment_type').addEventListener('change', function() {
+        updateScheduleUi('delivery');
+        updateSummary();
+      });
 
-  return `
-  <!DOCTYPE html>
-  <html lang="fr">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Nouvelle réservation payée</title>
-  </head>
-  <body style="margin:0; padding:20px; background:#f4f6f8; font-family:Arial, Helvetica, sans-serif; color:#1f2937;">
-    <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
-      <tr>
-        <td align="center">
-          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:680px; background:#ffffff; border-radius:12px; overflow:hidden;">
-            <tr>
-              <td style="background:#17365d; color:#ffffff; padding:22px 28px; font-size:22px; font-weight:bold;">
-                Nouvelle réservation payée
-              </td>
-            </tr>
-            <tr>
-              <td style="padding:28px;">
-                <p><strong>Numéro de réservation :</strong> ${escapeHtml(reservationNumber)}</p>
-                <p><strong>Montant payé :</strong> ${escapeHtml(amount)} ${escapeHtml(currency)}</p>
-                <p><strong>Véhicule :</strong> ${escapeHtml(vehicle)}</p>
+      document.getElementById('collect_open_until_day').addEventListener('change', updateSummary);
+      document.getElementById('delivery_open_until_day').addEventListener('change', updateSummary);
 
-                <h3 style="margin-top:24px;">Client</h3>
-                <p><strong>Nom :</strong> ${escapeHtml(booking?.billingName || "")}</p>
-                <p><strong>Société :</strong> ${escapeHtml(booking?.billingCompany || "")}</p>
-                <p><strong>Email :</strong> ${escapeHtml(customerEmail)}</p>
-                <p><strong>Téléphone :</strong> ${escapeHtml(booking?.billingPhone || "")}</p>
+      const scheduleInputs = [
+        'collect_opening_start','collect_opening_end','collect_pause_start','collect_pause_end',
+        'collect_flexible_start','collect_flexible_end','collect_fixed_time',
+        'delivery_opening_start','delivery_opening_end','delivery_pause_start','delivery_pause_end',
+        'delivery_flexible_start','delivery_flexible_end','delivery_fixed_time'
+      ];
+      for (let si = 0; si < scheduleInputs.length; si++) {
+        const scheduleEl = document.getElementById(scheduleInputs[si]);
+        scheduleEl.addEventListener('input', updateSummary);
+        scheduleEl.addEventListener('change', updateSummary);
+      }
 
-                <h3 style="margin-top:24px;">Trajet</h3>
-                <p><strong>Collecte :</strong> ${escapeHtml(booking?.pickupPostal || "")} (${escapeHtml(booking?.pickupCountry || "")})</p>
-                <p><strong>Livraison :</strong> ${escapeHtml(booking?.deliveryPostal || "")} (${escapeHtml(booking?.deliveryCountry || "")})</p>
+      document.getElementById('bookingForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+      });
 
-                <h3 style="margin-top:24px;">Résumé complet</h3>
-                <div style="white-space:pre-wrap; background:#f8fafc; padding:14px; border-radius:10px; border:1px solid #e5e7eb;">
-${escapeHtml(booking?.summary || "Résumé non disponible")}
-                </div>
-              </td>
-            </tr>
-          </table>
-        </td>
-      </tr>
-    </table>
-  </body>
-  </html>
-  `;
-}
+      document.getElementById('submitBtn').addEventListener('click', function () {
+        startMolliePayment();
+      });
 
-function getAdminEmailText({ reservationNumber, amount, currency, booking, payment }) {
-  const vehicle = booking?.vehicle || payment?.metadata?.vehicle || "";
-  const customerEmail = booking?.billingEmail || payment?.metadata?.billingEmail || "";
+      const optionChecks = document.querySelectorAll('.option-check');
+      for (let i = 0; i < optionChecks.length; i++) {
+        optionChecks[i].addEventListener('change', updateSummary);
+      }
 
-  return `Nouvelle réservation payée
+      const watchedFields = document.querySelectorAll('.summary-watch');
+      for (let j = 0; j < watchedFields.length; j++) {
+        watchedFields[j].addEventListener('input', updateSummary);
+        watchedFields[j].addEventListener('change', updateSummary);
+      }
 
-Numéro de réservation : ${reservationNumber}
-Montant payé : ${amount} ${currency}
-Véhicule : ${vehicle}
+      const langBtns = document.querySelectorAll('.lang-btn');
+      for (let n = 0; n < langBtns.length; n++) {
+        langBtns[n].addEventListener('click', function () {
+          currentLang = this.getAttribute('data-lang');
+          localStorage.setItem('ig_booking_lang', currentLang);
+          applyStaticTranslations();
+        });
+      }
 
-Client
-Nom : ${booking?.billingName || ""}
-Société : ${booking?.billingCompany || ""}
-Email : ${customerEmail}
-Téléphone : ${booking?.billingPhone || ""}
-
-Trajet
-Collecte : ${booking?.pickupPostal || ""} (${booking?.pickupCountry || ""})
-Livraison : ${booking?.deliveryPostal || ""} (${booking?.deliveryCountry || ""})
-
-Résumé complet
-${booking?.summary || "Résumé non disponible"}`;
-}
-
-function json(data, status = 200, headers = {}) {
-  return new Response(JSON.stringify(data), {
-    status,
-    headers: {
-      ...headers,
-      "Content-Type": "application/json"
+      setupVehicleDependentOptions();
+      updateScheduleUi('collect');
+      updateScheduleUi('delivery');
+      updatePrices();
+      addProduct();
+      showStep(1);
+      applyStaticTranslations();
     }
-  });
-}
-
-function escapeHtml(value) {
-  return String(value || "")
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
-}
+  </script>
+</body>
+</html>
