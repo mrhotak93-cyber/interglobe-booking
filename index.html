@@ -410,6 +410,25 @@ gtag('config', 'AW-18217117533');
       font-weight: bold;
     }
 
+    .opening-details {
+      border: 1px solid #dbe4ee;
+      border-radius: 10px;
+      background: #fff;
+      margin-bottom: 14px;
+    }
+
+    .opening-details summary {
+      cursor: pointer;
+      padding: 11px 12px;
+      font-size: 14px;
+      font-weight: bold;
+      color: #003366;
+    }
+
+    .opening-details-body {
+      padding: 0 12px 4px 12px;
+    }
+
     .schedule-note {
       margin-top: 10px;
       font-size: 13px;
@@ -587,10 +606,9 @@ gtag('config', 'AW-18217117533');
             </div>
 
             <div class="schedule-box" id="collectScheduleBox">
-              <div class="schedule-warning" id="collectScheduleWarning">
-                Si vous connaissez les heures d’ouverture du site, vous pouvez les indiquer (pauses comprises). Cela permet de vérifier automatiquement que l’horaire souhaité est compatible.
-              </div>
-
+              <details class="opening-details">
+                <summary id="collectOpeningSummary">Horaires du site (facultatif)</summary>
+                <div class="opening-details-body">
               <div class="field">
                 <label for="collect_open_until_day" id="label_collect_open_until_day">Ouvert du lundi au (facultatif)</label>
                 <select class="select" id="collect_open_until_day">
@@ -603,15 +621,26 @@ gtag('config', 'AW-18217117533');
                   <option value="6">Samedi</option>
                   <option value="7">Dimanche</option>
                 </select>
-                <div class="small-note" id="collectOpeningDaysNote">Si vous renseignez les jours d’ouverture, la date de collecte sera contrôlée automatiquement.</div>
               </div>
 
               <div class="field">
-                <label id="label_collect_opening_hours">Heures d’ouverture du lieu de collecte (facultatif)</label>
-                <div id="collect_openings_container"></div>
-                <button type="button" class="btn btn-secondary" id="addCollectOpeningBtn">+ Ajouter une plage d’ouverture</button>
-                <div class="small-note" id="collectOpeningNote">Ajoutez une deuxième plage si le site ferme pendant une pause. Si aucune heure n’est indiquée, aucun contrôle d’ouverture ne sera appliqué.</div>
+                <label id="label_collect_opening_hours">Heures d’ouverture (facultatif)</label>
+                <div class="grid-2">
+                  <input class="input" type="time" id="collect_opening_start" aria-label="Ouverture">
+                  <input class="input" type="time" id="collect_opening_end" aria-label="Fermeture">
+                </div>
               </div>
+
+              <div class="field">
+                <label id="label_collect_pause">Pause (facultatif)</label>
+                <div class="grid-2">
+                  <input class="input" type="time" id="collect_pause_start" aria-label="Début pause">
+                  <input class="input" type="time" id="collect_pause_end" aria-label="Fin pause">
+                </div>
+              </div>
+
+                </div>
+              </details>
 
               <div class="field">
                 <label for="collect_appointment_type" id="label_collect_appointment_type">Horaire souhaité d’enlèvement <span class="required-star">*</span></label>
@@ -623,21 +652,20 @@ gtag('config', 'AW-18217117533');
 
               <div id="collectFlexibleWrap" class="grid-2">
                 <div class="field">
-                  <label for="collect_flexible_start" id="label_collect_flexible_start">Début du créneau <span class="required-star">*</span></label>
+                  <label for="collect_flexible_start" id="label_collect_flexible_start">De <span class="required-star">*</span></label>
                   <input class="input" type="time" id="collect_flexible_start">
                 </div>
                 <div class="field">
-                  <label for="collect_flexible_end" id="label_collect_flexible_end">Fin du créneau <span class="required-star">*</span></label>
+                  <label for="collect_flexible_end" id="label_collect_flexible_end">À <span class="required-star">*</span></label>
                   <input class="input" type="time" id="collect_flexible_end">
                 </div>
               </div>
 
               <div id="collectFixedWrap" style="display:none;">
                 <div class="field">
-                  <label for="collect_fixed_time" id="label_collect_fixed_time">Heure fixe <span class="required-star">*</span></label>
+                  <label for="collect_fixed_time" id="label_collect_fixed_time">Heure <span class="required-star">*</span></label>
                   <input class="input" type="time" id="collect_fixed_time">
                 </div>
-                <div class="schedule-fee" id="collectFixedFeeNote">Supplément heure fixe : +35 € HTVA</div>
               </div>
 
               <div class="schedule-note" id="collectMinSlotNote"></div>
@@ -712,10 +740,9 @@ gtag('config', 'AW-18217117533');
             </div>
 
             <div class="schedule-box" id="deliveryScheduleBox">
-              <div class="schedule-warning" id="deliveryScheduleWarning">
-                Si vous connaissez les heures d’ouverture du site, vous pouvez les indiquer (pauses comprises). Cela permet de vérifier automatiquement que l’horaire souhaité est compatible.
-              </div>
-
+              <details class="opening-details">
+                <summary id="deliveryOpeningSummary">Horaires du site (facultatif)</summary>
+                <div class="opening-details-body">
               <div class="field">
                 <label for="delivery_open_until_day" id="label_delivery_open_until_day">Ouvert du lundi au (facultatif)</label>
                 <select class="select" id="delivery_open_until_day">
@@ -728,15 +755,26 @@ gtag('config', 'AW-18217117533');
                   <option value="6">Samedi</option>
                   <option value="7">Dimanche</option>
                 </select>
-                <div class="small-note" id="deliveryOpeningDaysNote">Si vous renseignez les jours d’ouverture, la date de livraison sera contrôlée automatiquement.</div>
               </div>
 
               <div class="field">
-                <label id="label_delivery_opening_hours">Heures d’ouverture du lieu de livraison (facultatif)</label>
-                <div id="delivery_openings_container"></div>
-                <button type="button" class="btn btn-secondary" id="addDeliveryOpeningBtn">+ Ajouter une plage d’ouverture</button>
-                <div class="small-note" id="deliveryOpeningNote">Ajoutez une deuxième plage si le site ferme pendant une pause. Si aucune heure n’est indiquée, aucun contrôle d’ouverture ne sera appliqué.</div>
+                <label id="label_delivery_opening_hours">Heures d’ouverture (facultatif)</label>
+                <div class="grid-2">
+                  <input class="input" type="time" id="delivery_opening_start" aria-label="Ouverture">
+                  <input class="input" type="time" id="delivery_opening_end" aria-label="Fermeture">
+                </div>
               </div>
+
+              <div class="field">
+                <label id="label_delivery_pause">Pause (facultatif)</label>
+                <div class="grid-2">
+                  <input class="input" type="time" id="delivery_pause_start" aria-label="Début pause">
+                  <input class="input" type="time" id="delivery_pause_end" aria-label="Fin pause">
+                </div>
+              </div>
+
+                </div>
+              </details>
 
               <div class="field">
                 <label for="delivery_appointment_type" id="label_delivery_appointment_type">Horaire souhaité de livraison <span class="required-star">*</span></label>
@@ -748,21 +786,20 @@ gtag('config', 'AW-18217117533');
 
               <div id="deliveryFlexibleWrap" class="grid-2">
                 <div class="field">
-                  <label for="delivery_flexible_start" id="label_delivery_flexible_start">Début du créneau <span class="required-star">*</span></label>
+                  <label for="delivery_flexible_start" id="label_delivery_flexible_start">De <span class="required-star">*</span></label>
                   <input class="input" type="time" id="delivery_flexible_start">
                 </div>
                 <div class="field">
-                  <label for="delivery_flexible_end" id="label_delivery_flexible_end">Fin du créneau <span class="required-star">*</span></label>
+                  <label for="delivery_flexible_end" id="label_delivery_flexible_end">À <span class="required-star">*</span></label>
                   <input class="input" type="time" id="delivery_flexible_end">
                 </div>
               </div>
 
               <div id="deliveryFixedWrap" style="display:none;">
                 <div class="field">
-                  <label for="delivery_fixed_time" id="label_delivery_fixed_time">Heure fixe <span class="required-star">*</span></label>
+                  <label for="delivery_fixed_time" id="label_delivery_fixed_time">Heure <span class="required-star">*</span></label>
                   <input class="input" type="time" id="delivery_fixed_time">
                 </div>
-                <div class="schedule-fee" id="deliveryFixedFeeNote">Supplément heure fixe : +35 € HTVA</div>
               </div>
 
               <div class="schedule-note" id="deliveryMinSlotNote"></div>
@@ -1759,120 +1796,106 @@ gtag('config', 'AW-18217117533');
       return isTruckOrSemi(vehicleName) ? 6 : 3;
     }
 
-    function addOpeningPeriod(prefix, startValue = '', endValue = '') {
-      const container = document.getElementById(prefix + '_openings_container');
-      if (!container) return;
-
-      const row = document.createElement('div');
-      row.className = 'opening-row';
-      row.innerHTML = ''
-        + '<span class="opening-label opening-from-label"></span>'
-        + '<input class="input opening-start" type="time" value="' + startValue + '">'
-        + '<span class="opening-label opening-to-label"></span>'
-        + '<input class="input opening-end" type="time" value="' + endValue + '">'
-        + '<button type="button" class="opening-remove"></button>';
-
-      row.querySelector('.opening-remove').addEventListener('click', function() {
-        const rows = container.querySelectorAll('.opening-row');
-        if (rows.length <= 1) {
-          row.querySelector('.opening-start').value = '';
-          row.querySelector('.opening-end').value = '';
-        } else {
-          row.remove();
-        }
-        updateSummary();
-      });
-
-      const inputs = row.querySelectorAll('input');
-      for (let i = 0; i < inputs.length; i++) {
-        inputs[i].addEventListener('input', updateSummary);
-        inputs[i].addEventListener('change', updateSummary);
-      }
-
-      container.appendChild(row);
-      refreshOpeningRowsTranslations(prefix);
-    }
-
-    function refreshOpeningRowsTranslations(prefix) {
-      const container = document.getElementById(prefix + '_openings_container');
-      if (!container) return;
-      const rows = container.querySelectorAll('.opening-row');
-      for (let i = 0; i < rows.length; i++) {
-        const fromLabel = rows[i].querySelector('.opening-from-label');
-        const toLabel = rows[i].querySelector('.opening-to-label');
-        const removeBtn = rows[i].querySelector('.opening-remove');
-        if (fromLabel) fromLabel.innerText = tr('labels.from');
-        if (toLabel) toLabel.innerText = tr('labels.to');
-        if (removeBtn) removeBtn.innerText = tr('labels.remove');
-      }
-    }
-
     function getOpeningPeriods(prefix) {
-      const container = document.getElementById(prefix + '_openings_container');
-      if (!container) return [];
-      const rows = container.querySelectorAll('.opening-row');
-      const periods = [];
+      const openStartEl = document.getElementById(prefix + '_opening_start');
+      const openEndEl = document.getElementById(prefix + '_opening_end');
+      const pauseStartEl = document.getElementById(prefix + '_pause_start');
+      const pauseEndEl = document.getElementById(prefix + '_pause_end');
 
-      for (let i = 0; i < rows.length; i++) {
-        const start = rows[i].querySelector('.opening-start').value;
-        const end = rows[i].querySelector('.opening-end').value;
-        periods.push({
-          start: start,
-          end: end,
-          startMin: timeToMinutes(start),
-          endMin: timeToMinutes(end),
-          startEl: rows[i].querySelector('.opening-start'),
-          endEl: rows[i].querySelector('.opening-end')
-        });
-      }
+      const openStart = openStartEl ? openStartEl.value : '';
+      const openEnd = openEndEl ? openEndEl.value : '';
+      const pauseStart = pauseStartEl ? pauseStartEl.value : '';
+      const pauseEnd = pauseEndEl ? pauseEndEl.value : '';
 
-      return periods;
+      if (!openStart && !openEnd) return [];
+
+      return [{
+        start: openStart,
+        end: openEnd,
+        startMin: timeToMinutes(openStart),
+        endMin: timeToMinutes(openEnd),
+        startEl: openStartEl,
+        endEl: openEndEl,
+        pauseStart: pauseStart,
+        pauseEnd: pauseEnd,
+        pauseStartMin: timeToMinutes(pauseStart),
+        pauseEndMin: timeToMinutes(pauseEnd),
+        pauseStartEl: pauseStartEl,
+        pauseEndEl: pauseEndEl
+      }];
     }
 
     function getOpeningHoursDisplay(prefix) {
-      const periods = getOpeningPeriods(prefix).filter(function(p) {
-        return p.start && p.end;
-      });
-      if (!periods.length) return '';
-      return periods.map(function(p) {
-        return p.start + ' - ' + p.end;
-      }).join(' / ');
+      const periods = getOpeningPeriods(prefix);
+      if (!periods.length || !periods[0].start || !periods[0].end) return '';
+      const p = periods[0];
+      let value = p.start + ' - ' + p.end;
+      if (p.pauseStart && p.pauseEnd) {
+        const pauseWord = currentLang === 'nl' ? 'Pauze' : currentLang === 'en' ? 'Break' : 'Pause';
+        value += ' | ' + pauseWord + ' ' + p.pauseStart + ' - ' + p.pauseEnd;
+      }
+      return value;
     }
 
     function validateOpeningPeriods(prefix) {
       const periods = getOpeningPeriods(prefix);
+      const openStartEl = document.getElementById(prefix + '_opening_start');
+      const openEndEl = document.getElementById(prefix + '_opening_end');
+      const pauseStartEl = document.getElementById(prefix + '_pause_start');
+      const pauseEndEl = document.getElementById(prefix + '_pause_end');
 
-      // Les heures d’ouverture sont facultatives.
-      // Si aucune plage n’est renseignée, on ne bloque pas la réservation.
-      const hasAnyOpeningValue = periods.some(function(p) {
-        return p.start || p.end;
-      });
-      if (!hasAnyOpeningValue) return [];
+      const openStart = openStartEl ? openStartEl.value : '';
+      const openEnd = openEndEl ? openEndEl.value : '';
+      const pauseStart = pauseStartEl ? pauseStartEl.value : '';
+      const pauseEnd = pauseEndEl ? pauseEndEl.value : '';
 
-      const complete = [];
-      for (let i = 0; i < periods.length; i++) {
-        const p = periods[i];
-
-        // Une ligne totalement vide est ignorée.
-        if (!p.start && !p.end) continue;
-
-        // Une ligne partiellement remplie reste une erreur.
-        if (!p.start || !p.end) {
-          return showValidationMessage(tr('validation.openingRequired'), !p.start ? p.startEl : p.endEl);
+      // Heures d'ouverture facultatives.
+      if (!openStart && !openEnd) {
+        if (pauseStart || pauseEnd) {
+          return showValidationMessage(
+            currentLang === 'nl' ? 'Vul eerst de openingsuren in.' : currentLang === 'en' ? 'Enter the opening hours first.' : 'Indiquez d’abord les heures d’ouverture.',
+            openStartEl
+          );
         }
-        if (p.startMin == null || p.endMin == null || p.endMin <= p.startMin) {
-          return showValidationMessage(tr('validation.openingInvalid'), p.endEl);
-        }
-        complete.push(p);
+        return [];
       }
 
-      complete.sort(function(a, b) { return a.startMin - b.startMin; });
-      for (let j = 1; j < complete.length; j++) {
-        if (complete[j].startMin < complete[j - 1].endMin) {
-          return showValidationMessage(tr('validation.openingOverlap'), complete[j].startEl);
-        }
+      if (!openStart || !openEnd) {
+        return showValidationMessage(tr('validation.openingRequired'), !openStart ? openStartEl : openEndEl);
       }
-      return complete;
+
+      const openStartMin = timeToMinutes(openStart);
+      const openEndMin = timeToMinutes(openEnd);
+      if (openStartMin == null || openEndMin == null || openEndMin <= openStartMin) {
+        return showValidationMessage(tr('validation.openingInvalid'), openEndEl);
+      }
+
+      const effective = [];
+
+      if (!pauseStart && !pauseEnd) {
+        effective.push({ start: openStart, end: openEnd, startMin: openStartMin, endMin: openEndMin, startEl: openStartEl, endEl: openEndEl });
+        return effective;
+      }
+
+      if (!pauseStart || !pauseEnd) {
+        return showValidationMessage(
+          currentLang === 'nl' ? 'Vul het begin en einde van de pauze in.' : currentLang === 'en' ? 'Enter both the start and end of the break.' : 'Indiquez le début et la fin de la pause.',
+          !pauseStart ? pauseStartEl : pauseEndEl
+        );
+      }
+
+      const pauseStartMin = timeToMinutes(pauseStart);
+      const pauseEndMin = timeToMinutes(pauseEnd);
+      if (pauseStartMin == null || pauseEndMin == null || pauseEndMin <= pauseStartMin || pauseStartMin <= openStartMin || pauseEndMin >= openEndMin) {
+        return showValidationMessage(
+          currentLang === 'nl' ? 'De pauze moet binnen de openingsuren vallen.' : currentLang === 'en' ? 'The break must fall within the opening hours.' : 'La pause doit se situer dans les heures d’ouverture.',
+          pauseStartEl
+        );
+      }
+
+      effective.push({ start: openStart, end: pauseStart, startMin: openStartMin, endMin: pauseStartMin, startEl: openStartEl, endEl: pauseStartEl });
+      effective.push({ start: pauseEnd, end: openEnd, startMin: pauseEndMin, endMin: openEndMin, startEl: pauseEndEl, endEl: openEndEl });
+      return effective;
     }
 
     function getOpeningDaysDisplay(prefix) {
@@ -2019,44 +2042,43 @@ gtag('config', 'AW-18217117533');
       document.getElementById(prefix + 'FixedWrap').style.display = isFixed ? 'block' : 'none';
 
       const note = document.getElementById(prefix + 'MinSlotNote');
-      note.innerText = isFixed
-        ? tr('labels.fixedFee')
-        : (isTruckOrSemi(vehicleName) ? tr('labels.minSlotHeavy') : tr('labels.minSlotLight'));
+      if (isFixed) {
+        note.innerText = currentLang === 'nl' ? '+35 € excl. btw' : currentLang === 'en' ? '+€35 excl. VAT' : '+35 € HTVA';
+      } else {
+        const hours = getMinimumFlexibleHours();
+        note.innerText = currentLang === 'nl' ? 'Min. ' + hours + ' u' : currentLang === 'en' ? 'Min. ' + hours + ' h' : 'Min. ' + hours + ' h';
+      }
 
       syncScheduleDerivedFields();
     }
 
     function applyScheduleTranslations() {
-      document.getElementById('collectScheduleWarning').innerText = tr('labels.openingWarning');
-      document.getElementById('deliveryScheduleWarning').innerText = tr('labels.openingWarning');
+      const optionalWord = currentLang === 'nl' ? 'optioneel' : currentLang === 'en' ? 'optional' : 'facultatif';
+      const openingText = currentLang === 'nl' ? 'Openingsuren' : currentLang === 'en' ? 'Opening hours' : 'Heures d’ouverture';
+      const pauseText = currentLang === 'nl' ? 'Pauze' : currentLang === 'en' ? 'Break' : 'Pause';
+      const siteHoursText = currentLang === 'nl' ? 'Openingsuren locatie (optioneel)' : currentLang === 'en' ? 'Site opening hours (optional)' : 'Horaires du site (facultatif)';
 
-      document.getElementById('label_collect_open_until_day').innerText = tr('labels.openMondayTo') + ' (' + (currentLang === 'fr' ? 'facultatif' : currentLang === 'nl' ? 'optioneel' : 'optional') + ')';
-      document.getElementById('label_delivery_open_until_day').innerText = tr('labels.openMondayTo') + ' (' + (currentLang === 'fr' ? 'facultatif' : currentLang === 'nl' ? 'optioneel' : 'optional') + ')';
+      document.getElementById('collectOpeningSummary').innerText = siteHoursText;
+      document.getElementById('deliveryOpeningSummary').innerText = siteHoursText;
+
+      document.getElementById('label_collect_open_until_day').innerText = tr('labels.openMondayTo');
+      document.getElementById('label_delivery_open_until_day').innerText = tr('labels.openMondayTo');
       updateOpeningDayOptions('collect');
       updateOpeningDayOptions('delivery');
-      document.getElementById('collectOpeningDaysNote').innerText = tr('labels.openingDaysNotePickup');
-      document.getElementById('deliveryOpeningDaysNote').innerText = tr('labels.openingDaysNoteDelivery');
 
-      document.getElementById('label_collect_opening_hours').innerText = tr('labels.openingHoursPickup') + ' (' + (currentLang === 'fr' ? 'facultatif' : currentLang === 'nl' ? 'optioneel' : 'optional') + ')';
-      document.getElementById('label_delivery_opening_hours').innerText = tr('labels.openingHoursDelivery') + ' (' + (currentLang === 'fr' ? 'facultatif' : currentLang === 'nl' ? 'optioneel' : 'optional') + ')';
-      document.getElementById('addCollectOpeningBtn').innerText = tr('labels.addOpening');
-      document.getElementById('addDeliveryOpeningBtn').innerText = tr('labels.addOpening');
-      document.getElementById('collectOpeningNote').innerText = tr('labels.openingOptionalNote');
-      document.getElementById('deliveryOpeningNote').innerText = tr('labels.openingOptionalNote');
+      document.getElementById('label_collect_opening_hours').innerText = openingText;
+      document.getElementById('label_delivery_opening_hours').innerText = openingText;
+      document.getElementById('label_collect_pause').innerText = pauseText + ' (' + optionalWord + ')';
+      document.getElementById('label_delivery_pause').innerText = pauseText + ' (' + optionalWord + ')';
 
       document.getElementById('label_collect_appointment_type').innerHTML = tr('labels.collectTime') + ' <span class="required-star">*</span>';
       document.getElementById('label_delivery_appointment_type').innerHTML = tr('labels.deliveryTime') + ' <span class="required-star">*</span>';
-      document.getElementById('label_collect_flexible_start').innerHTML = tr('labels.slotStart') + ' <span class="required-star">*</span>';
-      document.getElementById('label_collect_flexible_end').innerHTML = tr('labels.slotEnd') + ' <span class="required-star">*</span>';
-      document.getElementById('label_delivery_flexible_start').innerHTML = tr('labels.slotStart') + ' <span class="required-star">*</span>';
-      document.getElementById('label_delivery_flexible_end').innerHTML = tr('labels.slotEnd') + ' <span class="required-star">*</span>';
+      document.getElementById('label_collect_flexible_start').innerHTML = tr('labels.from') + ' <span class="required-star">*</span>';
+      document.getElementById('label_collect_flexible_end').innerHTML = tr('labels.to') + ' <span class="required-star">*</span>';
+      document.getElementById('label_delivery_flexible_start').innerHTML = tr('labels.from') + ' <span class="required-star">*</span>';
+      document.getElementById('label_delivery_flexible_end').innerHTML = tr('labels.to') + ' <span class="required-star">*</span>';
       document.getElementById('label_collect_fixed_time').innerHTML = tr('labels.exactTime') + ' <span class="required-star">*</span>';
       document.getElementById('label_delivery_fixed_time').innerHTML = tr('labels.exactTime') + ' <span class="required-star">*</span>';
-      document.getElementById('collectFixedFeeNote').innerText = tr('labels.fixedFee');
-      document.getElementById('deliveryFixedFeeNote').innerText = tr('labels.fixedFee');
-
-      refreshOpeningRowsTranslations('collect');
-      refreshOpeningRowsTranslations('delivery');
     }
 
     function getFixedTimeSurchargeTotal() {
@@ -2886,15 +2908,7 @@ gtag('config', 'AW-18217117533');
         updateSummary();
       });
 
-      document.getElementById('addCollectOpeningBtn').addEventListener('click', function() {
-        addOpeningPeriod('collect');
-        updateSummary();
-      });
 
-      document.getElementById('addDeliveryOpeningBtn').addEventListener('click', function() {
-        addOpeningPeriod('delivery');
-        updateSummary();
-      });
 
       document.getElementById('collect_appointment_type').addEventListener('change', function() {
         updateScheduleUi('collect');
@@ -2910,7 +2924,9 @@ gtag('config', 'AW-18217117533');
       document.getElementById('delivery_open_until_day').addEventListener('change', updateSummary);
 
       const scheduleInputs = [
+        'collect_opening_start','collect_opening_end','collect_pause_start','collect_pause_end',
         'collect_flexible_start','collect_flexible_end','collect_fixed_time',
+        'delivery_opening_start','delivery_opening_end','delivery_pause_start','delivery_pause_end',
         'delivery_flexible_start','delivery_flexible_end','delivery_fixed_time'
       ];
       for (let si = 0; si < scheduleInputs.length; si++) {
@@ -2948,8 +2964,6 @@ gtag('config', 'AW-18217117533');
       }
 
       setupVehicleDependentOptions();
-      addOpeningPeriod('collect');
-      addOpeningPeriod('delivery');
       updateScheduleUi('collect');
       updateScheduleUi('delivery');
       updatePrices();
