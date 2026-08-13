@@ -367,6 +367,63 @@ gtag('config', 'AW-18217117533');
       min-width: 180px;
     }
 
+    .schedule-box {
+      border: 1px solid #dbe4ee;
+      background: #f8fafc;
+      border-radius: 14px;
+      padding: 16px;
+      margin: 4px 0 16px 0;
+    }
+
+    .schedule-warning {
+      border-left: 4px solid #003366;
+      background: #eef4fb;
+      color: #003366;
+      border-radius: 8px;
+      padding: 12px 14px;
+      margin-bottom: 14px;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .opening-row {
+      display: grid;
+      grid-template-columns: auto 1fr auto 1fr auto;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .opening-label {
+      font-size: 13px;
+      font-weight: bold;
+      color: #475569;
+    }
+
+    .opening-remove {
+      border: none;
+      background: #fee2e2;
+      color: #991b1b;
+      border-radius: 8px;
+      padding: 9px 10px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .schedule-note {
+      margin-top: 10px;
+      font-size: 13px;
+      color: #475569;
+      line-height: 1.45;
+    }
+
+    .schedule-fee {
+      margin-top: 8px;
+      font-size: 14px;
+      font-weight: bold;
+      color: #9a3412;
+    }
+
     @media (max-width: 1024px) {
       .layout {
         grid-template-columns: 1fr;
@@ -390,6 +447,18 @@ gtag('config', 'AW-18217117533');
 
       .option-row span {
         font-size: 15px;
+      }
+
+      .opening-row {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .opening-row .opening-label {
+        display: none;
+      }
+
+      .opening-row .opening-remove {
+        grid-column: 1 / -1;
       }
     }
   </style>
@@ -515,12 +584,67 @@ gtag('config', 'AW-18217117533');
                 <label for="collect_country" id="label_collect_country">Pays <span class="required-star">*</span></label>
                 <input class="input summary-watch" type="text" id="collect_country">
               </div>
+            </div>
 
-              <div class="field">
-                <label for="collect_time" id="label_collect_time">Heure souhaitée d’enlèvement <span class="required-star">*</span></label>
-                <input class="input summary-watch" type="text" id="collect_time" placeholder="Ex : 09:00 - 11:00">
+            <div class="schedule-box" id="collectScheduleBox">
+              <div class="schedule-warning" id="collectScheduleWarning">
+                Si vous connaissez les heures d’ouverture du site, vous pouvez les indiquer (pauses comprises). Cela permet de vérifier automatiquement que l’horaire souhaité est compatible.
               </div>
 
+              <div class="field">
+                <label for="collect_open_until_day" id="label_collect_open_until_day">Ouvert du lundi au (facultatif)</label>
+                <select class="select" id="collect_open_until_day">
+                  <option value="">Non renseigné</option>
+                  <option value="1">Lundi uniquement</option>
+                  <option value="2">Mardi</option>
+                  <option value="3">Mercredi</option>
+                  <option value="4">Jeudi</option>
+                  <option value="5">Vendredi</option>
+                  <option value="6">Samedi</option>
+                  <option value="7">Dimanche</option>
+                </select>
+                <div class="small-note" id="collectOpeningDaysNote">Si vous renseignez les jours d’ouverture, la date de collecte sera contrôlée automatiquement.</div>
+              </div>
+
+              <div class="field">
+                <label id="label_collect_opening_hours">Heures d’ouverture du lieu de collecte (facultatif)</label>
+                <div id="collect_openings_container"></div>
+                <button type="button" class="btn btn-secondary" id="addCollectOpeningBtn">+ Ajouter une plage d’ouverture</button>
+                <div class="small-note" id="collectOpeningNote">Ajoutez une deuxième plage si le site ferme pendant une pause. Si aucune heure n’est indiquée, aucun contrôle d’ouverture ne sera appliqué.</div>
+              </div>
+
+              <div class="field">
+                <label for="collect_appointment_type" id="label_collect_appointment_type">Horaire souhaité d’enlèvement <span class="required-star">*</span></label>
+                <select class="select" id="collect_appointment_type">
+                  <option value="flexible">Créneau flexible</option>
+                  <option value="fixed">Heure fixe (+35 € HTVA)</option>
+                </select>
+              </div>
+
+              <div id="collectFlexibleWrap" class="grid-2">
+                <div class="field">
+                  <label for="collect_flexible_start" id="label_collect_flexible_start">Début du créneau <span class="required-star">*</span></label>
+                  <input class="input" type="time" id="collect_flexible_start">
+                </div>
+                <div class="field">
+                  <label for="collect_flexible_end" id="label_collect_flexible_end">Fin du créneau <span class="required-star">*</span></label>
+                  <input class="input" type="time" id="collect_flexible_end">
+                </div>
+              </div>
+
+              <div id="collectFixedWrap" style="display:none;">
+                <div class="field">
+                  <label for="collect_fixed_time" id="label_collect_fixed_time">Heure fixe <span class="required-star">*</span></label>
+                  <input class="input" type="time" id="collect_fixed_time">
+                </div>
+                <div class="schedule-fee" id="collectFixedFeeNote">Supplément heure fixe : +35 € HTVA</div>
+              </div>
+
+              <div class="schedule-note" id="collectMinSlotNote"></div>
+              <input type="hidden" id="collect_time">
+            </div>
+
+            <div class="grid-2">
               <div class="field">
                 <label for="collect_contact" id="label_collect_contact">Nom et prénom de la personne de contact</label>
                 <input class="input summary-watch" type="text" id="collect_contact">
@@ -585,12 +709,67 @@ gtag('config', 'AW-18217117533');
                 <label for="delivery_country" id="label_delivery_country">Pays <span class="required-star">*</span></label>
                 <input class="input summary-watch" type="text" id="delivery_country">
               </div>
+            </div>
 
-              <div class="field">
-                <label for="delivery_time" id="label_delivery_time">Heure souhaitée de livraison <span class="required-star">*</span></label>
-                <input class="input summary-watch" type="text" id="delivery_time" placeholder="Ex : 14:00 - 16:00">
+            <div class="schedule-box" id="deliveryScheduleBox">
+              <div class="schedule-warning" id="deliveryScheduleWarning">
+                Si vous connaissez les heures d’ouverture du site, vous pouvez les indiquer (pauses comprises). Cela permet de vérifier automatiquement que l’horaire souhaité est compatible.
               </div>
 
+              <div class="field">
+                <label for="delivery_open_until_day" id="label_delivery_open_until_day">Ouvert du lundi au (facultatif)</label>
+                <select class="select" id="delivery_open_until_day">
+                  <option value="">Non renseigné</option>
+                  <option value="1">Lundi uniquement</option>
+                  <option value="2">Mardi</option>
+                  <option value="3">Mercredi</option>
+                  <option value="4">Jeudi</option>
+                  <option value="5">Vendredi</option>
+                  <option value="6">Samedi</option>
+                  <option value="7">Dimanche</option>
+                </select>
+                <div class="small-note" id="deliveryOpeningDaysNote">Si vous renseignez les jours d’ouverture, la date de livraison sera contrôlée automatiquement.</div>
+              </div>
+
+              <div class="field">
+                <label id="label_delivery_opening_hours">Heures d’ouverture du lieu de livraison (facultatif)</label>
+                <div id="delivery_openings_container"></div>
+                <button type="button" class="btn btn-secondary" id="addDeliveryOpeningBtn">+ Ajouter une plage d’ouverture</button>
+                <div class="small-note" id="deliveryOpeningNote">Ajoutez une deuxième plage si le site ferme pendant une pause. Si aucune heure n’est indiquée, aucun contrôle d’ouverture ne sera appliqué.</div>
+              </div>
+
+              <div class="field">
+                <label for="delivery_appointment_type" id="label_delivery_appointment_type">Horaire souhaité de livraison <span class="required-star">*</span></label>
+                <select class="select" id="delivery_appointment_type">
+                  <option value="flexible">Créneau flexible</option>
+                  <option value="fixed">Heure fixe (+35 € HTVA)</option>
+                </select>
+              </div>
+
+              <div id="deliveryFlexibleWrap" class="grid-2">
+                <div class="field">
+                  <label for="delivery_flexible_start" id="label_delivery_flexible_start">Début du créneau <span class="required-star">*</span></label>
+                  <input class="input" type="time" id="delivery_flexible_start">
+                </div>
+                <div class="field">
+                  <label for="delivery_flexible_end" id="label_delivery_flexible_end">Fin du créneau <span class="required-star">*</span></label>
+                  <input class="input" type="time" id="delivery_flexible_end">
+                </div>
+              </div>
+
+              <div id="deliveryFixedWrap" style="display:none;">
+                <div class="field">
+                  <label for="delivery_fixed_time" id="label_delivery_fixed_time">Heure fixe <span class="required-star">*</span></label>
+                  <input class="input" type="time" id="delivery_fixed_time">
+                </div>
+                <div class="schedule-fee" id="deliveryFixedFeeNote">Supplément heure fixe : +35 € HTVA</div>
+              </div>
+
+              <div class="schedule-note" id="deliveryMinSlotNote"></div>
+              <input type="hidden" id="delivery_time">
+            </div>
+
+            <div class="grid-2">
               <div class="field">
                 <label for="delivery_contact" id="label_delivery_contact">Nom et prénom de la personne de contact</label>
                 <input class="input summary-watch" type="text" id="delivery_contact">
@@ -752,6 +931,15 @@ gtag('config', 'AW-18217117533');
 
     const PRICE_SECRET_KEY = "InterGlobe_2026_Key";
     const PAYMENT_WORKER_URL = "https://long-cake-e1c6.interglobe1932.workers.dev/create-payment";
+    const FIXED_TIME_SURCHARGE = 35;
+
+    const VEHICLE_CAPACITY_RULES = {
+      "Compact": { maxWeight: 400, maxPallets: 1, maxLength: 125, maxWidth: 100 },
+      "Van": { maxWeight: 1000, maxPallets: 3, maxLength: 320, maxWidth: 180 },
+      "Fourgon": { maxWeight: 800, maxPallets: 6, maxLength: 320, maxWidth: 180, maxItemWeight: 500 },
+      "Camion": { maxPallets: 18 },
+      "Semi-remorque": { maxPallets: 33 }
+    };
 
     const TEXTS = {
       fr: {
@@ -788,8 +976,35 @@ gtag('config', 'AW-18217117533');
           postal:"Code postal",
           city:"Ville",
           country:"Pays",
-          collectTime:"Heure souhaitée d’enlèvement",
-          deliveryTime:"Heure souhaitée de livraison",
+          collectTime:"Horaire souhaité d’enlèvement",
+          deliveryTime:"Horaire souhaité de livraison",
+          openingHoursPickup:"Heures d’ouverture du lieu de collecte",
+          openingHoursDelivery:"Heures d’ouverture du lieu de livraison",
+          openingWarning:"Si vous connaissez les heures d’ouverture du site, vous pouvez les indiquer (pauses comprises). Cela permet de vérifier automatiquement que l’horaire souhaité est compatible.",
+          addOpening:"+ Ajouter une plage d’ouverture",
+          openingNote:"Ajoutez une deuxième plage si le site ferme pendant une pause.",
+          appointmentType:"Type d’horaire",
+          flexibleSlot:"Créneau flexible",
+          fixedTime:"Heure fixe (+35 € HTVA)",
+          slotStart:"Début du créneau",
+          slotEnd:"Fin du créneau",
+          exactTime:"Heure fixe",
+          fixedFee:"Supplément heure fixe : +35 € HTVA",
+          minSlotLight:"Créneau flexible minimum : 3 heures pour Compact, Van et Fourgon.",
+          minSlotHeavy:"Créneau flexible minimum : 6 heures pour Camion et Semi-remorque.",
+          openingHours:"Heures d’ouverture",
+          openingDays:"Jours d’ouverture",
+          openMondayTo:"Ouvert du lundi au",
+          notSpecified:"Non renseigné",
+          mondayOnly:"Lundi uniquement",
+          openingDaysNotePickup:"Si vous renseignez les jours d’ouverture, la date de collecte sera contrôlée automatiquement.",
+          openingDaysNoteDelivery:"Si vous renseignez les jours d’ouverture, la date de livraison sera contrôlée automatiquement.",
+          openingOptionalNote:"Ajoutez une deuxième plage si le site ferme pendant une pause. Si aucune heure n’est indiquée, aucun contrôle d’ouverture ne sera appliqué.",
+          fixedPickupOption:"Heure fixe collecte",
+          fixedDeliveryOption:"Heure fixe livraison",
+          from:"De",
+          to:"à",
+          remove:"Supprimer",
           contactName:"Nom et prénom de la personne de contact",
           contactPhone:"N° de téléphone du contact",
           collectRef:"Réf. de collecte",
@@ -829,6 +1044,8 @@ gtag('config', 'AW-18217117533');
           stackable:"Empilable",
           qty:"Quantité",
           weight:"Poids par unité (kg)",
+          totalWeight:"Poids total",
+          goodsTotalWeight:"Poids total marchandises",
           length:"Longueur (cm)",
           width:"Largeur (cm)",
           height:"Hauteur (cm)",
@@ -860,7 +1077,21 @@ gtag('config', 'AW-18217117533');
           addOneProduct:"Veuillez ajouter au moins un produit.",
           productPrefix:"Veuillez compléter les informations du produit",
           required:"Veuillez compléter ce champ obligatoire.",
-          specifyCountry:"Veuillez indiquer votre pays."
+          specifyCountry:"Veuillez indiquer votre pays.",
+          openingRequired:"Une plage d’ouverture est incomplète. Complétez les deux heures ou supprimez cette plage.",
+          closedDay:"La date choisie correspond à un jour où le site est indiqué comme fermé.",
+          openingInvalid:"Une plage d’ouverture est invalide : l’heure de fin doit être après l’heure de début.",
+          openingOverlap:"Les plages d’ouverture ne peuvent pas se chevaucher.",
+          flexibleRequired:"Veuillez indiquer le début et la fin du créneau souhaité.",
+          flexibleInvalid:"Le créneau souhaité est invalide : l’heure de fin doit être après l’heure de début.",
+          flexibleOutside:"Le créneau souhaité doit commencer et se terminer pendant les heures d’ouverture indiquées.",
+          flexibleTooShort:"Le temps réellement disponible dans ce créneau est insuffisant. Minimum requis : {hours} heures, pauses déduites.",
+          fixedRequired:"Veuillez indiquer l’heure fixe souhaitée.",
+          fixedOutside:"L’heure fixe doit se situer pendant une plage d’ouverture du site.",
+          capacityWeight:"Le poids total déclaré ({actual} kg) dépasse la capacité du véhicule sélectionné ({max} kg).",
+          capacityPallets:"Le nombre de palettes déclaré ({actual}) dépasse la capacité du véhicule sélectionné ({max}).",
+          capacityItemWeight:"Le produit {product} dépasse le poids maximal autorisé par article ({max} kg).",
+          capacityDimensions:"Le produit {product} dépasse les dimensions au sol prévues pour ce véhicule ({length} × {width} cm)."
         }
       },
       nl: {
@@ -897,8 +1128,35 @@ gtag('config', 'AW-18217117533');
           postal:"Postcode",
           city:"Stad",
           country:"Land",
-          collectTime:"Gewenst afhaaluur",
-          deliveryTime:"Gewenst leveringsuur",
+          collectTime:"Gewenst afhaalmoment",
+          deliveryTime:"Gewenst leveringsmoment",
+          openingHoursPickup:"Openingsuren van de afhaallocatie",
+          openingHoursDelivery:"Openingsuren van de leveringslocatie",
+          openingWarning:"Als u de openingsuren van de locatie kent, kunt u ze invullen (inclusief pauzes). Zo kan automatisch worden gecontroleerd of het gewenste tijdstip binnen de openingsuren valt.",
+          addOpening:"+ Openingsperiode toevoegen",
+          openingNote:"Voeg een tweede periode toe als de locatie tijdens een pauze sluit.",
+          appointmentType:"Type tijdstip",
+          flexibleSlot:"Flexibel tijdsvenster",
+          fixedTime:"Vast uur (+35 € excl. btw)",
+          slotStart:"Begin tijdsvenster",
+          slotEnd:"Einde tijdsvenster",
+          exactTime:"Vast uur",
+          fixedFee:"Toeslag vast uur: +35 € excl. btw",
+          minSlotLight:"Minimaal flexibel tijdsvenster: 3 uur voor Compact, Van en Bestelwagen.",
+          minSlotHeavy:"Minimaal flexibel tijdsvenster: 6 uur voor Vrachtwagen en Oplegger.",
+          openingHours:"Openingsuren",
+          openingDays:"Openingsdagen",
+          openMondayTo:"Open van maandag tot",
+          notSpecified:"Niet ingevuld",
+          mondayOnly:"Alleen maandag",
+          openingDaysNotePickup:"Als u de openingsdagen invult, wordt de afhaaldatum automatisch gecontroleerd.",
+          openingDaysNoteDelivery:"Als u de openingsdagen invult, wordt de leveringsdatum automatisch gecontroleerd.",
+          openingOptionalNote:"Voeg een tweede periode toe als de locatie tijdens een pauze sluit. Als u geen uren invult, wordt er geen controle op openingsuren uitgevoerd.",
+          fixedPickupOption:"Vast afhaaluur",
+          fixedDeliveryOption:"Vast leveringsuur",
+          from:"Van",
+          to:"tot",
+          remove:"Verwijderen",
           contactName:"Naam van de contactpersoon",
           contactPhone:"Telefoonnummer contactpersoon",
           collectRef:"Afhaalreferentie",
@@ -938,6 +1196,8 @@ gtag('config', 'AW-18217117533');
           stackable:"Stapelbaar",
           qty:"Aantal",
           weight:"Gewicht per eenheid (kg)",
+          totalWeight:"Totaalgewicht",
+          goodsTotalWeight:"Totaalgewicht goederen",
           length:"Lengte (cm)",
           width:"Breedte (cm)",
           height:"Hoogte (cm)",
@@ -969,7 +1229,21 @@ gtag('config', 'AW-18217117533');
           addOneProduct:"Gelieve minstens één product toe te voegen.",
           productPrefix:"Gelieve de gegevens van product in te vullen",
           required:"Gelieve dit verplichte veld in te vullen.",
-          specifyCountry:"Gelieve uw land in te vullen."
+          specifyCountry:"Gelieve uw land in te vullen.",
+          openingRequired:"Een openingsperiode is onvolledig. Vul beide uren in of verwijder deze periode.",
+          closedDay:"De gekozen datum valt op een dag waarop de locatie volgens de opgegeven openingsdagen gesloten is.",
+          openingInvalid:"Een openingsperiode is ongeldig: de eindtijd moet na de begintijd liggen.",
+          openingOverlap:"Openingsperiodes mogen elkaar niet overlappen.",
+          flexibleRequired:"Vul het begin en einde van het gewenste tijdsvenster in.",
+          flexibleInvalid:"Het gewenste tijdsvenster is ongeldig: de eindtijd moet na de begintijd liggen.",
+          flexibleOutside:"Het gewenste tijdsvenster moet beginnen en eindigen binnen de opgegeven openingsuren.",
+          flexibleTooShort:"De werkelijk beschikbare tijd in dit tijdsvenster is onvoldoende. Vereist minimum: {hours} uur, pauzes afgetrokken.",
+          fixedRequired:"Vul het gewenste vaste uur in.",
+          fixedOutside:"Het vaste uur moet binnen een openingsperiode van de locatie vallen.",
+          capacityWeight:"Het aangegeven totale gewicht ({actual} kg) overschrijdt de capaciteit van het gekozen voertuig ({max} kg).",
+          capacityPallets:"Het aangegeven aantal pallets ({actual}) overschrijdt de capaciteit van het gekozen voertuig ({max}).",
+          capacityItemWeight:"Product {product} overschrijdt het maximale gewicht per artikel ({max} kg).",
+          capacityDimensions:"Product {product} overschrijdt de voorziene vloerafmetingen voor dit voertuig ({length} × {width} cm)."
         }
       },
       en: {
@@ -1006,8 +1280,35 @@ gtag('config', 'AW-18217117533');
           postal:"Postal code",
           city:"City",
           country:"Country",
-          collectTime:"Preferred pickup time",
-          deliveryTime:"Preferred delivery time",
+          collectTime:"Preferred pickup schedule",
+          deliveryTime:"Preferred delivery schedule",
+          openingHoursPickup:"Pickup location opening hours",
+          openingHoursDelivery:"Delivery location opening hours",
+          openingWarning:"If you know the location’s opening hours, you can enter them (including breaks). This allows the requested time to be checked automatically against those hours.",
+          addOpening:"+ Add opening period",
+          openingNote:"Add a second period if the location closes during a break.",
+          appointmentType:"Schedule type",
+          flexibleSlot:"Flexible time window",
+          fixedTime:"Fixed time (+€35 excl. VAT)",
+          slotStart:"Window start",
+          slotEnd:"Window end",
+          exactTime:"Fixed time",
+          fixedFee:"Fixed-time surcharge: +€35 excl. VAT",
+          minSlotLight:"Minimum flexible window: 3 hours for Compact, Van and Box van.",
+          minSlotHeavy:"Minimum flexible window: 6 hours for Truck and Semi-trailer.",
+          openingHours:"Opening hours",
+          openingDays:"Opening days",
+          openMondayTo:"Open Monday through",
+          notSpecified:"Not specified",
+          mondayOnly:"Monday only",
+          openingDaysNotePickup:"If you enter opening days, the pickup date will be checked automatically.",
+          openingDaysNoteDelivery:"If you enter opening days, the delivery date will be checked automatically.",
+          openingOptionalNote:"Add a second period if the location closes during a break. If no hours are entered, no opening-hours check will be applied.",
+          fixedPickupOption:"Fixed pickup time",
+          fixedDeliveryOption:"Fixed delivery time",
+          from:"From",
+          to:"to",
+          remove:"Remove",
           contactName:"Contact person name",
           contactPhone:"Contact phone number",
           collectRef:"Pickup reference",
@@ -1047,6 +1348,8 @@ gtag('config', 'AW-18217117533');
           stackable:"Stackable",
           qty:"Quantity",
           weight:"Weight per unit (kg)",
+          totalWeight:"Total weight",
+          goodsTotalWeight:"Total goods weight",
           length:"Length (cm)",
           width:"Width (cm)",
           height:"Height (cm)",
@@ -1078,10 +1381,35 @@ gtag('config', 'AW-18217117533');
           addOneProduct:"Please add at least one product.",
           productPrefix:"Please complete the information for product",
           required:"Please complete this required field.",
-          specifyCountry:"Please specify your country."
+          specifyCountry:"Please specify your country.",
+          openingRequired:"An opening period is incomplete. Complete both times or remove that period.",
+          closedDay:"The selected date falls on a day when the location is marked as closed.",
+          openingInvalid:"An opening period is invalid: the end time must be after the start time.",
+          openingOverlap:"Opening periods cannot overlap.",
+          flexibleRequired:"Please enter the start and end of the requested time window.",
+          flexibleInvalid:"The requested time window is invalid: the end time must be after the start time.",
+          flexibleOutside:"The requested time window must start and end within the stated opening hours.",
+          flexibleTooShort:"The actual available time in this window is insufficient. Required minimum: {hours} hours, excluding breaks.",
+          fixedRequired:"Please enter the requested fixed time.",
+          fixedOutside:"The fixed time must fall within one of the location’s opening periods.",
+          capacityWeight:"The declared total weight ({actual} kg) exceeds the selected vehicle capacity ({max} kg).",
+          capacityPallets:"The declared number of pallets ({actual}) exceeds the selected vehicle capacity ({max}).",
+          capacityItemWeight:"Product {product} exceeds the maximum permitted weight per item ({max} kg).",
+          capacityDimensions:"Product {product} exceeds the floor dimensions provided for this vehicle ({length} × {width} cm)."
         }
       }
     };
+
+    const WEEK_DAYS = {
+      fr: {1:"lundi",2:"mardi",3:"mercredi",4:"jeudi",5:"vendredi",6:"samedi",7:"dimanche"},
+      nl: {1:"maandag",2:"dinsdag",3:"woensdag",4:"donderdag",5:"vrijdag",6:"zaterdag",7:"zondag"},
+      en: {1:"Monday",2:"Tuesday",3:"Wednesday",4:"Thursday",5:"Friday",6:"Saturday",7:"Sunday"}
+    };
+
+    function getWeekDayName(dayNumber) {
+      const langDays = WEEK_DAYS[currentLang] || WEEK_DAYS.fr;
+      return langDays[dayNumber] || '';
+    }
 
     function tr(path) {
       const parts = path.split('.');
@@ -1093,6 +1421,12 @@ gtag('config', 'AW-18217117533');
         return fallback != null ? fallback : path;
       }
       return obj;
+    }
+
+    function formatTemplate(text, values) {
+      return String(text).replace(/\{(\w+)\}/g, function(_, key) {
+        return values && values[key] != null ? values[key] : '';
+      });
     }
 
     function setLangButtons() {
@@ -1286,8 +1620,6 @@ gtag('config', 'AW-18217117533');
       document.getElementById('step2Note').innerText = tr('labels.step2Note');
 
       document.getElementById('goods_extra_info').placeholder = tr('placeholders.extraInfo');
-      document.getElementById('collect_time').placeholder = tr('placeholders.collectTime');
-      document.getElementById('delivery_time').placeholder = tr('placeholders.deliveryTime');
 
       document.getElementById('prevBtn').innerText = tr('labels.prev');
       document.getElementById('nextBtn').innerText = tr('labels.next');
@@ -1301,7 +1633,6 @@ gtag('config', 'AW-18217117533');
       setLabelText('collect_postal', tr('labels.postal'));
       setLabelText('collect_city', tr('labels.city'));
       setLabelText('collect_country', tr('labels.country'));
-      setLabelText('collect_time', tr('labels.collectTime'));
       setLabelText('collect_contact', tr('labels.contactName'));
       setLabelText('collect_phone', tr('labels.contactPhone'));
       setLabelText('collect_ref', tr('labels.collectRef'));
@@ -1314,7 +1645,6 @@ gtag('config', 'AW-18217117533');
       setLabelText('delivery_postal', tr('labels.postal'));
       setLabelText('delivery_city', tr('labels.city'));
       setLabelText('delivery_country', tr('labels.country'));
-      setLabelText('delivery_time', tr('labels.deliveryTime'));
       setLabelText('delivery_contact', tr('labels.contactName'));
       setLabelText('delivery_phone', tr('labels.contactPhone'));
       setLabelText('delivery_ref', tr('labels.deliveryRef'));
@@ -1338,6 +1668,9 @@ gtag('config', 'AW-18217117533');
 
       updateVehicleDependentLabels();
       refreshProductTranslations();
+      applyScheduleTranslations();
+      updateScheduleUi('collect');
+      updateScheduleUi('delivery');
       updateProgressHeader();
       updateSummary();
     }
@@ -1416,8 +1749,325 @@ gtag('config', 'AW-18217117533');
       }
     }
 
-    function getOptionsTotal() {
+    function timeToMinutes(value) {
+      if (!/^\d{2}:\d{2}$/.test(value || '')) return null;
+      const parts = value.split(':');
+      return Number(parts[0]) * 60 + Number(parts[1]);
+    }
+
+    function getMinimumFlexibleHours() {
+      return isTruckOrSemi(vehicleName) ? 6 : 3;
+    }
+
+    function addOpeningPeriod(prefix, startValue = '', endValue = '') {
+      const container = document.getElementById(prefix + '_openings_container');
+      if (!container) return;
+
+      const row = document.createElement('div');
+      row.className = 'opening-row';
+      row.innerHTML = ''
+        + '<span class="opening-label opening-from-label"></span>'
+        + '<input class="input opening-start" type="time" value="' + startValue + '">'
+        + '<span class="opening-label opening-to-label"></span>'
+        + '<input class="input opening-end" type="time" value="' + endValue + '">'
+        + '<button type="button" class="opening-remove"></button>';
+
+      row.querySelector('.opening-remove').addEventListener('click', function() {
+        const rows = container.querySelectorAll('.opening-row');
+        if (rows.length <= 1) {
+          row.querySelector('.opening-start').value = '';
+          row.querySelector('.opening-end').value = '';
+        } else {
+          row.remove();
+        }
+        updateSummary();
+      });
+
+      const inputs = row.querySelectorAll('input');
+      for (let i = 0; i < inputs.length; i++) {
+        inputs[i].addEventListener('input', updateSummary);
+        inputs[i].addEventListener('change', updateSummary);
+      }
+
+      container.appendChild(row);
+      refreshOpeningRowsTranslations(prefix);
+    }
+
+    function refreshOpeningRowsTranslations(prefix) {
+      const container = document.getElementById(prefix + '_openings_container');
+      if (!container) return;
+      const rows = container.querySelectorAll('.opening-row');
+      for (let i = 0; i < rows.length; i++) {
+        const fromLabel = rows[i].querySelector('.opening-from-label');
+        const toLabel = rows[i].querySelector('.opening-to-label');
+        const removeBtn = rows[i].querySelector('.opening-remove');
+        if (fromLabel) fromLabel.innerText = tr('labels.from');
+        if (toLabel) toLabel.innerText = tr('labels.to');
+        if (removeBtn) removeBtn.innerText = tr('labels.remove');
+      }
+    }
+
+    function getOpeningPeriods(prefix) {
+      const container = document.getElementById(prefix + '_openings_container');
+      if (!container) return [];
+      const rows = container.querySelectorAll('.opening-row');
+      const periods = [];
+
+      for (let i = 0; i < rows.length; i++) {
+        const start = rows[i].querySelector('.opening-start').value;
+        const end = rows[i].querySelector('.opening-end').value;
+        periods.push({
+          start: start,
+          end: end,
+          startMin: timeToMinutes(start),
+          endMin: timeToMinutes(end),
+          startEl: rows[i].querySelector('.opening-start'),
+          endEl: rows[i].querySelector('.opening-end')
+        });
+      }
+
+      return periods;
+    }
+
+    function getOpeningHoursDisplay(prefix) {
+      const periods = getOpeningPeriods(prefix).filter(function(p) {
+        return p.start && p.end;
+      });
+      if (!periods.length) return '';
+      return periods.map(function(p) {
+        return p.start + ' - ' + p.end;
+      }).join(' / ');
+    }
+
+    function validateOpeningPeriods(prefix) {
+      const periods = getOpeningPeriods(prefix);
+
+      // Les heures d’ouverture sont facultatives.
+      // Si aucune plage n’est renseignée, on ne bloque pas la réservation.
+      const hasAnyOpeningValue = periods.some(function(p) {
+        return p.start || p.end;
+      });
+      if (!hasAnyOpeningValue) return [];
+
+      const complete = [];
+      for (let i = 0; i < periods.length; i++) {
+        const p = periods[i];
+
+        // Une ligne totalement vide est ignorée.
+        if (!p.start && !p.end) continue;
+
+        // Une ligne partiellement remplie reste une erreur.
+        if (!p.start || !p.end) {
+          return showValidationMessage(tr('validation.openingRequired'), !p.start ? p.startEl : p.endEl);
+        }
+        if (p.startMin == null || p.endMin == null || p.endMin <= p.startMin) {
+          return showValidationMessage(tr('validation.openingInvalid'), p.endEl);
+        }
+        complete.push(p);
+      }
+
+      complete.sort(function(a, b) { return a.startMin - b.startMin; });
+      for (let j = 1; j < complete.length; j++) {
+        if (complete[j].startMin < complete[j - 1].endMin) {
+          return showValidationMessage(tr('validation.openingOverlap'), complete[j].startEl);
+        }
+      }
+      return complete;
+    }
+
+    function getOpeningDaysDisplay(prefix) {
+      const value = safeValue(prefix + '_open_until_day');
+      if (!value) return '';
+      const lastDay = Number(value);
+      if (lastDay === 1) return tr('labels.mondayOnly');
+      return tr('labels.openMondayTo') + ' ' + getWeekDayName(lastDay);
+    }
+
+    function updateOpeningDayOptions(prefix) {
+      const select = document.getElementById(prefix + '_open_until_day');
+      if (!select) return;
+
+      const currentValue = select.value;
+      select.options[0].text = tr('labels.notSpecified');
+      select.options[1].text = tr('labels.mondayOnly');
+      for (let day = 2; day <= 7; day++) {
+        select.options[day].text = getWeekDayName(day);
+      }
+      select.value = currentValue;
+    }
+
+    function validateOpeningDay(prefix) {
+      const openUntilValue = safeValue(prefix + '_open_until_day');
+      if (!openUntilValue) return true;
+
+      const dateEl = document.getElementById(prefix === 'collect' ? 'collect_date' : 'delivery_date');
+      if (!dateEl || !dateEl.value) return true;
+
+      const selectedDate = new Date(dateEl.value + 'T12:00:00');
+      let day = selectedDate.getDay();
+      if (day === 0) day = 7; // dimanche = 7
+
+      const lastOpenDay = Number(openUntilValue);
+      if (day < 1 || day > lastOpenDay) {
+        return showValidationMessage(tr('validation.closedDay'), dateEl);
+      }
+      return true;
+    }
+
+    function isTimeInsideOpening(periods, minute, allowEnd) {
+      for (let i = 0; i < periods.length; i++) {
+        if (minute >= periods[i].startMin && (allowEnd ? minute <= periods[i].endMin : minute < periods[i].endMin)) {
+          return true;
+        }
+      }
+      return false;
+    }
+
+    function getAvailableMinutes(periods, startMin, endMin) {
       let total = 0;
+      for (let i = 0; i < periods.length; i++) {
+        const overlapStart = Math.max(startMin, periods[i].startMin);
+        const overlapEnd = Math.min(endMin, periods[i].endMin);
+        if (overlapEnd > overlapStart) total += overlapEnd - overlapStart;
+      }
+      return total;
+    }
+
+    function validateSchedule(prefix) {
+      if (!validateOpeningDay(prefix)) return false;
+
+      const periods = validateOpeningPeriods(prefix);
+      if (!Array.isArray(periods)) return false;
+
+      const hasOpeningHours = periods.length > 0;
+      const type = safeValue(prefix + '_appointment_type') || 'flexible';
+
+      if (type === 'fixed') {
+        const fixedEl = document.getElementById(prefix + '_fixed_time');
+        const fixed = fixedEl.value;
+        if (!fixed) return showValidationMessage(tr('validation.fixedRequired'), fixedEl);
+        const fixedMin = timeToMinutes(fixed);
+
+        // Si les heures d’ouverture sont renseignées, l’heure fixe doit correspondre.
+        if (hasOpeningHours && !isTimeInsideOpening(periods, fixedMin, false)) {
+          return showValidationMessage(tr('validation.fixedOutside'), fixedEl);
+        }
+        return true;
+      }
+
+      const startEl = document.getElementById(prefix + '_flexible_start');
+      const endEl = document.getElementById(prefix + '_flexible_end');
+      const start = startEl.value;
+      const end = endEl.value;
+      if (!start || !end) return showValidationMessage(tr('validation.flexibleRequired'), !start ? startEl : endEl);
+
+      const startMin = timeToMinutes(start);
+      const endMin = timeToMinutes(end);
+      if (startMin == null || endMin == null || endMin <= startMin) {
+        return showValidationMessage(tr('validation.flexibleInvalid'), endEl);
+      }
+
+      // Si les heures d’ouverture sont renseignées, le créneau doit y correspondre.
+      if (hasOpeningHours) {
+        if (!isTimeInsideOpening(periods, startMin, false) || !isTimeInsideOpening(periods, endMin, true)) {
+          return showValidationMessage(tr('validation.flexibleOutside'), startEl);
+        }
+      }
+
+      // Avec des heures d’ouverture : on déduit les pauses. Sans heures : durée brute du créneau.
+      const availableMinutes = hasOpeningHours
+        ? getAvailableMinutes(periods, startMin, endMin)
+        : (endMin - startMin);
+
+      const minimumHours = getMinimumFlexibleHours();
+      if (availableMinutes < minimumHours * 60) {
+        return showValidationMessage(
+          formatTemplate(tr('validation.flexibleTooShort'), { hours: minimumHours }),
+          endEl
+        );
+      }
+      return true;
+    }
+
+    function formatScheduleValue(prefix) {
+      const type = safeValue(prefix + '_appointment_type') || 'flexible';
+      if (type === 'fixed') {
+        const fixed = safeValue(prefix + '_fixed_time');
+        return fixed ? tr('labels.exactTime') + ' ' + fixed + ' (+35 € HTVA)' : '';
+      }
+      const start = safeValue(prefix + '_flexible_start');
+      const end = safeValue(prefix + '_flexible_end');
+      return start && end ? tr('labels.flexibleSlot') + ' ' + start + ' - ' + end : '';
+    }
+
+    function syncScheduleDerivedFields() {
+      const collectField = document.getElementById('collect_time');
+      const deliveryField = document.getElementById('delivery_time');
+      if (collectField) collectField.value = formatScheduleValue('collect');
+      if (deliveryField) deliveryField.value = formatScheduleValue('delivery');
+    }
+
+    function updateScheduleUi(prefix) {
+      const typeSelect = document.getElementById(prefix + '_appointment_type');
+      if (!typeSelect) return;
+
+      typeSelect.options[0].text = tr('labels.flexibleSlot');
+      typeSelect.options[1].text = tr('labels.fixedTime');
+
+      const isFixed = typeSelect.value === 'fixed';
+      document.getElementById(prefix + 'FlexibleWrap').style.display = isFixed ? 'none' : 'grid';
+      document.getElementById(prefix + 'FixedWrap').style.display = isFixed ? 'block' : 'none';
+
+      const note = document.getElementById(prefix + 'MinSlotNote');
+      note.innerText = isFixed
+        ? tr('labels.fixedFee')
+        : (isTruckOrSemi(vehicleName) ? tr('labels.minSlotHeavy') : tr('labels.minSlotLight'));
+
+      syncScheduleDerivedFields();
+    }
+
+    function applyScheduleTranslations() {
+      document.getElementById('collectScheduleWarning').innerText = tr('labels.openingWarning');
+      document.getElementById('deliveryScheduleWarning').innerText = tr('labels.openingWarning');
+
+      document.getElementById('label_collect_open_until_day').innerText = tr('labels.openMondayTo') + ' (' + (currentLang === 'fr' ? 'facultatif' : currentLang === 'nl' ? 'optioneel' : 'optional') + ')';
+      document.getElementById('label_delivery_open_until_day').innerText = tr('labels.openMondayTo') + ' (' + (currentLang === 'fr' ? 'facultatif' : currentLang === 'nl' ? 'optioneel' : 'optional') + ')';
+      updateOpeningDayOptions('collect');
+      updateOpeningDayOptions('delivery');
+      document.getElementById('collectOpeningDaysNote').innerText = tr('labels.openingDaysNotePickup');
+      document.getElementById('deliveryOpeningDaysNote').innerText = tr('labels.openingDaysNoteDelivery');
+
+      document.getElementById('label_collect_opening_hours').innerText = tr('labels.openingHoursPickup') + ' (' + (currentLang === 'fr' ? 'facultatif' : currentLang === 'nl' ? 'optioneel' : 'optional') + ')';
+      document.getElementById('label_delivery_opening_hours').innerText = tr('labels.openingHoursDelivery') + ' (' + (currentLang === 'fr' ? 'facultatif' : currentLang === 'nl' ? 'optioneel' : 'optional') + ')';
+      document.getElementById('addCollectOpeningBtn').innerText = tr('labels.addOpening');
+      document.getElementById('addDeliveryOpeningBtn').innerText = tr('labels.addOpening');
+      document.getElementById('collectOpeningNote').innerText = tr('labels.openingOptionalNote');
+      document.getElementById('deliveryOpeningNote').innerText = tr('labels.openingOptionalNote');
+
+      document.getElementById('label_collect_appointment_type').innerHTML = tr('labels.collectTime') + ' <span class="required-star">*</span>';
+      document.getElementById('label_delivery_appointment_type').innerHTML = tr('labels.deliveryTime') + ' <span class="required-star">*</span>';
+      document.getElementById('label_collect_flexible_start').innerHTML = tr('labels.slotStart') + ' <span class="required-star">*</span>';
+      document.getElementById('label_collect_flexible_end').innerHTML = tr('labels.slotEnd') + ' <span class="required-star">*</span>';
+      document.getElementById('label_delivery_flexible_start').innerHTML = tr('labels.slotStart') + ' <span class="required-star">*</span>';
+      document.getElementById('label_delivery_flexible_end').innerHTML = tr('labels.slotEnd') + ' <span class="required-star">*</span>';
+      document.getElementById('label_collect_fixed_time').innerHTML = tr('labels.exactTime') + ' <span class="required-star">*</span>';
+      document.getElementById('label_delivery_fixed_time').innerHTML = tr('labels.exactTime') + ' <span class="required-star">*</span>';
+      document.getElementById('collectFixedFeeNote').innerText = tr('labels.fixedFee');
+      document.getElementById('deliveryFixedFeeNote').innerText = tr('labels.fixedFee');
+
+      refreshOpeningRowsTranslations('collect');
+      refreshOpeningRowsTranslations('delivery');
+    }
+
+    function getFixedTimeSurchargeTotal() {
+      let total = 0;
+      if (safeValue('collect_appointment_type') === 'fixed') total += FIXED_TIME_SURCHARGE;
+      if (safeValue('delivery_appointment_type') === 'fixed') total += FIXED_TIME_SURCHARGE;
+      return total;
+    }
+
+    function getOptionsTotal() {
+      let total = getFixedTimeSurchargeTotal();
       const checks = document.querySelectorAll('.option-check');
       for (let i = 0; i < checks.length; i++) {
         if (checks[i].checked) {
@@ -1437,6 +2087,13 @@ gtag('config', 'AW-18217117533');
             price: parseFloat(checks[i].getAttribute('data-price') || '0')
           });
         }
+      }
+
+      if (safeValue('collect_appointment_type') === 'fixed') {
+        selected.push({ label: tr('labels.fixedPickupOption'), price: FIXED_TIME_SURCHARGE });
+      }
+      if (safeValue('delivery_appointment_type') === 'fixed') {
+        selected.push({ label: tr('labels.fixedDeliveryOption'), price: FIXED_TIME_SURCHARGE });
       }
       return selected;
     }
@@ -1621,6 +2278,79 @@ gtag('config', 'AW-18217117533');
       updateSummary();
     }
 
+    function validateVehicleCapacity() {
+      const rules = VEHICLE_CAPACITY_RULES[vehicleName];
+      if (!rules) return true;
+
+      const products = document.querySelectorAll('.product-box');
+      let totalWeight = 0;
+      let palletCount = 0;
+
+      for (let i = 0; i < products.length; i++) {
+        const typeEl = products[i].querySelector('.product-type');
+        const qtyEl = products[i].querySelector('.product-qty');
+        const weightEl = products[i].querySelector('.product-weight');
+        const lengthEl = products[i].querySelector('.product-length');
+        const widthEl = products[i].querySelector('.product-width');
+
+        const type = typeEl.value;
+        const qty = Number(qtyEl.value || 0);
+        const unitWeight = Number(weightEl.value || 0);
+        const length = Number(lengthEl.value || 0);
+        const width = Number(widthEl.value || 0);
+
+        totalWeight += qty * unitWeight;
+        if (type === 'Palette') palletCount += qty;
+
+        if (rules.maxItemWeight && unitWeight > rules.maxItemWeight) {
+          return showValidationMessage(
+            formatTemplate(tr('validation.capacityItemWeight'), {
+              product: i + 1,
+              max: rules.maxItemWeight
+            }),
+            weightEl
+          );
+        }
+
+        if (rules.maxLength && rules.maxWidth && length > 0 && width > 0) {
+          const fitsNormal = length <= rules.maxLength && width <= rules.maxWidth;
+          const fitsRotated = width <= rules.maxLength && length <= rules.maxWidth;
+          if (!fitsNormal && !fitsRotated) {
+            return showValidationMessage(
+              formatTemplate(tr('validation.capacityDimensions'), {
+                product: i + 1,
+                length: rules.maxLength,
+                width: rules.maxWidth
+              }),
+              lengthEl
+            );
+          }
+        }
+      }
+
+      if (rules.maxWeight && totalWeight > rules.maxWeight) {
+        return showValidationMessage(
+          formatTemplate(tr('validation.capacityWeight'), {
+            actual: totalWeight.toFixed(2),
+            max: rules.maxWeight
+          }),
+          products.length ? products[0].querySelector('.product-weight') : null
+        );
+      }
+
+      if (rules.maxPallets && palletCount > rules.maxPallets) {
+        return showValidationMessage(
+          formatTemplate(tr('validation.capacityPallets'), {
+            actual: palletCount,
+            max: rules.maxPallets
+          }),
+          products.length ? products[0].querySelector('.product-qty') : null
+        );
+      }
+
+      return true;
+    }
+
     function showValidationMessage(message, fieldEl) {
       alert(message);
       if (fieldEl) fieldEl.focus();
@@ -1652,22 +2382,26 @@ gtag('config', 'AW-18217117533');
             }
           }
         }
+
+        if (!validateVehicleCapacity()) return false;
       }
 
       if (step === 3) {
-        const fields3 = ['collect_company','collect_date','collect_street','collect_number','collect_postal','collect_city','collect_country','collect_time'];
+        const fields3 = ['collect_company','collect_date','collect_street','collect_number','collect_postal','collect_city','collect_country'];
         for (let k = 0; k < fields3.length; k++) {
           const el3 = document.getElementById(fields3[k]);
           if (!el3.value.trim()) return showValidationMessage(tr('validation.required'), el3);
         }
+        if (!validateSchedule('collect')) return false;
       }
 
       if (step === 4) {
-        const fields4 = ['delivery_company','delivery_date','delivery_street','delivery_number','delivery_postal','delivery_city','delivery_country','delivery_time'];
+        const fields4 = ['delivery_company','delivery_date','delivery_street','delivery_number','delivery_postal','delivery_city','delivery_country'];
         for (let m = 0; m < fields4.length; m++) {
           const el4 = document.getElementById(fields4[m]);
           if (!el4.value.trim()) return showValidationMessage(tr('validation.required'), el4);
         }
+        if (!validateSchedule('delivery')) return false;
       }
 
       if (step === 5) {
@@ -1711,26 +2445,40 @@ gtag('config', 'AW-18217117533');
       }
 
       let html = '';
+      let grandTotalWeight = 0;
+
       for (let i = 0; i < products.length; i++) {
         const type = products[i].querySelector('.product-type').value || '-';
         const desc = products[i].querySelector('.product-description').value.trim() || '-';
         const stack = products[i].querySelector('.product-stackable').value || '-';
-        const qty = products[i].querySelector('.product-qty').value.trim() || '-';
-        const weight = products[i].querySelector('.product-weight').value.trim() || '-';
+        const qtyRaw = products[i].querySelector('.product-qty').value.trim();
+        const weightRaw = products[i].querySelector('.product-weight').value.trim();
+        const qty = qtyRaw || '-';
+        const weight = weightRaw || '-';
         const length = products[i].querySelector('.product-length').value.trim() || '-';
         const width = products[i].querySelector('.product-width').value.trim() || '-';
         const height = products[i].querySelector('.product-height').value.trim() || '-';
+
+        const qtyNumber = Number(qtyRaw || 0);
+        const unitWeightNumber = Number(weightRaw || 0);
+        const productTotalWeight = qtyNumber * unitWeightNumber;
+        grandTotalWeight += productTotalWeight;
 
         html += '<strong>' + tr('product.title') + ' ' + (i + 1) + '</strong><br>';
         html += tr('product.type') + ' : ' + type + '<br>';
         html += tr('product.description') + ' : ' + desc + '<br>';
         html += tr('product.stackable') + ' : ' + stack + '<br>';
         html += tr('product.qty') + ' : ' + qty + ' | ' + tr('product.weight') + ' : ' + weight + '<br>';
+        if (qtyRaw && weightRaw) {
+          html += '<strong>' + tr('product.totalWeight') + ' : ' + productTotalWeight.toFixed(2) + ' kg</strong><br>';
+        }
         html += tr('product.length') + ' / ' + tr('product.width') + ' / ' + tr('product.height') + ' : ' + length + ' x ' + width + ' x ' + height + ' cm<br><br>';
       }
 
+      html += '<strong>' + tr('product.goodsTotalWeight') + ' : ' + grandTotalWeight.toFixed(2) + ' kg</strong><br>';
+
       if (safeValue('goods_extra_info')) {
-        html += '<strong>' + tr('labels.extraInfo') + '</strong><br>' + safeValue('goods_extra_info');
+        html += '<br><strong>' + tr('labels.extraInfo') + '</strong><br>' + safeValue('goods_extra_info');
       }
 
       target.innerHTML = html;
@@ -1765,6 +2513,8 @@ gtag('config', 'AW-18217117533');
       if (safeValue('collect_street') || safeValue('collect_number') || safeValue('collect_postal') || safeValue('collect_city') || safeValue('collect_country')) {
         html += tr('labels.address') + ' : ' + safeValue('collect_street') + ' ' + safeValue('collect_number') + ', ' + safeValue('collect_postal') + ' ' + safeValue('collect_city') + ', ' + safeValue('collect_country') + '<br>';
       }
+      if (getOpeningDaysDisplay('collect')) html += tr('labels.openingDays') + ' : ' + getOpeningDaysDisplay('collect') + '<br>';
+      if (getOpeningHoursDisplay('collect')) html += tr('labels.openingHours') + ' : ' + getOpeningHoursDisplay('collect') + '<br>';
       if (safeValue('collect_time')) html += tr('labels.timeWord') + ' : ' + safeValue('collect_time') + '<br>';
       if (safeValue('collect_contact')) html += tr('labels.contactWord') + ' : ' + safeValue('collect_contact') + '<br>';
       if (safeValue('collect_phone')) html += tr('labels.phone') + ' : ' + safeValue('collect_phone') + '<br>';
@@ -1802,6 +2552,8 @@ gtag('config', 'AW-18217117533');
       if (safeValue('delivery_street') || safeValue('delivery_number') || safeValue('delivery_postal') || safeValue('delivery_city') || safeValue('delivery_country')) {
         html += tr('labels.address') + ' : ' + safeValue('delivery_street') + ' ' + safeValue('delivery_number') + ', ' + safeValue('delivery_postal') + ' ' + safeValue('delivery_city') + ', ' + safeValue('delivery_country') + '<br>';
       }
+      if (getOpeningDaysDisplay('delivery')) html += tr('labels.openingDays') + ' : ' + getOpeningDaysDisplay('delivery') + '<br>';
+      if (getOpeningHoursDisplay('delivery')) html += tr('labels.openingHours') + ' : ' + getOpeningHoursDisplay('delivery') + '<br>';
       if (safeValue('delivery_time')) html += tr('labels.timeWord') + ' : ' + safeValue('delivery_time') + '<br>';
       if (safeValue('delivery_contact')) html += tr('labels.contactWord') + ' : ' + safeValue('delivery_contact') + '<br>';
       if (safeValue('delivery_phone')) html += tr('labels.phone') + ' : ' + safeValue('delivery_phone') + '<br>';
@@ -1853,6 +2605,12 @@ gtag('config', 'AW-18217117533');
       html += '<strong>' + tr('labels.vehicle') + ' :</strong> ' + vehicleName + '<br>';
       html += '<strong>' + tr('labels.pickup') + ' :</strong> ' + pickupPostal + ' (' + pickupCountry + ')<br>';
       html += '<strong>' + tr('labels.delivery') + ' :</strong> ' + deliveryPostal + ' (' + deliveryCountry + ')<br>';
+      if (getOpeningDaysDisplay('collect')) html += '<strong>' + tr('labels.openingDays') + ' :</strong> ' + getOpeningDaysDisplay('collect') + '<br>';
+      if (getOpeningHoursDisplay('collect')) html += '<strong>' + tr('labels.openingHoursPickup') + ' :</strong> ' + getOpeningHoursDisplay('collect') + '<br>';
+      if (safeValue('collect_time')) html += '<strong>' + tr('labels.collectTime') + ' :</strong> ' + safeValue('collect_time') + '<br>';
+      if (getOpeningDaysDisplay('delivery')) html += '<strong>' + tr('labels.openingDays') + ' :</strong> ' + getOpeningDaysDisplay('delivery') + '<br>';
+      if (getOpeningHoursDisplay('delivery')) html += '<strong>' + tr('labels.openingHoursDelivery') + ' :</strong> ' + getOpeningHoursDisplay('delivery') + '<br>';
+      if (safeValue('delivery_time')) html += '<strong>' + tr('labels.deliveryTime') + ' :</strong> ' + safeValue('delivery_time') + '<br>';
       html += '<strong>' + tr('labels.basePrice') + ' :</strong> ' + formatPrice(basePrice) + '<br>';
       html += '<strong>' + tr('labels.optionsPrice') + ' :</strong> ' + formatPrice(totals.optionsTotal) + '<br>';
       html += '<strong>' + tr('labels.vatShort') + ' :</strong> ' + formatPrice(totals.vatAmount) + '<br>';
@@ -1879,6 +2637,7 @@ gtag('config', 'AW-18217117533');
     }
 
     function updateSummary() {
+      syncScheduleDerivedFields();
       toggleOtherCountryField();
       updatePrices();
       updateSummaryOptions();
@@ -1920,6 +2679,7 @@ gtag('config', 'AW-18217117533');
       }
 
       summary += '=== MARCHANDISES ===\n';
+      let grandTotalWeight = 0;
       if (products.length === 0) {
         summary += 'Aucun produit ajouté\n\n';
       } else {
@@ -1932,6 +2692,10 @@ gtag('config', 'AW-18217117533');
           const length = products[i].querySelector('.product-length').value.trim() || '-';
           const width = products[i].querySelector('.product-width').value.trim() || '-';
           const height = products[i].querySelector('.product-height').value.trim() || '-';
+          const qtyNumber = Number(products[i].querySelector('.product-qty').value || 0);
+          const unitWeightNumber = Number(products[i].querySelector('.product-weight').value || 0);
+          const productTotalWeight = qtyNumber * unitWeightNumber;
+          grandTotalWeight += productTotalWeight;
 
           summary += 'Produit ' + (i + 1) + '\n';
           summary += 'Type: ' + type + '\n';
@@ -1939,8 +2703,10 @@ gtag('config', 'AW-18217117533');
           summary += 'Empilable: ' + stack + '\n';
           summary += 'Quantité: ' + qty + '\n';
           summary += 'Poids par unité: ' + weight + ' kg\n';
+          summary += 'Poids total produit: ' + productTotalWeight.toFixed(2) + ' kg\n';
           summary += 'Dimensions: ' + length + ' x ' + width + ' x ' + height + ' cm\n\n';
         }
+        summary += 'Poids total marchandises: ' + grandTotalWeight.toFixed(2) + ' kg\n\n';
       }
 
       if (safeValue('goods_extra_info')) {
@@ -1951,7 +2717,9 @@ gtag('config', 'AW-18217117533');
       summary += 'Société: ' + safeValue('collect_company') + '\n';
       summary += 'Date: ' + safeValue('collect_date') + '\n';
       summary += 'Adresse: ' + safeValue('collect_street') + ' ' + safeValue('collect_number') + ', ' + safeValue('collect_postal') + ' ' + safeValue('collect_city') + ', ' + safeValue('collect_country') + '\n';
-      summary += 'Heure: ' + safeValue('collect_time') + '\n';
+      summary += 'Jours d’ouverture: ' + (getOpeningDaysDisplay('collect') || 'Non renseignés') + '\n';
+      summary += 'Heures d’ouverture: ' + (getOpeningHoursDisplay('collect') || 'Non renseignées') + '\n';
+      summary += 'Horaire souhaité: ' + safeValue('collect_time') + '\n';
       summary += 'Contact: ' + safeValue('collect_contact') + '\n';
       summary += 'Téléphone: ' + safeValue('collect_phone') + '\n';
       summary += 'Réf.: ' + safeValue('collect_ref') + '\n';
@@ -1961,7 +2729,9 @@ gtag('config', 'AW-18217117533');
       summary += 'Société: ' + safeValue('delivery_company') + '\n';
       summary += 'Date: ' + safeValue('delivery_date') + '\n';
       summary += 'Adresse: ' + safeValue('delivery_street') + ' ' + safeValue('delivery_number') + ', ' + safeValue('delivery_postal') + ' ' + safeValue('delivery_city') + ', ' + safeValue('delivery_country') + '\n';
-      summary += 'Heure: ' + safeValue('delivery_time') + '\n';
+      summary += 'Jours d’ouverture: ' + (getOpeningDaysDisplay('delivery') || 'Non renseignés') + '\n';
+      summary += 'Heures d’ouverture: ' + (getOpeningHoursDisplay('delivery') || 'Non renseignées') + '\n';
+      summary += 'Horaire souhaité: ' + safeValue('delivery_time') + '\n';
       summary += 'Contact: ' + safeValue('delivery_contact') + '\n';
       summary += 'Téléphone: ' + safeValue('delivery_phone') + '\n';
       summary += 'Réf.: ' + safeValue('delivery_ref') + '\n';
@@ -2012,6 +2782,12 @@ gtag('config', 'AW-18217117533');
         pickupCountry: pickupCountry,
         deliveryPostal: deliveryPostal,
         deliveryCountry: deliveryCountry,
+        pickupOpeningDays: getOpeningDaysDisplay('collect'),
+        pickupOpeningHours: getOpeningHoursDisplay('collect'),
+        pickupSchedule: safeValue('collect_time'),
+        deliveryOpeningDays: getOpeningDaysDisplay('delivery'),
+        deliveryOpeningHours: getOpeningHoursDisplay('delivery'),
+        deliverySchedule: safeValue('delivery_time'),
         billingEmail: safeValue('billing_email'),
         billingName: safeValue('billing_name'),
         billingCompany: safeValue('billing_company'),
@@ -2110,6 +2886,39 @@ gtag('config', 'AW-18217117533');
         updateSummary();
       });
 
+      document.getElementById('addCollectOpeningBtn').addEventListener('click', function() {
+        addOpeningPeriod('collect');
+        updateSummary();
+      });
+
+      document.getElementById('addDeliveryOpeningBtn').addEventListener('click', function() {
+        addOpeningPeriod('delivery');
+        updateSummary();
+      });
+
+      document.getElementById('collect_appointment_type').addEventListener('change', function() {
+        updateScheduleUi('collect');
+        updateSummary();
+      });
+
+      document.getElementById('delivery_appointment_type').addEventListener('change', function() {
+        updateScheduleUi('delivery');
+        updateSummary();
+      });
+
+      document.getElementById('collect_open_until_day').addEventListener('change', updateSummary);
+      document.getElementById('delivery_open_until_day').addEventListener('change', updateSummary);
+
+      const scheduleInputs = [
+        'collect_flexible_start','collect_flexible_end','collect_fixed_time',
+        'delivery_flexible_start','delivery_flexible_end','delivery_fixed_time'
+      ];
+      for (let si = 0; si < scheduleInputs.length; si++) {
+        const scheduleEl = document.getElementById(scheduleInputs[si]);
+        scheduleEl.addEventListener('input', updateSummary);
+        scheduleEl.addEventListener('change', updateSummary);
+      }
+
       document.getElementById('bookingForm').addEventListener('submit', function (e) {
         e.preventDefault();
       });
@@ -2139,6 +2948,10 @@ gtag('config', 'AW-18217117533');
       }
 
       setupVehicleDependentOptions();
+      addOpeningPeriod('collect');
+      addOpeningPeriod('delivery');
+      updateScheduleUi('collect');
+      updateScheduleUi('delivery');
       updatePrices();
       addProduct();
       showStep(1);
